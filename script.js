@@ -277,7 +277,8 @@
   }
 
   function renderVehicles() {
-    grid.innerHTML = vehicles.map(cardHTML).join("");
+    var live = vehicles.filter(function (v) { return v.published !== false; });
+    grid.innerHTML = live.map(cardHTML).join("");
     grid.querySelectorAll("[data-quote]").forEach(function (btn) {
       btn.addEventListener("click", function () { window.__openModal(btn.dataset.model); });
     });

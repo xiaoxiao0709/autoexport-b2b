@@ -9,6 +9,7 @@
     "stock": 50,
     "status": "Export Ready",
     "image": "assets/car-byd-song-plus.png",
+    "published": true,
     "description": ""
   },
   {
@@ -21,6 +22,7 @@
     "stock": 120,
     "status": "Export Ready",
     "image": "assets/car-byd-seagull.png",
+    "published": true,
     "description": ""
   },
   {
@@ -33,6 +35,7 @@
     "stock": 80,
     "status": "Export Ready",
     "image": "assets/car-chery-tiggo8.png",
+    "published": true,
     "description": ""
   },
   {
@@ -45,6 +48,7 @@
     "stock": 45,
     "status": "Export Ready",
     "image": "assets/car-geely-monjaro.png",
+    "published": true,
     "description": ""
   },
   {
@@ -57,6 +61,7 @@
     "stock": 200,
     "status": "Export Ready",
     "image": "assets/car-haval-h6.png",
+    "published": true,
     "description": ""
   },
   {
@@ -69,6 +74,7 @@
     "stock": 30,
     "status": "Export Ready",
     "image": "assets/car-zeekr-001.png",
+    "published": true,
     "description": ""
   }
 ]

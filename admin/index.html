@@ -70,6 +70,46 @@
   .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
   .kv{font-size:12px;color:var(--muted)} .kv b{color:var(--ink)}
   .errbox{color:var(--err);font-size:12px;margin-top:8px;display:none}
+  /* vehicle grid */
+  .veh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .veh-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:.15s}
+  .veh-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+  .veh-thumb{height:128px;background:#eef2f7;position:relative}
+  .veh-thumb img{width:100%;height:100%;object-fit:cover}
+  .veh-thumb .ph{display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:12px}
+  .veh-pub{position:absolute;top:8px;left:8px;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;backdrop-filter:blur(2px)}
+  .veh-pub.on{background:#dcfce7;color:#15803d}.veh-pub.off{background:#fee2e2;color:#b91c1c}
+  .veh-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:6px}
+  .veh-bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .veh-bhead b{font-size:15px}.veh-bhead .model{font-size:13px;color:var(--muted)}
+  .veh-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .veh-stock{margin-top:2px;font-size:12px}.veh-stock b{color:var(--ink)}
+  .veh-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+  .veh-actions button{flex:1;padding:7px 0;font-size:13px}
+  /* switch */
+  .switch{position:relative;display:inline-block;width:40px;height:22px}
+  .switch input{display:none}
+  .switch .sl{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s;cursor:pointer}
+  .switch .sl:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .switch input:checked+.sl{background:var(--ok)}
+  .switch input:checked+.sl:before{transform:translateX(18px)}
+  /* inbox */
+  .inbox{display:grid;grid-template-columns:280px 1fr;gap:14px}
+  .conv{border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;margin-bottom:8px;background:#fff}
+  .conv:hover{border-color:var(--brand)}
+  .conv.active{background:var(--brand-50);border-color:var(--brand)}
+  .conv .ct{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conv .cm{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conv .cmeta{font-size:11px;color:#94a3b8;margin-top:4px;display:flex;justify-content:space-between}
+  .conv .dot-open{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
+  .thread{max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+  .msg{padding:9px 12px;border-radius:12px;max-width:82%;font-size:13px;white-space:pre-wrap;word-break:break-word}
+  .msg.me{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .msg.them{background:#f1f5f9;align-self:flex-start;border-bottom-left-radius:3px}
+  .msg .who{font-size:10px;opacity:.7;margin-bottom:2px}
+  .reply-box{display:flex;gap:8px;margin-top:12px}
+  .reply-box textarea{flex:1;min-height:44px;resize:vertical}
+  .empty{color:var(--muted);font-size:13px;padding:30px;text-align:center}
 </style>
 </head>
 <body>
@@ -100,7 +140,9 @@
   <div class="tabs">
     <button class="tab active" data-tab="vehicles">Vehicles</button>
     <button class="tab" data-tab="content">Homepage Content</button>
-    <button class="tab" data-tab="deploy">Deploy &amp; Status</button>
+    <button class="tab" data-tab="inbox">Inbox · 客服</button>
+    <button class="tab" data-tab="settings">Settings</button>
+    <button class="tab" data-tab="deploy">Deploy</button>
   </div>
 
   <!-- VEHICLES -->
@@ -114,10 +156,7 @@
         </div>
       </div>
       <div id="vehEmpty" class="hint">Connect to load vehicles.</div>
-      <table id="vehTable" style="display:none">
-        <thead><tr><th>Image</th><th>Brand</th><th>Model</th><th>Type</th><th>Body</th><th>Year</th><th>Stock</th><th></th></tr></thead>
-        <tbody id="vehBody"></tbody>
-      </table>
+      <div id="vehGrid" class="veh-grid" style="display:none"></div>
     </div>
   </section>
 
@@ -147,6 +186,48 @@
       </div>
     </div>
   </section>
+
+  <!-- INBOX / 客服 -->
+  <section id="tab-inbox" style="display:none">
+    <div class="card">
+      <div class="bar">
+        <h2 style="margin:0">Customer Inbox · 客服对话</h2>
+        <button class="ghost" id="btnRefreshInbox">Refresh</button>
+      </div>
+      <div class="hint" style="margin-bottom:12px">访客通过前端"在线咨询"发起的对话会以 GitHub Issue 形式出现在这里。客服可直接回复，回复会实时显示给访客。</div>
+      <div class="inbox">
+        <div id="convList"><div class="empty">Connect to load conversations.</div></div>
+        <div>
+          <div id="thread" class="thread"><div class="empty">Select a conversation on the left.</div></div>
+          <div class="reply-box">
+            <textarea id="replyText" placeholder="输入客服回复…"></textarea>
+            <button id="btnSendReply">Send</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="ghost" id="btnCloseConv">Mark Resolved / Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="tab-settings" style="display:none">
+    <div class="card">
+      <div class="bar">
+        <h2 style="margin:0">Site Settings</h2>
+        <button id="btnSaveSettings">Save Settings</button>
+      </div>
+      <div class="grid2">
+        <div><label>Business Name</label><input id="sBiz" placeholder="Auto Export"></div>
+        <div><label>WhatsApp (with country code)</label><input id="sWa" placeholder="8613800000000"></div>
+        <div><label>Email</label><input id="sEmail" placeholder="sales@example.com"></div>
+        <div><label>Chat Inbox Token (fine-grained, Issues:write)</label><input id="sChatTok" type="password" placeholder="github_pat_… (Issues write only)"></div>
+      </div>
+      <div class="hint" style="margin-top:8px">Chat Token 用于前端访客创建对话 Issue，请使用<strong>细粒度 Token</strong>且仅授权该仓库的 <strong>Issues 读写</strong>（不要给 contents/repo 全权限），即使泄露也改不了网站文件。访客消息将以 Issue 形式存入仓库。</div>
+      <div id="settingsErr" class="errbox"></div>
+    </div>
+  </section>
 </div>
 
 <!-- Vehicle modal -->
@@ -165,6 +246,10 @@
       <div><label>Stock (units)</label><input id="vStock" type="number" value="1"></div>
       <div><label>Status</label><input id="vStatus" value="Export Ready"></div>
       <div><label>Image URL</label><input id="vImage" placeholder="assets/car-xxx.png"></div>
+    </div>
+    <div style="margin-top:4px;display:flex;align-items:center;gap:10px">
+      <label class="switch"><input id="vPublished" type="checkbox" checked><span class="sl"></span></label>
+      <label style="margin:0">上架 / Published（在前台展示该车辆）</label>
     </div>
     <div style="margin-top:12px">
       <label>Or upload image to repo</label>
@@ -186,7 +271,7 @@
   "use strict";
   var API="https://api.github.com";
   var LS_KEY="aex_admin_cfg_v1";
-  var state={owner:"",repo:"",branch:"",token:"",site:null,siteSha:null,veh:null,vehSha:null,editing:-1};
+  var state={owner:"",repo:"",branch:"",token:"",site:null,siteSha:null,veh:null,vehSha:null,editing:-1,config:null,configSha:null,convs:[],activeConv:null};
 
   /* ---------- helpers ---------- */
   function $(id){return document.getElementById(id);}
@@ -225,6 +310,12 @@
       return r.json();
     });
   }
+  function getConfig(){
+    return api(repoPath("data/config.json")).then(function(r){
+      if(r.ok)return r.json().then(function(d){state.config=JSON.parse(b64ToUtf8(d.content));state.configSha=d.sha;});
+      state.config={businessName:"Auto Export",whatsapp:"",email:"",chatToken:""};state.configSha=null;
+    });
+  }
 
   /* ---------- connect ---------- */
   function connect(){
@@ -236,12 +327,12 @@
     // detect default branch if empty
     var repoReq=state.branch?Promise.resolve():api("/repos/"+state.owner+"/"+state.repo).then(function(r){if(!r.ok)throw new Error("Repository not found or token lacks access.");return r.json();}).then(function(d){state.branch=d.default_branch;$("cfgBranch").value=state.branch;saveCfg();return true;});
     repoReq.then(function(){
-      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json")]);
+      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json"),getConfig()]);
     }).then(function(res){
       state.site=JSON.parse(res[0].text);state.siteSha=res[0].sha;
       state.veh=JSON.parse(res[1].text);state.vehSha=res[1].sha;
       setStatus("Connected · "+state.branch,"ok");
-      renderVehicles();renderContent();renderDeploy();
+      renderVehicles();renderContent();renderDeploy();renderSettings();
       toast("Loaded site data","ok");
     }).catch(function(err){
       setStatus("Connection failed","err");
@@ -252,34 +343,37 @@
   /* ---------- vehicles ---------- */
   var TYPE_LABEL={ev:"EV",phev:"PHEV",petrol:"Petrol"};
   function renderVehicles(){
-    var body=$("vehBody");body.innerHTML="";
-    if(!state.veh||!state.veh.length){$("vehTable").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="No vehicles yet. Click '+ Add Vehicle'.";return;}
-    $("vehTable").style.display="table";$("vehEmpty").style.display="none";
+    var grid=$("vehGrid");grid.innerHTML="";
+    if(!state.veh||!state.veh.length){$("vehGrid").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="No vehicles yet. Click '+ Add Vehicle'.";return;}
+    $("vehGrid").style.display="grid";$("vehEmpty").style.display="none";
     state.veh.forEach(function(v,i){
-      var tr=el("tr");
-      tr.innerHTML=
-        '<td><img src="'+esc(v.image)+'" alt=""></td>'+
-        '<td><b>'+esc(v.brand)+'</b></td>'+
-        '<td>'+esc(v.name)+'</td>'+
-        '<td><span class="tag '+(TYPE_LABEL[v.type]||'').toLowerCase()+'">'+(TYPE_LABEL[v.type]||v.type)+'</span></td>'+
-        '<td>'+esc(v.bodyType)+'</td>'+
-        '<td>'+esc(v.year)+'</td>'+
-        '<td>'+esc(v.stock)+'</td>'+
-        '<td style="white-space:nowrap"><button class="ghost" data-edit="'+i+'">Edit</button> '+
-        '<button class="danger" data-del="'+i+'">Delete</button></td>';
-      body.appendChild(tr);
+      var pub=v.published!==false;
+      var thumb=v.image?'<img src="'+esc(v.image)+'" alt="">':'<div class="ph">No image</div>';
+      var card=el("div","class","veh-card");
+      card.innerHTML=
+        '<div class="veh-thumb">'+thumb+'<span class="veh-pub '+(pub?"on":"off")+'">'+(pub?"上架":"下架")+'</span></div>'+
+        '<div class="veh-body">'+
+          '<div class="veh-bhead"><div><b>'+esc(v.brand)+'</b><div class="model">'+esc(v.name)+'</div></div>'+
+            '<span class="tag '+(TYPE_LABEL[v.type]||'').toLowerCase()+'">'+(TYPE_LABEL[v.type]||v.type)+'</span></div>'+
+          '<div class="veh-meta"><span>'+esc(v.bodyType)+'</span><span>· '+esc(v.year)+'</span></div>'+
+          '<div class="veh-stock">Stock: <b>'+(v.stock!=null?v.stock:"—")+'</b> · '+esc(v.status||"Export Ready")+'</div>'+
+        '</div>'+
+        '<div class="veh-actions"><button class="ghost" data-edit="'+i+'">Edit</button>'+
+          '<button class="danger" data-del="'+i+'">Delete</button></div>';
+      grid.appendChild(card);
     });
-    body.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){openVehModal(+b.dataset.edit);};});
-    body.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){
+    grid.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){openVehModal(+b.dataset.edit);};});
+    grid.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){
       if(confirm("Delete "+state.veh[+b.dataset.del].brand+" "+state.veh[+b.dataset.del].name+"?")){state.veh.splice(+b.dataset.del,1);renderVehicles();}
     };});
   }
   function openVehModal(i){
     state.editing=i;
-    var v=i>=0?state.veh[i]:{brand:"",name:"",type:"ev",bodyType:"",year:2025,stock:1,status:"Export Ready",image:"",description:""};
+    var v=i>=0?state.veh[i]:{brand:"",name:"",type:"ev",bodyType:"",year:2025,stock:1,status:"Export Ready",image:"",published:true,description:""};
     $("vehModalTitle").textContent=i>=0?"Edit Vehicle":"Add Vehicle";
     $("vBrand").value=v.brand;$("vName").value=v.name;$("vType").value=v.type;$("vBody").value=v.bodyType;
     $("vYear").value=v.year;$("vStock").value=v.stock;$("vStatus").value=v.status;$("vImage").value=v.image;$("vFile").value="";
+    $("vPublished").checked=v.published!==false;
     $("vehErr").style.display="none";
     $("vehModal").classList.add("open");
   }
@@ -287,7 +381,7 @@
   function saveVehModal(){
     var brand=$("vBrand").value.trim(),name=$("vName").value.trim();
     if(!brand||!name){$("vehErr").style.display="block";$("vehErr").textContent="Brand and Model Name are required.";return;}
-    var v={brand:brand,name:name,type:$("vType").value,bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",image:$("vImage").value.trim()};
+    var v={brand:brand,name:name,type:$("vType").value,bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",image:$("vImage").value.trim(),published:$("vPublished").checked};
     if(state.editing>=0){v.id=state.veh[state.editing].id;state.veh[state.editing]=v;}else{v.id=slug(brand+"-"+name);state.veh.push(v);}
     renderVehicles();closeVehModal();toast("Vehicle updated locally — remember to Save Vehicles","");
   }
@@ -345,6 +439,82 @@
     .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
   }
 
+  /* ---------- inbox / chat ---------- */
+  function loadInbox(){
+    if(!state.token){toast("Connect first","err");return;}
+    setStatus("Loading inbox…","busy");
+    api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){if(!r.ok)throw new Error("Failed to load issues");return r.json();})
+    .then(function(issues){
+      state.convs=issues||[];
+      setStatus("Connected · "+state.branch,"ok");
+      renderInbox();
+      if(!state.activeConv&&state.convs.length)selectConv(state.convs[0].number);
+    }).catch(function(err){setStatus("Inbox failed","err");toast(err.message,"err");});
+  }
+  function renderInbox(){
+    var list=$("convList");
+    if(!state.convs.length){list.innerHTML='<div class="empty">No conversations yet.</div>';$("thread").innerHTML='<div class="empty">Select a conversation on the left.</div>';return;}
+    list.innerHTML="";
+    state.convs.forEach(function(iss){
+      var c=el("div","class","conv"+(state.activeConv===iss.number?" active":""));
+      var first=(iss.body||"").replace(/\n/g," ").slice(0,60);
+      c.innerHTML='<div class="ct">'+(iss.title||"Chat")+'</div>'+
+        '<div class="cm">'+esc(first)+'</div>'+
+        '<div class="cmeta"><span>'+(iss.state==="closed"?"✓ resolved":"● open")+'</span><span>#'+(iss.number)+'</span></div>';
+      c.onclick=function(){selectConv(iss.number);};
+      list.appendChild(c);
+    });
+  }
+  function selectConv(num){
+    state.activeConv=num;renderInbox();
+    var iss=state.convs.filter(function(x){return x.number===num;})[0];
+    if(!iss)return;
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+num+"/comments").then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
+    .then(function(comments){
+      var thread=$("thread");thread.innerHTML="";
+      thread.appendChild(msgEl("Visitor · 访客", iss.body||"", "them"));
+      (comments||[]).forEach(function(c){
+        var me=(c.user&&c.user.login===state.owner);
+        thread.appendChild(msgEl(c.user?c.user.login:"visitor", c.body, me?"me":"them"));
+      });
+      thread.scrollTop=thread.scrollHeight;
+    }).catch(function(err){toast(err.message,"err");});
+  }
+  function msgEl(who,text,side){var m=el("div","class","msg "+side);m.innerHTML='<div class="who">'+esc(who)+'</div>'+esc(text);return m;}
+  function sendReply(){
+    if(state.activeConv==null){toast("Select a conversation","err");return;}
+    var txt=$("replyText").value.trim();if(!txt){toast("Type a reply","err");return;}
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv+"/comments",{method:"POST",body:JSON.stringify({body:txt})})
+    .then(function(r){if(!r.ok)throw new Error("Failed to post reply");return r.json();})
+    .then(function(){$("replyText").value="";selectConv(state.activeConv);toast("Reply sent ✓","ok");})
+    .catch(function(err){toast(err.message,"err");});
+  }
+  function closeConv(){
+    if(state.activeConv==null){toast("Select a conversation","err");return;}
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv,{method:"PATCH",body:JSON.stringify({state:"closed"})})
+    .then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
+    .then(function(){loadInbox();toast("Marked resolved","ok");})
+    .catch(function(err){toast(err.message,"err");});
+  }
+
+  /* ---------- settings ---------- */
+  function renderSettings(){
+    if(!state.config)return;
+    $("sBiz").value=state.config.businessName||"";$("sWa").value=state.config.whatsapp||"";
+    $("sEmail").value=state.config.email||"";$("sChatTok").value=state.config.chatToken||"";
+  }
+  function saveSettings(){
+    state.config={businessName:$("sBiz").value.trim(),whatsapp:$("sWa").value.trim(),email:$("sEmail").value.trim(),chatToken:$("sChatTok").value.trim()};
+    setStatus("Saving settings…","busy");
+    api(repoPath("data/config.json")).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});return null;})
+    .then(function(sha){
+      var body={message:"Update site settings",content:utf8ToB64(JSON.stringify(state.config,null,2)+"\n")};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
+      return api("/repos/"+state.owner+"/"+state.repo+"/contents/data/config.json",{method:"PUT",body:JSON.stringify(body)});
+    }).then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
+    .then(function(){state.configSha=null;setStatus("Connected · "+state.branch,"ok");toast("Settings saved ✓","ok");renderDeploy();})
+    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+  }
+
   /* ---------- deploy ---------- */
   function renderDeploy(){
     var live="https://"+state.owner+".github.io/"+state.repo+"/";
@@ -361,7 +531,10 @@
   function initTabs(){
     document.querySelectorAll(".tab").forEach(function(t){
       t.onclick=function(){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});t.classList.add("active");
-        var name=t.dataset.tab;["vehicles","content","deploy"].forEach(function(s){$("tab-"+s).style.display=s===name?"block":"none";});};
+        var name=t.dataset.tab;["vehicles","content","inbox","settings","deploy"].forEach(function(s){$("tab-"+s).style.display=s===name?"block":"none";});
+        if(name==="inbox")loadInbox();
+        if(name==="settings")renderSettings();
+      };
     });
   }
 
@@ -388,6 +561,10 @@
     $("btnSaveVehicles").onclick=saveVehicles;
     $("btnSaveContent").onclick=saveContent;
     $("contentSearch").oninput=renderContent;
+    $("btnRefreshInbox").onclick=loadInbox;
+    $("btnSendReply").onclick=sendReply;
+    $("btnCloseConv").onclick=closeConv;
+    $("btnSaveSettings").onclick=saveSettings;
     if(state.token)setStatus("Token present — click Connect","");
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
