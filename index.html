@@ -1,0 +1,2742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoExport — China Vehicle Export Partner | Bulk Vehicle Supply to Global Markets</title>
+<meta name="description" content="Reliable automotive supply from China to global markets. Bulk vehicle supply, professional export process and global logistics for car dealers, importers and fleet buyers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Color — OKLCH tinted-navy system */
+  --ink-900: oklch(16% 0.035 262);      /* deepest navy */
+  --ink-800: oklch(20% 0.04 262);
+  --ink-700: oklch(25% 0.045 262);
+  --paper:   oklch(98% 0.005 255);
+  --paper-2: oklch(96% 0.008 258);
+  --line:    oklch(90% 0.012 258);
+  --text-hi: oklch(22% 0.03 262);
+  --text-mid: oklch(45% 0.02 262);
+  --text-low: oklch(58% 0.015 262);
+  --brand:   oklch(58% 0.19 256);       /* brand blue */
+  --brand-hi: oklch(66% 0.18 256);
+  --brand-deep: oklch(48% 0.17 260);
+  --amber:   oklch(75% 0.14 75);
+  --mint:    oklch(72% 0.13 165);
+  --wa:      oklch(68% 0.17 152);
+
+  /* Dark-on-dark text */
+  --dark-hi: oklch(97% 0.01 255);
+  --dark-mid: oklch(78% 0.015 258);
+  --dark-low: oklch(62% 0.02 258);
+
+  /* Type */
+  --font-display: "Space Grotesk", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+
+  /* Spacing (4pt) */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* Radius */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+
+  /* Motion */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Layout */
+  --maxw: 1280px;
+  --pad-x: clamp(20px, 5vw, 64px);
+}
+
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-hi);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; border: none; background: none; cursor: pointer; }
+ul { list-style: none; }
+::selection { background: var(--brand); color: #fff; }
+
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad-x); }
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  transition: background 0.35s var(--ease-quart), box-shadow 0.35s var(--ease-quart), backdrop-filter 0.35s;
+}
+.site-header.scrolled {
+  background: color-mix(in oklch, var(--ink-900) 88%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 oklch(100% 0 0 / 8%);
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  height: 76px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+.brand { display: flex; align-items: center; gap: var(--s-3); margin-right: auto; }
+.brand-mark {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 24px; height: 24px; }
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--dark-hi);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.brand-tag {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dark-low);
+}
+.nav-links { display: flex; align-items: center; gap: 0; }
+.nav-links a {
+  position: relative;
+  padding: 8px 11px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--dark-mid);
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  transition: color 0.2s var(--ease-quart);
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: 4px;
+  height: 2px;
+  background: var(--brand-hi);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s var(--ease-expo);
+}
+.nav-links a:hover, .nav-links a.active { color: var(--dark-hi); }
+.nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+.nav-right { display: flex; align-items: center; gap: var(--s-3); flex-shrink: 0; }
+.lang-switch { position: relative; }
+.lang-current {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: var(--dark-mid);
+  padding: 8px 10px; border-radius: var(--r-sm);
+  background: transparent; border: 1px solid transparent; cursor: pointer;
+  white-space: nowrap; transition: color .2s, border-color .2s;
+}
+.lang-current:hover { color: var(--dark-hi); border-color: oklch(100% 0 0 / 18%); }
+.lang-current svg { width: 16px; height: 16px; }
+.lang-current svg[style*="width:12px"] { width: 12px; height: 12px; }
+.lang-current[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+.lang-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 60;
+  min-width: 156px; margin: 0; padding: 6px; list-style: none;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r-sm);
+  box-shadow: 0 14px 34px oklch(20% 0.05 262 / 18%);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity .18s var(--ease-quart), transform .18s var(--ease-quart), visibility .18s;
+}
+.lang-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.lang-menu li {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+  border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  color: var(--ink-900); cursor: pointer; white-space: nowrap;
+}
+.lang-menu li:hover { background: var(--paper-2); }
+.lang-menu li.active { color: var(--brand); }
+.lang-menu li.active::after { content: "✓"; margin-left: auto; font-size: 12px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease-quart), background 0.2s var(--ease-quart), box-shadow 0.25s var(--ease-quart), color 0.2s, border-color 0.2s;
+  will-change: transform;
+}
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 18px; height: 18px; transition: transform 0.25s var(--ease-expo); }
+.btn:hover svg { transform: translateX(4px); }
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  padding: 12px 22px;
+  font-size: 14px;
+  box-shadow: 0 6px 20px oklch(58% 0.19 256 / 35%);
+}
+.btn-primary:hover { background: var(--brand-hi); box-shadow: 0 10px 28px oklch(58% 0.19 256 / 45%); }
+.btn-ghost {
+  color: var(--dark-hi);
+  padding: 12px 22px;
+  font-size: 14px;
+  border: 1.5px solid oklch(100% 0 0 / 28%);
+  background: oklch(100% 0 0 / 4%);
+}
+.btn-ghost:hover { border-color: oklch(100% 0 0 / 55%); background: oklch(100% 0 0 / 9%); }
+.btn-lg { padding: 16px 30px; font-size: 15px; }
+
+.nav-toggle {
+  display: none;
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  color: var(--dark-hi);
+  position: relative;
+}
+.nav-toggle span {
+  position: absolute; left: 11px; right: 11px;
+  height: 2px; background: currentColor; border-radius: 2px;
+  transition: transform 0.3s var(--ease-expo), opacity 0.2s, top 0.3s var(--ease-expo);
+}
+.nav-toggle span:nth-child(1) { top: 15px; }
+.nav-toggle span:nth-child(2) { top: 21px; }
+.nav-toggle span:nth-child(3) { top: 27px; }
+.nav-toggle.open span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed; inset: 0;
+  z-index: 99;
+  background: var(--ink-900);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad-x);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s var(--ease-quart), visibility 0.35s;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; }
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 600;
+  color: var(--dark-hi);
+  padding: 10px 0;
+  border-bottom: 1px solid oklch(100% 0 0 / 8%);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-expo), transform 0.5s var(--ease-expo), color 0.2s;
+  transition-delay: calc(var(--i) * 60ms);
+}
+.mobile-menu.open a { opacity: 1; transform: none; }
+.mobile-menu a:hover { color: var(--brand-hi); }
+
+/* ============================================================
+   SECTION 1 — HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--dark-hi);
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  z-index: -2;
+}
+.hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  transform: scale(1.06);
+  animation: heroZoom 14s var(--ease-expo) forwards;
+}
+@keyframes heroZoom { to { transform: scale(1); } }
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to right, oklch(16% 0.035 262 / 88%) 0%, oklch(16% 0.035 262 / 55%) 42%, oklch(16% 0.035 262 / 18%) 72%),
+    linear-gradient(to top, var(--ink-900) 0%, oklch(16% 0.035 262 / 40%) 26%, transparent 55%);
+}
+.hero-inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 110px var(--pad-x) 60px;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: var(--s-5);
+}
+.hero-eyebrow::before {
+  content: "";
+  width: 36px; height: 2px;
+  background: var(--amber);
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7.4vw, 96px);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--s-5);
+  text-wrap: balance;
+}
+.hero h1 .accent {
+  display: block;
+  color: var(--brand-hi);
+}
+.hero-sub {
+  font-size: clamp(17px, 1.7vw, 21px);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--dark-mid);
+  max-width: 34ch;
+  margin-bottom: var(--s-6);
+}
+.hero-adv-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--s-7);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--dark-hi);
+}
+.hero-adv-line span { white-space: nowrap; }
+.hero-adv-line i {
+  width: 5px; height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-hi);
+  box-shadow: 0 0 8px var(--brand-hi);
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-bottom: var(--s-8); }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: var(--s-7) 0 var(--s-8);
+  background: oklch(100% 0 0 / 14%);
+  border: 1px solid oklch(100% 0 0 / 14%);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.hero-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: var(--s-5) var(--s-5);
+  background: oklch(20% 0.04 262 / 38%);
+  backdrop-filter: blur(6px);
+}
+.hero-stats .stat-icon {
+  flex: none;
+  width: 42px; height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: oklch(58% 0.19 256 / 18%);
+  color: var(--brand-hi);
+  border: 1px solid oklch(58% 0.19 256 / 32%);
+}
+.hero-stats .stat-icon svg { width: 22px; height: 22px; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.9vw, 40px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.stat-num em { font-style: normal; color: var(--brand-hi); }
+.stat-label {
+  margin-top: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dark-low);
+}
+
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dark-low);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.scroll-hint-icon {
+  width: 26px; height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid oklch(100% 0 0 / 24%);
+  color: var(--dark-hi);
+  animation: scrollPulse 2.2s var(--ease-quart) infinite;
+}
+.scroll-hint-icon svg { width: 14px; height: 14px; }
+.scroll-hint::after { content: none; }
+@keyframes scrollPulse {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ============================================================
+   SECTION LABELS (shared)
+   ============================================================ */
+.sec-head { margin-bottom: var(--s-8); }
+.sec-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+  margin-bottom: var(--s-4);
+}
+.sec-eyebrow::before { content: ""; width: 34px; height: 2px; background: var(--brand); }
+.sec-title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.sec-sub {
+  margin-top: var(--s-4);
+  font-size: 17px;
+  color: var(--text-mid);
+  max-width: 56ch;
+}
+.on-dark .sec-eyebrow { color: var(--brand-hi); }
+.on-dark .sec-title { color: var(--dark-hi); }
+.on-dark .sec-sub { color: var(--dark-mid); }
+
+section { padding: var(--s-9) 0; }
+
+/* ============================================================
+   SECTION 2 — COMPANY
+   ============================================================ */
+.about { background: var(--paper); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+.about-copy p + p { margin-top: var(--s-4); }
+.about-copy p { color: var(--text-mid); font-size: 16.5px; }
+.about-points {
+  margin-top: var(--s-6);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-5) var(--s-6);
+}
+.about-points li { display: flex; gap: var(--s-3); }
+.pt-icon {
+  flex-shrink: 0;
+  width: 42px; height: 42px;
+  border-radius: var(--r-sm);
+  background: color-mix(in oklch, var(--brand) 12%, var(--paper));
+  display: grid; place-items: center;
+  color: var(--brand-deep);
+}
+.pt-icon svg { width: 20px; height: 20px; }
+.about-points strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.about-points span { font-size: 13.5px; color: var(--text-low); }
+
+.about-media {
+  position: relative;
+  padding-bottom: 64px;
+}
+.about-media .main-img {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 30px 60px oklch(16% 0.035 262 / 18%);
+}
+.about-media .main-img img { aspect-ratio: 4/3.4; object-fit: cover; }
+.about-media .sub-img {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  width: 52%;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 6px solid var(--paper);
+  box-shadow: 0 24px 48px oklch(16% 0.035 262 / 20%);
+}
+.about-media .sub-img img { aspect-ratio: 16/10; object-fit: cover; }
+.about-badge {
+  position: absolute;
+  left: -24px;
+  bottom: 88px;
+  background: var(--ink-900);
+  color: var(--dark-hi);
+  border-radius: var(--r-md);
+  padding: 18px 22px;
+  box-shadow: 0 20px 40px oklch(16% 0.035 262 / 30%);
+}
+.about-badge .num {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--amber);
+}
+.about-badge .lbl { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dark-low); margin-top: 6px; }
+
+/* ============================================================
+   BRAND MARQUEE
+   ============================================================ */
+.marquee-band {
+  background: var(--ink-900);
+  padding: var(--s-6) 0;
+  overflow: hidden;
+  border-block: 1px solid oklch(100% 0 0 / 8%);
+}
+.marquee { display: flex; overflow: hidden; user-select: none; }
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--s-8);
+  padding-right: var(--s-8);
+  animation: marquee 30s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+.marquee-track span {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--dark-low);
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+.marquee-track span:hover { color: var(--dark-hi); }
+.marquee-track i {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SECTION 3 — INVENTORY
+   ============================================================ */
+.inventory { background: var(--paper-2); }
+.inv-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+}
+.inv-filters { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+.chip {
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-mid);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  transition: all 0.2s var(--ease-quart);
+}
+.chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+.chip.active {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: var(--dark-hi);
+}
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--s-5);
+}
+.car-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s var(--ease-expo), box-shadow 0.35s var(--ease-expo), border-color 0.25s, opacity 0.3s;
+}
+.car-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px oklch(16% 0.035 262 / 14%);
+  border-color: oklch(80% 0.04 258);
+}
+.car-card.hide { display: none; }
+.car-media { position: relative; overflow: hidden; background: oklch(94% 0.01 258); }
+.car-media img {
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.6s var(--ease-expo);
+}
+.car-card:hover .car-media img { transform: scale(1.05); }
+.car-status {
+  position: absolute;
+  top: 14px; left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--ink-900) 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--mint);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.car-status::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 8px var(--mint);
+  animation: blink 1.8s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.35; } }
+.car-body { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-4); flex: 1; }
+.car-brand {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+}
+.car-name {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+.car-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-low);
+}
+.car-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.car-meta svg { width: 14px; height: 14px; color: var(--brand); }
+.car-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px dashed var(--line);
+}
+.car-stock { font-size: 13px; font-weight: 600; color: var(--text-mid); }
+.car-stock b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-hi);
+  font-variant-numeric: tabular-nums;
+}
+.btn-price {
+  background: var(--ink-900);
+  color: var(--dark-hi);
+  padding: 11px 18px;
+  font-size: 13.5px;
+  border-radius: var(--r-sm);
+}
+.btn-price:hover { background: var(--brand); }
+.inv-more { margin-top: var(--s-7); text-align: center; }
+.btn-outline-dark {
+  border: 1.5px solid var(--ink-900);
+  color: var(--ink-900);
+  padding: 14px 30px;
+  font-size: 14px;
+  border-radius: var(--r-sm);
+}
+.btn-outline-dark:hover { background: var(--ink-900); color: var(--dark-hi); }
+
+/* ============================================================
+   SECTION 4 — WHY US
+   ============================================================ */
+.why { background: var(--paper); }
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-block: 1px solid var(--line);
+}
+.why-item {
+  padding: var(--s-7) var(--s-6);
+  border-left: 1px solid var(--line);
+  position: relative;
+  transition: background 0.3s var(--ease-quart);
+}
+.why-item:first-child { border-left: none; }
+.why-item:hover { background: var(--paper-2); }
+.why-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--brand);
+  margin-bottom: var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.why-num::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.why-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  background: var(--ink-900);
+  color: var(--amber);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--s-5);
+  transition: transform 0.35s var(--ease-expo), background 0.3s;
+}
+.why-item:hover .why-icon { transform: translateY(-4px) rotate(-4deg); background: var(--brand-deep); color: #fff; }
+.why-icon svg { width: 26px; height: 26px; }
+.why-item h3 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-bottom: var(--s-3);
+}
+.why-item p { font-size: 14px; color: var(--text-mid); line-height: 1.65; }
+
+/* ============================================================
+   SECTION 5 — PROCESS
+   ============================================================ */
+.process {
+  background:
+    radial-gradient(60% 90% at 85% 10%, oklch(30% 0.07 262 / 60%), transparent 60%),
+    var(--ink-900);
+  color: var(--dark-hi);
+}
+.flow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s-5);
+  position: relative;
+  counter-reset: step;
+}
+.flow::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  left: 5%;
+  right: 5%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 22%) 12%, oklch(100% 0 0 / 22%) 88%, transparent);
+}
+.flow-step { position: relative; text-align: left; }
+.flow-dot {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 1.5px solid oklch(100% 0 0 / 20%);
+  background: var(--ink-800);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--s-5);
+  position: relative;
+  z-index: 1;
+  counter-increment: step;
+  transition: border-color 0.3s, background 0.3s, transform 0.35s var(--ease-expo);
+}
+.flow-step:hover .flow-dot {
+  border-color: var(--amber);
+  background: var(--ink-700);
+  transform: translateY(-4px);
+}
+.flow-dot svg { width: 28px; height: 28px; color: var(--amber); }
+.flow-dot::after {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  top: -8px; right: -10px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--brand);
+  color: #fff;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.flow-step h3 {
+  font-family: var(--font-display);
+  font-size: 17.5px;
+  font-weight: 700;
+  margin-bottom: var(--s-2);
+  letter-spacing: -0.01em;
+}
+.flow-step p { font-size: 13.5px; color: var(--dark-low); line-height: 1.6; }
+.process-cta { margin-top: var(--s-8); display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+.process-note { font-size: 13.5px; color: var(--dark-low); }
+.process-note b { color: var(--dark-hi); }
+
+/* ============================================================
+   SECTION 6 — GLOBAL MARKET
+   ============================================================ */
+.markets { background: var(--ink-800); color: var(--dark-hi); overflow: hidden; }
+.markets-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: center;
+}
+.map-wrap { position: relative; }
+.map-wrap svg { width: 100%; height: auto; display: block; }
+.map-land-dot { fill: oklch(45% 0.05 258); }
+.map-route {
+  fill: none;
+  stroke: var(--brand-hi);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 7;
+  opacity: 0.85;
+  animation: routeFlow 2.6s linear infinite;
+}
+@keyframes routeFlow { to { stroke-dashoffset: -24; } }
+.map-origin { fill: var(--amber); }
+.map-marker { fill: var(--brand-hi); }
+.map-pulse {
+  fill: none;
+  stroke: var(--brand-hi);
+  stroke-width: 1.4;
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: mapPulse 2.4s var(--ease-quart) infinite;
+}
+.map-pulse.d2 { animation-delay: 0.6s; }
+.map-pulse.d3 { animation-delay: 1.2s; }
+.map-pulse.d4 { animation-delay: 1.8s; }
+@keyframes mapPulse {
+  0% { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.region-list { display: flex; flex-direction: column; }
+.region-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-5) var(--s-4);
+  border-bottom: 1px solid oklch(100% 0 0 / 10%);
+  border-radius: var(--r-sm);
+  transition: background 0.25s, transform 0.3s var(--ease-expo);
+}
+.region-item:first-child { border-top: 1px solid oklch(100% 0 0 / 10%); }
+.region-item:hover { background: oklch(100% 0 0 / 5%); transform: translateX(6px); }
+.region-flag {
+  flex-shrink: 0;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid oklch(100% 0 0 / 16%);
+  display: grid;
+  place-items: center;
+  color: var(--brand-hi);
+}
+.region-flag svg { width: 22px; height: 22px; }
+.region-item h3 { font-family: var(--font-display); font-size: 17.5px; font-weight: 700; letter-spacing: -0.01em; }
+.region-item p { font-size: 13px; color: var(--dark-low); margin-top: 2px; }
+.region-arrow { margin-left: auto; color: var(--dark-low); transition: transform 0.3s var(--ease-expo), color 0.2s; }
+.region-item:hover .region-arrow { transform: translateX(4px); color: var(--brand-hi); }
+.region-arrow svg { width: 20px; height: 20px; }
+
+/* ============================================================
+   SECTION 7 — PARTNERSHIP
+   ============================================================ */
+.partner {
+  position: relative;
+  background: var(--ink-900);
+  color: var(--dark-hi);
+  isolation: isolate;
+  overflow: hidden;
+}
+.partner::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: url("assets/hero-port.png") center 70%/cover no-repeat;
+  opacity: 0.16;
+}
+.partner::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: radial-gradient(70% 100% at 50% 0%, oklch(48% 0.17 260 / 25%), transparent 65%);
+}
+.partner-inner { text-align: center; max-width: 800px; margin: 0 auto; }
+.partner .sec-eyebrow { justify-content: center; color: var(--amber); }
+.partner .sec-eyebrow::before { background: var(--amber); }
+.partner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 62px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.partner h2 em { font-style: normal; color: var(--brand-hi); }
+.partner-sub {
+  margin: var(--s-5) auto var(--s-7);
+  font-size: 17.5px;
+  color: var(--dark-mid);
+  max-width: 52ch;
+}
+.partner-perks {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-7);
+}
+.partner-perks span {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid oklch(100% 0 0 / 18%);
+  background: oklch(100% 0 0 / 5%);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark-mid);
+}
+.partner-cta { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--s-4); }
+.btn-wa { background: var(--wa); color: oklch(20% 0.05 150); padding: 16px 30px; font-size: 15px; }
+.btn-wa:hover { background: oklch(74% 0.18 152); }
+
+/* ============================================================
+   SECTION 8 — FOOTER
+   ============================================================ */
+.footer {
+  background: oklch(12% 0.03 262);
+  color: var(--dark-mid);
+  padding: var(--s-8) 0 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  gap: var(--s-7);
+  padding-bottom: var(--s-8);
+}
+.footer .brand-name { font-size: 22px; }
+.footer-about { margin-top: var(--s-4); font-size: 14px; line-height: 1.7; color: var(--dark-low); max-width: 34ch; }
+.socials { display: flex; gap: var(--s-3); margin-top: var(--s-5); }
+.socials a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid oklch(100% 0 0 / 14%);
+  display: grid;
+  place-items: center;
+  color: var(--dark-low);
+  transition: all 0.25s var(--ease-quart);
+}
+.socials a:hover { background: var(--brand); border-color: var(--brand); color: #fff; transform: translateY(-3px); }
+.socials svg { width: 17px; height: 17px; }
+.footer h4 {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dark-hi);
+  margin-bottom: var(--s-5);
+}
+.footer-links li { margin-bottom: var(--s-3); }
+.footer-links a {
+  font-size: 14px;
+  color: var(--dark-low);
+  transition: color 0.2s, padding-left 0.25s var(--ease-expo);
+}
+.footer-links a:hover { color: var(--dark-hi); padding-left: 6px; }
+.footer-contact li {
+  display: flex;
+  gap: var(--s-3);
+  font-size: 14px;
+  margin-bottom: var(--s-4);
+  color: var(--dark-low);
+  line-height: 1.5;
+}
+.footer-contact svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 3px; color: var(--brand-hi); }
+.footer-contact a { color: var(--dark-mid); font-weight: 600; transition: color 0.2s; }
+.footer-contact a:hover { color: var(--brand-hi); }
+.footer-bottom {
+  border-top: 1px solid oklch(100% 0 0 / 8%);
+  padding: var(--s-5) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--dark-low);
+}
+.footer-bottom nav { display: flex; gap: var(--s-5); }
+.footer-bottom a:hover { color: var(--dark-hi); }
+
+/* WhatsApp float */
+.wa-float {
+  position: fixed;
+  right: 24px; bottom: 24px;
+  z-index: 90;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--wa);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 30px oklch(68% 0.17 152 / 45%);
+  transition: transform 0.3s var(--ease-expo), box-shadow 0.3s;
+}
+.wa-float:hover { transform: translateY(-4px) scale(1.05); }
+.wa-float svg { width: 28px; height: 28px; }
+.wa-float::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--wa);
+  animation: waRing 2.4s var(--ease-quart) infinite;
+}
+@keyframes waRing {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* ============================================================
+   QUOTE MODAL
+   ============================================================ */
+.modal {
+  position: fixed; inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s var(--ease-quart), visibility 0.3s;
+}
+.modal.open { opacity: 1; visibility: visible; }
+.modal-backdrop { position: absolute; inset: 0; background: oklch(12% 0.03 262 / 72%); backdrop-filter: blur(6px); }
+.modal-card {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  padding: var(--s-7);
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.4s var(--ease-expo);
+}
+.modal.open .modal-card { transform: none; }
+.modal-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-mid);
+  transition: background 0.2s, transform 0.3s var(--ease-expo);
+}
+.modal-close:hover { background: var(--paper-2); transform: rotate(90deg); }
+.modal-close svg { width: 18px; height: 18px; }
+.modal-eyebrow {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+  margin-bottom: var(--s-2);
+}
+.modal-card h3 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--s-2);
+}
+.modal-model {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-mid);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: var(--s-5);
+}
+.form-row { margin-bottom: var(--s-4); }
+.form-row label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-mid);
+  margin-bottom: 6px;
+}
+.form-row input, .form-row textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--text-hi);
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-row input:focus, .form-row textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px oklch(58% 0.19 256 / 15%);
+}
+.form-row textarea { resize: vertical; min-height: 88px; }
+.form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+.form-submit { width: 100%; justify-content: center; padding: 15px; font-size: 15px; }
+.form-success { text-align: center; padding: var(--s-6) 0; display: none; }
+.form-success.show { display: block; }
+.form-success .ok {
+  width: 64px; height: 64px;
+  margin: 0 auto var(--s-5);
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--mint) 18%, var(--paper));
+  display: grid;
+  place-items: center;
+  color: oklch(50% 0.14 160);
+}
+.form-success .ok svg { width: 30px; height: 30px; }
+.form-success h4 { font-family: var(--font-display); font-size: 22px; margin-bottom: var(--s-2); }
+.form-success p { font-size: 14.5px; color: var(--text-mid); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1080px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .why-grid { grid-template-columns: 1fr 1fr; }
+  .why-item:nth-child(3) { border-left: none; }
+  .why-item:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .markets-grid { grid-template-columns: 1fr; }
+  .flow { grid-template-columns: repeat(2, 1fr); gap: var(--s-7) var(--s-6); }
+  .flow::before { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--s-6); }
+}
+@media (max-width: 860px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .about-media { margin-top: var(--s-5); }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .hero-stats .stat { padding: var(--s-5) var(--s-4); }
+  section { padding: var(--s-8) 0; }
+}
+@media (max-width: 640px) {
+  .nav-right .btn-primary { padding: 10px 16px; font-size: 13px; }
+  .brand-tag { font-size: 8.5px; letter-spacing: 0.1em; }
+  .brand-name { font-size: 18px; }
+  .why-grid { grid-template-columns: 1fr; }
+  .why-item { border-left: none; border-top: 1px solid var(--line); }
+  .why-item:first-child { border-top: none; }
+  .flow { grid-template-columns: 1fr; }
+  .flow-step { display: grid; grid-template-columns: 68px 1fr; gap: var(--s-5); align-items: start; }
+  .flow-dot { margin-bottom: 0; }
+  .form-2col { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-inner { padding-top: 120px; }
+  .scroll-hint { display: none; }
+  .about-badge { left: 0; }
+  .about-media .sub-img { right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ===== RTL (Arabic) ===== */
+[dir="rtl"] body { text-align: right; }
+[dir="rtl"] .region-arrow svg { transform: scaleX(-1); }
+[dir="rtl"] .btn:hover svg { transform: translateX(-4px); }
+[dir="rtl"] .about-badge { left: auto; right: 0; }
+[dir="rtl"] .lang-menu { left: 0; right: auto; }
+[dir="rtl"] .lang-menu li.active::after { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .nav-links, [dir="rtl"] .nav { direction: rtl; }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header" id="siteHeader">
+  <nav class="nav" aria-label="Main navigation">
+    <a href="#home" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19 12 5l8 14"/>
+          <path d="M7.5 13.5h9"/>
+        </svg>
+      </span>
+      <span>
+        <span class="brand-name">AutoExport</span>
+        <span class="brand-tag"><span data-i18n="brand.tag">China Vehicle Export Partner</span></span>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="#home" class="active"><span data-i18n="nav.home">Home</span></a>
+      <a href="#about"><span data-i18n="nav.about">About Us</span></a>
+      <a href="#vehicles"><span data-i18n="nav.vehicles">Vehicles</span></a>
+      <a href="#process"><span data-i18n="nav.service">Export Service</span></a>
+      <a href="#markets"><span data-i18n="nav.markets">Global Market</span></a>
+      <a href="#partnership"><span data-i18n="nav.partnership">Partnership</span></a>
+      <a href="#news"><span data-i18n="nav.news">News</span></a>
+      <a href="#contact"><span data-i18n="nav.contact">Contact</span></a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-switch" id="langSwitch">
+        <button class="lang-current" id="langCurrent" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          <span id="langLabel">EN</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <ul class="lang-menu" id="langMenu" role="menu">
+          <li role="menuitem" data-lang="en" class="active">English</li>
+          <li role="menuitem" data-lang="zh">中文</li>
+          <li role="menuitem" data-lang="ar">العربية</li>
+          <li role="menuitem" data-lang="ru">Русский</li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" data-quote><span data-i18n="nav.getquote">Get a Quote</span></button>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home" style="--i:0"><span data-i18n="nav.home">Home</span></a>
+  <a href="#about" style="--i:1"><span data-i18n="nav.about">About Us</span></a>
+  <a href="#vehicles" style="--i:2"><span data-i18n="nav.vehicles">Vehicles</span></a>
+  <a href="#process" style="--i:3"><span data-i18n="nav.service">Export Service</span></a>
+  <a href="#markets" style="--i:4"><span data-i18n="nav.markets">Global Market</span></a>
+  <a href="#partnership" style="--i:5"><span data-i18n="nav.partnership">Partnership</span></a>
+  <a href="#news" style="--i:6"><span data-i18n="nav.news">News</span></a>
+  <a href="#contact" style="--i:7"><span data-i18n="nav.contact">Contact</span></a>
+</div>
+
+<!-- ================= SECTION 1 — HERO ================= -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <img src="assets/hero-port.png" alt="RoRo car carrier ship docked at a Chinese export port with thousands of new vehicles lined up for shipment at dusk" fetchpriority="high">
+  </div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow reveal"><span data-i18n="hero.eyebrow">Global Automotive Supply · B2B Only</span></p>
+    <h1 class="reveal" style="--i:1"><span data-i18n="hero.t1">China Vehicle</span><br><span class="accent" data-i18n="hero.t2">Export Partner</span></h1>
+    <p class="hero-sub reveal" style="--i:2"><span data-i18n="hero.sub1">Reliable Automotive Supply</span><br><span data-i18n="hero.sub2">From China to Global Markets</span></p>
+    <p class="hero-adv-line reveal" style="--i:3">
+      <span><span data-i18n="hero.adv1">Bulk Vehicle Supply</span></span><i></i><span><span data-i18n="hero.adv2">Global Export Service</span></span><i></i><span><span data-i18n="hero.adv3">Dealer Partnership</span></span>
+    </p>
+    <div class="hero-stats reveal" style="--i:4">
+      <div class="stat">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+        </span>
+        <div>
+          <div class="stat-num"><span data-count="1000">0</span><em>+</em></div>
+          <div class="stat-label"><span data-i18n="hero.stat1">Vehicles Exported</span></div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg>
+        </span>
+        <div>
+          <div class="stat-num"><span data-count="50">0</span><em>+</em></div>
+          <div class="stat-label"><span data-i18n="hero.stat2">Countries Served</span></div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 0 0 1.42 0l3.29-3.3a2 2 0 0 0 0-2.82l-5.5-5.51A2 2 0 0 0 10.8 7L4 8.5V15l4.5 4.5"/><path d="m14 13 2.5 2.5"/></svg>
+        </span>
+        <div>
+          <div class="stat-num"><span data-count="100">0</span><em>+</em></div>
+          <div class="stat-label"><span data-i18n="hero.stat3">Partner Dealers</span></div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c1.5 1.2 3 1.8 5 1.8s3.5-.6 5-1.8c1.5-1.2 3-1.8 5-1.8s3.5.6 5 1.8"/><path d="M4 18V8h9l4 5h3v5"/><circle cx="7.5" cy="18.5" r="1.5"/><circle cx="16.5" cy="18.5" r="1.5"/></svg>
+        </span>
+        <div>
+          <div class="stat-num"><span data-count="10">0</span><em>+</em></div>
+          <div class="stat-label"><span data-i18n="hero.stat4">Years Experience</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-cta reveal" style="--i:5">
+      <a href="#vehicles" class="btn btn-primary btn-lg">
+        <span data-i18n="hero.cta1">View Vehicles</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#partnership" class="btn btn-ghost btn-lg">
+        <span data-i18n="hero.cta2">Become Our Partner</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span class="scroll-hint-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+    </span>
+    <span data-i18n="hero.scroll">Scroll Down</span></div>
+</section>
+
+<!-- ================= SECTION 2 — COMPANY ================= -->
+<section class="about" id="about">
+  <div class="container about-grid">
+    <div class="about-copy">
+      <div class="sec-head reveal">
+        <p class="sec-eyebrow"><span data-i18n="about.eyebrow">01 — Who We Are</span></p>
+        <h2 class="sec-title"><span data-i18n="about.title1">Your Bridge to China's</span><br><span data-i18n="about.title2">Automotive Supply Chain</span></h2>
+      </div>
+      <p class="reveal" style="--i:1"><span data-i18n="about.p1">AutoExport is a professional vehicle export trading company based in China. We integrate vehicle resources directly from OEM factories, authorized dealer networks and certified stock channels — covering new energy vehicles, petrol models and hybrids across 50+ brands.</span></p>
+      <p class="reveal" style="--i:2"><span data-i18n="about.p2">From bulk sourcing and pre-export inspection to documentation and ocean freight, our team manages the entire export chain, so overseas dealers can buy from China with factory-level pricing and zero guesswork.</span></p>
+      <ul class="about-points">
+        <li class="reveal" style="--i:2">
+          <span class="pt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 20V8l6 4V8l6 4V4h4v16"/></svg></span>
+          <div><strong><span data-i18n="about.pt1t">Supply Chain Integration</span></strong><span><span data-i18n="about.pt1d">Direct OEM &amp; dealer network access</span></span></div>
+        </li>
+        <li class="reveal" style="--i:3">
+          <span class="pt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5.5"/><path d="m13.5 13.5 6 6"/><path d="M7 9.5h4M9 7.5v4"/></svg></span>
+          <div><strong><span data-i18n="about.pt2t">Volume Sourcing</span></strong><span><span data-i18n="about.pt2d">Bulk procurement &amp; stock allocation</span></span></div>
+        </li>
+        <li class="reveal" style="--i:4">
+          <span class="pt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8c0 4 3 6 7 6s7-2 7-6"/><circle cx="12" cy="12" r="10"/></svg></span>
+          <div><strong><span data-i18n="about.pt3t">Export Expertise</span></strong><span><span data-i18n="about.pt3d">10+ years of cross-border trade</span></span></div>
+        </li>
+        <li class="reveal" style="--i:5">
+          <span class="pt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg></span>
+          <div><strong><span data-i18n="about.pt4t">Global Client Service</span></strong><span><span data-i18n="about.pt4d">Multilingual team, dedicated support</span></span></div>
+        </li>
+      </ul>
+    </div>
+    <div class="about-media reveal" style="--i:2">
+      <div class="main-img">
+        <img src="assets/warehouse.png" alt="AutoExport vehicle logistics warehouse with rows of new cars undergoing pre-export inspection" loading="lazy">
+      </div>
+      <div class="sub-img">
+        <img src="assets/loading-port.png" alt="Vehicles being loaded onto a carrier ship for export at a container port" loading="lazy">
+      </div>
+      <div class="about-badge">
+        <div class="num">10+</div>
+        <div class="lbl"><span data-i18n="about.badge">Years in Export</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BRAND MARQUEE ================= -->
+<div class="marquee-band" aria-hidden="true">
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>BYD</span><i></i><span>Chery</span><i></i><span>Geely</span><i></i><span>Haval</span><i></i><span>Zeekr</span><i></i><span>Changan</span><i></i><span>Great Wall</span><i></i><span>MG</span><i></i><span>Jetour</span><i></i><span>NIO</span><i></i><span>Xpeng</span><i></i><span>Leapmotor</span><i></i><span>Tank</span><i></i><span>Hongqi</span><i></i>
+    </div>
+    <div class="marquee-track">
+      <span>BYD</span><i></i><span>Chery</span><i></i><span>Geely</span><i></i><span>Haval</span><i></i><span>Zeekr</span><i></i><span>Changan</span><i></i><span>Great Wall</span><i></i><span>MG</span><i></i><span>Jetour</span><i></i><span>NIO</span><i></i><span>Xpeng</span><i></i><span>Leapmotor</span><i></i><span>Tank</span><i></i><span>Hongqi</span><i></i>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SECTION 3 — INVENTORY ================= -->
+<section class="inventory" id="vehicles">
+  <div class="container">
+    <div class="inv-head sec-head reveal">
+      <div>
+        <p class="sec-eyebrow"><span data-i18n="inv.eyebrow">02 — Vehicle Inventory</span></p>
+        <h2 class="sec-title"><span data-i18n="inv.title">Available for Export</span></h2>
+        <p class="sec-sub"><span data-i18n="inv.sub">Live stock from factory and port-side warehouses. Every unit is inspected, documented and ready for shipment.</span></p>
+      </div>
+      <div class="inv-filters" role="group" aria-label="Filter vehicles">
+        <button class="chip active" data-filter="all"><span data-i18n="inv.f1">All Models</span></button>
+        <button class="chip" data-filter="ev"><span data-i18n="car.ev">Electric</span></button>
+        <button class="chip" data-filter="phev"><span data-i18n="inv.f3">Hybrid / PHEV</span></button>
+        <button class="chip" data-filter="petrol"><span data-i18n="car.petrol">Petrol</span></button>
+      </div>
+    </div>
+
+    <div class="inv-grid">
+      <!-- Card 1 -->
+      <article class="car-card reveal" data-type="phev" style="--i:0">
+        <div class="car-media">
+          <img src="assets/car-byd-song-plus.png" alt="BYD Song Plus DM-i dark blue SUV, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">BYD</div>
+            <h3 class="car-name">Song Plus DM-i</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg><span data-i18n="car.phev">Plug-in Hybrid</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.suv">SUV</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock1">50 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="BYD Song Plus DM-i 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="car-card reveal" data-type="ev" style="--i:1">
+        <div class="car-media">
+          <img src="assets/car-byd-seagull.png" alt="BYD Seagull white electric hatchback with black roof, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">BYD</div>
+            <h3 class="car-name">Seagull</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg><span data-i18n="car.ev">Electric</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.hatch">Hatchback</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock2">120 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="BYD Seagull 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="car-card reveal" data-type="petrol" style="--i:2">
+        <div class="car-media">
+          <img src="assets/car-chery-tiggo8.png" alt="Chery Tiggo 8 Pro pearl white 7-seat SUV, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">Chery</div>
+            <h3 class="car-name">Tiggo 8 Pro</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V9l4-4h6l4 4v12"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="car.petrol">Petrol</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.suv7">7-Seat SUV</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock3">80 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="Chery Tiggo 8 Pro 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="car-card reveal" data-type="petrol" style="--i:0">
+        <div class="car-media">
+          <img src="assets/car-geely-monjaro.png" alt="Geely Monjaro emerald green premium SUV, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">Geely</div>
+            <h3 class="car-name">Monjaro</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V9l4-4h6l4 4v12"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="car.petrol">Petrol</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.suv">SUV</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock4">45 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="Geely Monjaro 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="car-card reveal" data-type="petrol" style="--i:1">
+        <div class="car-media">
+          <img src="assets/car-haval-h6.png" alt="Haval H6 red compact SUV, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">Haval</div>
+            <h3 class="car-name">H6</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V9l4-4h6l4 4v12"/><path d="M9 21v-6h6v6"/></svg><span data-i18n="car.petrol">Petrol</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.suv">SUV</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock5">200 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="Haval H6 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="car-card reveal" data-type="ev" style="--i:2">
+        <div class="car-media">
+          <img src="assets/car-zeekr-001.png" alt="Zeekr 001 silver electric shooting brake, studio view" loading="lazy">
+          <span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>
+        </div>
+        <div class="car-body">
+          <div>
+            <div class="car-brand">Zeekr</div>
+            <h3 class="car-name">001</h3>
+          </div>
+          <div class="car-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg><span data-i18n="car.year">2025</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg><span data-i18n="car.ev">Electric</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><span data-i18n="car.shoot">Shooting Brake</span></span>
+          </div>
+          <div class="car-foot">
+            <div class="car-stock"><span data-i18n="car.available">Available</span><b><span data-i18n="car.stock6">30 Units</span></b></div>
+            <button class="btn btn-price" data-quote data-model="Zeekr 001 2025"><span data-i18n="car.request">Request Price</span></button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="inv-more reveal">
+      <button class="btn btn-outline-dark" data-quote>
+        <span data-i18n="inv.more">Request Full Stock List</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 4 — WHY US ================= -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow"><span data-i18n="why.eyebrow">03 — Why Choose Us</span></p>
+      <h2 class="sec-title"><span data-i18n="why.title1">Built for Dealers,</span><br><span data-i18n="why.title2">Not for Showrooms</span></h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item reveal" style="--i:0">
+        <div class="why-num">01</div>
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 20V8l6 4V8l6 4V4h4v16"/></svg>
+        </div>
+        <h3><span data-i18n="why.1t">Chinese Vehicle Resources</span></h3>
+        <p><span data-i18n="why.1p">Direct access to 50+ brands — factory allocations, authorized dealer stock and certified inventory across EV, hybrid and ICE lineups.</span></p>
+      </div>
+      <div class="why-item reveal" style="--i:1">
+        <div class="why-num">02</div>
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 7H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg>
+        </div>
+        <h3><span data-i18n="why.2t">Competitive Factory Price</span></h3>
+        <p><span data-i18n="why.2p">No middle layers. Wholesale pricing straight from the source, with tiered discounts that scale with your order volume.</span></p>
+      </div>
+      <div class="why-item reveal" style="--i:2">
+        <div class="why-num">03</div>
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z"/><path d="M14 3v6h6M9 13l2 2 4-4"/></svg>
+        </div>
+        <h3><span data-i18n="why.3t">Professional Export Process</span></h3>
+        <p><span data-i18n="why.3p">Inspection reports, export licenses, customs clearance and destination compliance — handled by a team that ships cars every week.</span></p>
+      </div>
+      <div class="why-item reveal" style="--i:3">
+        <div class="why-num">04</div>
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V10l7-6 7 6v10"/><path d="M12 20v-6M2 8l10 5L22 8" opacity="0"/></svg>
+        </div>
+        <h3><span data-i18n="why.4t">Global Logistics Support</span></h3>
+        <p><span data-i18n="why.4p">RoRo, container and rail freight to 50+ countries, with real-time tracking from Chinese port to your destination terminal.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 5 — PROCESS ================= -->
+<section class="process on-dark" id="process">
+  <div class="container">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow"><span data-i18n="proc.eyebrow">04 — Export Service</span></p>
+      <h2 class="sec-title"><span data-i18n="proc.title1">From Selection to Delivery</span><br><span data-i18n="proc.title2">in Five Clear Steps</span></h2>
+    </div>
+    <div class="flow">
+      <div class="flow-step reveal" style="--i:0">
+        <div class="flow-dot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M8.5 11h5M11 8.5v5"/></svg>
+        </div>
+        <div>
+          <h3><span data-i18n="proc.1t">Vehicle Selection</span></h3>
+          <p><span data-i18n="proc.1p">Share your target models and volume. We match factory and stock options within 24 hours.</span></p>
+        </div>
+      </div>
+      <div class="flow-step reveal" style="--i:1">
+        <div class="flow-dot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5.5L12 2 4 5.5V12c0 6.4 8 10 8 10z"/><path d="m9 11.5 2 2 4-4.5"/></svg>
+        </div>
+        <div>
+          <h3><span data-i18n="proc.2t">Inspection</span></h3>
+          <p><span data-i18n="proc.2p">Every unit passes a multi-point pre-export check with photo and video condition reports.</span></p>
+        </div>
+      </div>
+      <div class="flow-step reveal" style="--i:2">
+        <div class="flow-dot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z"/><path d="M14 3v6h6M9 14h6M9 17h4"/></svg>
+        </div>
+        <div>
+          <h3><span data-i18n="proc.3t">Documentation</span></h3>
+          <p><span data-i18n="proc.3p">Commercial invoice, certificate of origin, export license and destination compliance papers.</span></p>
+        </div>
+      </div>
+      <div class="flow-step reveal" style="--i:3">
+        <div class="flow-dot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16c1.5 1.5 3 2 5 2s3.5-.5 5-2 3-2 5-2 3.5.5 5 2"/><path d="M4 16V9h10l4 4h2v3"/><circle cx="7.5" cy="18.5" r="1.6"/><circle cx="16.5" cy="18.5" r="1.6"/></svg>
+        </div>
+        <div>
+          <h3><span data-i18n="proc.4t">Shipping</span></h3>
+          <p><span data-i18n="proc.4p">RoRo, container or rail — booked, loaded and tracked with live status updates to your port.</span></p>
+        </div>
+      </div>
+      <div class="flow-step reveal" style="--i:4">
+        <div class="flow-dot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <h3><span data-i18n="proc.5t">Delivery</span></h3>
+          <p><span data-i18n="proc.5p">Port handover with full document package. After-sales support keeps your fleet moving.</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="process-cta reveal">
+      <button class="btn btn-primary btn-lg" data-quote>
+        <span data-i18n="proc.cta">Start Your First Order</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <p class="process-note"><span data-i18n="proc.note1">Typical lead time: </span><b><span data-i18n="proc.note2">15–25 working days</span></b><span data-i18n="proc.note3"> from deposit to vessel departure.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 6 — GLOBAL MARKET ================= -->
+<section class="markets on-dark" id="markets">
+  <div class="container">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow"><span data-i18n="mkt.eyebrow">05 — Global Market</span></p>
+      <h2 class="sec-title"><span data-i18n="mkt.title1">Shipping Routes Across</span><br><span data-i18n="mkt.title2">Four Continents</span></h2>
+      <p class="sec-sub"><span data-i18n="mkt.sub">Regular sailings and rail connections from Shanghai, Ningbo and Guangzhou ports to our core dealer markets.</span></p>
+    </div>
+    <div class="markets-grid">
+      <div class="map-wrap reveal" aria-hidden="true">
+        <svg id="worldMap" viewBox="0 0 1000 520" role="img" aria-label="World map showing export routes from China to Africa, Middle East, Southeast Asia and Latin America">
+          <!-- Routes from China (Shanghai) -->
+          <g>
+            <path class="map-route" d="M835 187 Q740 110 652 208"/>
+            <path class="map-route" d="M835 187 Q670 300 509 272"/>
+            <path class="map-route" d="M835 187 Q812 222 778 246"/>
+            <path class="map-route" d="M835 187 Q590 60 370 375"/>
+          </g>
+          <!-- Origin: China -->
+          <circle class="map-origin" cx="835" cy="187" r="6"/>
+          <circle class="map-pulse" cx="835" cy="187" r="8"/>
+          <!-- Middle East -->
+          <circle class="map-marker" cx="652" cy="208" r="5.5"/>
+          <circle class="map-pulse d2" cx="652" cy="208" r="8"/>
+          <!-- Africa -->
+          <circle class="map-marker" cx="509" cy="272" r="5.5"/>
+          <circle class="map-pulse d3" cx="509" cy="272" r="8"/>
+          <!-- Southeast Asia -->
+          <circle class="map-marker" cx="778" cy="246" r="5.5"/>
+          <circle class="map-pulse d4" cx="778" cy="246" r="8"/>
+          <!-- Latin America -->
+          <circle class="map-marker" cx="370" cy="375" r="5.5"/>
+          <circle class="map-pulse" cx="370" cy="375" r="8" style="animation-delay:0.9s"/>
+        </svg>
+      </div>
+      <div class="region-list">
+        <a class="region-item reveal" style="--i:0" href="#contact">
+          <span class="region-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
+          <div>
+            <h3><span data-i18n="mkt.r1t">Middle East</span></h3>
+            <p><span data-i18n="mkt.r1d">UAE · Saudi Arabia · Iraq · Kuwait — RoRo to Jebel Ali &amp; Dammam</span></p>
+          </div>
+          <span class="region-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="region-item reveal" style="--i:1" href="#contact">
+          <span class="region-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
+          <div>
+            <h3><span data-i18n="mkt.r2t">Africa</span></h3>
+            <p><span data-i18n="mkt.r2d">Nigeria · Ghana · Kenya · Egypt — container &amp; RoRo to Lagos and Mombasa</span></p>
+          </div>
+          <span class="region-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="region-item reveal" style="--i:2" href="#contact">
+          <span class="region-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
+          <div>
+            <h3><span data-i18n="mkt.r3t">Southeast Asia</span></h3>
+            <p><span data-i18n="mkt.r3d">Thailand · Vietnam · Philippines — short-sea sailings, 7-day transit</span></p>
+          </div>
+          <span class="region-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="region-item reveal" style="--i:3" href="#contact">
+          <span class="region-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
+          <div>
+            <h3><span data-i18n="mkt.r4t">Latin America</span></h3>
+            <p><span data-i18n="mkt.r4d">Mexico · Brazil · Chile · Peru — direct RoRo to Veracruz &amp; San Antonio</span></p>
+          </div>
+          <span class="region-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 7 — PARTNERSHIP ================= -->
+<section class="partner on-dark" id="partnership">
+  <div class="container partner-inner">
+    <p class="sec-eyebrow reveal"><span data-i18n="part.eyebrow">06 — Dealer Partnership</span></p>
+    <h2 class="reveal" style="--i:1"><span data-i18n="part.t1">Become Our</span> <em data-i18n="part.t2">Global Dealer</em> <span data-i18n="part.t3">Partner</span></h2>
+    <p class="partner-sub reveal" style="--i:2"><span data-i18n="part.sub">We are building long-term partnerships with overseas dealers, importers and fleet buyers. Lock in priority stock allocation, volume pricing and a dedicated export team for your market.</span></p>
+    <div class="partner-perks reveal" style="--i:3">
+      <span><span data-i18n="part.perk1">Priority Stock Allocation</span></span>
+      <span><span data-i18n="part.perk2">Volume-Based Pricing</span></span>
+      <span><span data-i18n="part.perk3">Market Exclusivity Options</span></span>
+      <span><span data-i18n="part.perk4">Dedicated Account Manager</span></span>
+    </div>
+    <div class="partner-cta reveal" style="--i:4">
+      <button class="btn btn-primary btn-lg" data-quote>
+        <span data-i18n="part.cta">Contact Export Team</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <a class="btn btn-wa" href="https://wa.me/8613800000000" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.9.9-1.1 2.2-.2 3.9a11.6 11.6 0 0 0 4.5 4.2c1.7.8 2.4.9 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.1-.5-.2z"/></svg>
+        <span data-i18n="part.wa">WhatsApp Us</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 8 — FOOTER ================= -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#home" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 17h18M5 17l1.5-5.5A2 2 0 0 1 8.4 10h7.2a2 2 0 0 1 1.9 1.5L19 17"/>
+              <circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>
+              <path d="M9.3 17.5h5.4"/>
+            </svg>
+          </span>
+          <span>
+            <span class="brand-name">AutoExport</span>
+            <span class="brand-tag"><span data-i18n="brand.tag">China Vehicle Export Partner</span></span>
+          </span>
+        </a>
+        <p class="footer-about"><span data-i18n="foot.about">Professional vehicle export trading company connecting China's automotive supply with dealers and importers worldwide.</span></p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14C17.17 2.1 15.97 2 14.7 2 12.05 2 10 3.66 10 6.7v2.8H7v4h3V22h4v-8.5z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.8H3.2V21h3.3V8.8zM4.8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM21 13.4c0-3.2-1.7-4.9-4-4.9-1.5 0-2.4.8-3 1.6V8.8H10.7V21H14v-6.1c0-1.6.8-2.5 2-2.5s2 .9 2 2.5V21h3v-7.6z"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2h3.1c.2 1.9 1.3 3.6 3.3 4v3.1c-1.3 0-2.5-.4-3.5-1v6.6a6.1 6.1 0 1 1-6.1-6.1c.3 0 .7 0 1 .1v3.3a2.9 2.9 0 1 0 2.2 2.8V2z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 8s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 4.5 12 4.5 12 4.5s-4.6 0-7.8.2c-.4.1-1.4.1-2.3 1C1.2 6.4 1 8 1 8S.8 9.9.8 11.8v1.7c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.2 7.6.2s4.6 0 7.8-.2c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.7C23.2 9.9 23 8 23 8zM9.8 15.3V8.7l6.2 3.3-6.2 3.3z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4><span data-i18n="foot.explore">Explore</span></h4>
+        <ul class="footer-links">
+          <li><a href="#about"><span data-i18n="nav.about">About Us</span></a></li>
+          <li><a href="#vehicles"><span data-i18n="foot.link1">Vehicle Inventory</span></a></li>
+          <li><a href="#process"><span data-i18n="nav.service">Export Service</span></a></li>
+          <li><a href="#markets"><span data-i18n="nav.markets">Global Market</span></a></li>
+          <li><a href="#partnership"><span data-i18n="nav.partnership">Partnership</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span data-i18n="foot.popular">Popular Models</span></h4>
+        <ul class="footer-links">
+          <li><a href="#vehicles">BYD Song Plus DM-i</a></li>
+          <li><a href="#vehicles">BYD Seagull</a></li>
+          <li><a href="#vehicles">Chery Tiggo 8 Pro</a></li>
+          <li><a href="#vehicles">Geely Monjaro</a></li>
+          <li><a href="#vehicles">Zeekr 001</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span data-i18n="foot.contactH">Contact Export Team</span></h4>
+        <ul class="footer-contact">
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.6 12.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.9.9-1.1 2.2-.2 3.9a11.6 11.6 0 0 0 4.5 4.2c1.7.8 2.4.9 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.1-.5-.2z"/></svg>
+            <span><span data-i18n="foot.wa">WhatsApp</span><br><a href="https://wa.me/8613800000000" target="_blank" rel="noopener">+86 138 0000 0000</a></span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            <span><span data-i18n="foot.email">Email</span><br><a href="mailto:export@autoexport.com">export@autoexport.com</a></span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span><span data-i18n="foot.office">Head Office</span><br>Guangzhou, Guangdong, China</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <span><span data-i18n="foot.hours">Business Hours</span><br>Mon–Sat 9:00–18:00 (GMT+8)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span><span data-i18n="foot.copy">© 2025 AutoExport Trading Co., Ltd. All rights reserved.</span></span>
+      <nav>
+        <a href="#"><span data-i18n="foot.pp">Privacy Policy</span></a>
+        <a href="#"><span data-i18n="foot.tos">Terms of Service</span></a>
+        <a href="#"><span data-i18n="foot.ec">Export Compliance</span></a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp float -->
+<a class="wa-float" href="https://wa.me/8613800000000" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.9.9-1.1 2.2-.2 3.9a11.6 11.6 0 0 0 4.5 4.2c1.7.8 2.4.9 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.1-.5-.2z"/></svg>
+</a>
+
+<!-- Quote Modal -->
+<div class="modal" id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close aria-label="Close dialog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="quoteFormWrap">
+      <p class="modal-eyebrow"><span data-i18n="modal.eyebrow">Request a Quote</span></p>
+      <h3 id="quoteTitle"><span data-i18n="modal.title">Get Export Pricing</span></h3>
+      <span class="modal-model" id="modalModel"><span data-i18n="modal.model">General Inquiry — Full Stock List</span></span>
+      <form id="quoteForm" novalidate>
+        <div class="form-2col">
+          <div class="form-row">
+            <label for="f-name"><span data-i18n="form.name">Contact Name *</span></label>
+            <input id="f-name" type="text" placeholder="Your name" required data-i18n-ph="ph.name">
+          </div>
+          <div class="form-row">
+            <label for="f-company"><span data-i18n="form.company">Company</span></label>
+            <input id="f-company" type="text" placeholder="Dealership / company" data-i18n-ph="ph.company">
+          </div>
+        </div>
+        <div class="form-2col">
+          <div class="form-row">
+            <label for="f-email"><span data-i18n="form.email">Business Email *</span></label>
+            <input id="f-email" type="email" placeholder="name@company.com" required data-i18n-ph="ph.email">
+          </div>
+          <div class="form-row">
+            <label for="f-wa"><span data-i18n="foot.wa">WhatsApp</span></label>
+            <input id="f-wa" type="tel" placeholder="+966 ..." data-i18n-ph="ph.wa">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="f-msg"><span data-i18n="form.qty">Quantity &amp; Destination *</span></label>
+          <textarea id="f-msg" placeholder="e.g. 20 units of BYD Song Plus DM-i to Jebel Ali, UAE" required data-i18n-ph="ph.msg"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">
+          <span data-i18n="form.submit">Send Inquiry</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </form>
+    </div>
+    <div class="form-success" id="quoteSuccess">
+      <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 5 5 9-11"/></svg></div>
+      <h4><span data-i18n="form.ok">Inquiry Received</span></h4>
+      <p><span data-i18n="form.okp">Our export team will reply with pricing and availability within 24 hours. For urgent orders, reach us instantly on WhatsApp.</span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Header state */
+const header = document.getElementById('siteHeader');
+const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
+onScroll();
+window.addEventListener('scroll', onScroll, { passive: true });
+
+/* Mobile menu */
+const toggle = document.getElementById('navToggle');
+const menu = document.getElementById('mobileMenu');
+toggle.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  toggle.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  menu.classList.remove('open');
+  toggle.classList.remove('open');
+  document.body.style.overflow = '';
+}));
+
+/* Reveal on scroll */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* Count-up stats */
+const countIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    countIO.unobserve(el);
+    const target = +el.dataset.count;
+    const dur = 1800;
+    const t0 = performance.now();
+    const tick = now => {
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 4);
+      el.textContent = Math.round(target * eased).toLocaleString('en-US');
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
+
+/* Inventory filter */
+const chips = document.querySelectorAll('.chip');
+const cards = document.querySelectorAll('.car-card');
+chips.forEach(chip => chip.addEventListener('click', () => {
+  chips.forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  const f = chip.dataset.filter;
+  cards.forEach(card => {
+    const show = f === 'all' || card.dataset.type === f;
+    card.classList.toggle('hide', !show);
+  });
+}));
+
+/* Nav active state */
+const sections = ['home','about','vehicles','process','markets','partnership'];
+const navLinks = document.querySelectorAll('.nav-links a');
+const navIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) navIO.observe(el);
+});
+
+/* Quote modal */
+const modal = document.getElementById('quoteModal');
+const modelChip = document.getElementById('modalModel');
+const formWrap = document.getElementById('quoteFormWrap');
+const successBox = document.getElementById('quoteSuccess');
+let lastFocus = null;
+
+function openModal(model) {
+  lastFocus = document.activeElement;
+  modelChip.textContent = model || 'General Inquiry — Full Stock List';
+  formWrap.style.display = '';
+  successBox.classList.remove('show');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const first = modal.querySelector('input');
+  if (first) setTimeout(() => first.focus(), 250);
+}
+function closeModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+document.querySelectorAll('[data-quote]').forEach(btn => {
+  btn.addEventListener('click', () => openModal(btn.dataset.model));
+});
+modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeModal));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+});
+
+document.getElementById('quoteForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const form = e.target;
+  if (!form.checkValidity()) { form.reportValidity(); return; }
+  formWrap.style.display = 'none';
+  successBox.classList.add('show');
+});
+
+/* Dot-matrix world map */
+(function renderWorldMap() {
+  // Land grid: row -> [startCol, endCol] ranges (64 cols x 30 rows, equirectangular approx)
+  const LAND = {
+    1:  [[6,12],[40,50]],
+    2:  [[3,15],[42,55]],
+    3:  [[1,16],[21,23],[40,60]],
+    4:  [[3,17],[21,23],[38,62]],
+    5:  [[4,18],[30,39],[38,63]],
+    6:  [[5,18],[29,39],[38,62]],
+    7:  [[6,18],[30,39],[39,63]],
+    8:  [[7,17],[29,39],[39,62]],
+    9:  [[7,16],[30,38],[38,58]],
+    10: [[7,14],[31,37],[38,55]],
+    11: [[7,13],[38,52],[61,62]],
+    12: [[8,12],[29,39],[40,56],[61,62]],
+    13: [[9,15],[29,40],[42,58]],
+    14: [[12,19],[29,41],[43,59]],
+    15: [[15,21],[30,40],[44,59]],
+    16: [[16,22],[31,39],[46,60]],
+    17: [[16,22],[31,38],[52,58]],
+    18: [[16,23],[31,37],[52,59]],
+    19: [[17,23],[31,37],[53,58]],
+    20: [[17,22],[32,37],[52,59]],
+    21: [[18,22],[32,36],[51,59]],
+    22: [[18,21],[32,35],[52,59]],
+    23: [[18,21],[33,35],[52,58]],
+    24: [[18,20],[33,34],[53,57]],
+    25: [[18,20],[54,56]],
+    26: [[19,20]],
+    27: [[19,20]],
+    28: [[19,19]]
+  };
+  const svg = document.getElementById('worldMap');
+  if (!svg) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const g = document.createElementNS(NS, 'g');
+  const CW = 1000 / 64, CH = 520 / 30;
+  let dots = '';
+  for (const [row, ranges] of Object.entries(LAND)) {
+    for (const [c0, c1] of ranges) {
+      for (let c = c0; c <= c1; c++) {
+        dots += `<circle class="map-land-dot" cx="${(c * CW + CW / 2).toFixed(1)}" cy="${(row * CH + CH / 2).toFixed(1)}" r="2.3"/>`;
+      }
+    }
+  }
+  g.innerHTML = dots;
+  svg.insertBefore(g, svg.firstChild);
+})();
+</script>
+<!-- ================= I18N ENGINE ================= -->
+<script>
+const I18N = {
+"en": {
+"nav.home": "Home",
+"nav.about": "About Us",
+"nav.vehicles": "Vehicles",
+"nav.service": "Export Service",
+"nav.markets": "Global Market",
+"nav.partnership": "Partnership",
+"nav.news": "News",
+"nav.contact": "Contact",
+"nav.getquote": "Get a Quote",
+"hero.eyebrow": "Global Automotive Supply · B2B Only",
+"hero.t1": "China Vehicle",
+"hero.t2": "Export Partner",
+"hero.sub1": "Reliable Automotive Supply",
+"hero.sub2": "From China to Global Markets",
+"hero.adv1": "Bulk Vehicle Supply",
+"hero.adv2": "Global Export Service",
+"hero.adv3": "Dealer Partnership",
+"hero.stat1": "Vehicles Exported",
+"hero.stat2": "Countries Served",
+"hero.stat3": "Partner Dealers",
+"hero.stat4": "Years Experience",
+"hero.scroll": "Scroll Down",
+"hero.cta1": "View Vehicles",
+"hero.cta2": "Become Our Partner",
+"about.eyebrow": "01 — Who We Are",
+"about.title1": "Your Bridge to China's",
+"about.title2": "Automotive Supply Chain",
+"about.p1": "AutoExport is a professional vehicle export trading company based in China. We integrate vehicle resources directly from OEM factories, authorized dealer networks and certified stock channels — covering new energy vehicles, petrol models and hybrids across 50+ brands.",
+"about.p2": "From bulk sourcing and pre-export inspection to documentation and ocean freight, our team manages the entire export chain, so overseas dealers can buy from China with factory-level pricing and zero guesswork.",
+"about.pt1t": "Supply Chain Integration",
+"about.pt1d": "Direct OEM & dealer network access",
+"about.pt2t": "Volume Sourcing",
+"about.pt2d": "Bulk procurement & stock allocation",
+"about.pt3t": "Export Expertise",
+"about.pt3d": "10+ years of cross-border trade",
+"about.pt4t": "Global Client Service",
+"about.pt4d": "Multilingual team, dedicated support",
+"about.badge": "Years in Export",
+"inv.eyebrow": "02 — Vehicle Inventory",
+"inv.title": "Available for Export",
+"inv.sub": "Live stock from factory and port-side warehouses. Every unit is inspected, documented and ready for shipment.",
+"inv.f1": "All Models",
+"inv.f3": "Hybrid / PHEV",
+"inv.status": "Export Ready",
+"inv.more": "Request Full Stock List",
+"car.ev": "Electric",
+"car.petrol": "Petrol",
+"car.year": "2025",
+"car.phev": "Plug-in Hybrid",
+"car.suv": "SUV",
+"car.hatch": "Hatchback",
+"car.suv7": "7-Seat SUV",
+"car.shoot": "Shooting Brake",
+"car.available": "Available",
+"car.stock1": "50 Units",
+"car.stock2": "120 Units",
+"car.stock3": "80 Units",
+"car.stock4": "45 Units",
+"car.stock5": "200 Units",
+"car.stock6": "30 Units",
+"car.request": "Request Price",
+"why.eyebrow": "03 — Why Choose Us",
+"why.title1": "Built for Dealers,",
+"why.title2": "Not for Showrooms",
+"why.1t": "Chinese Vehicle Resources",
+"why.1p": "Direct access to 50+ brands — factory allocations, authorized dealer stock and certified inventory across EV, hybrid and ICE lineups.",
+"why.2t": "Competitive Factory Price",
+"why.2p": "No middle layers. Wholesale pricing straight from the source, with tiered discounts that scale with your order volume.",
+"why.3t": "Professional Export Process",
+"why.3p": "Inspection reports, export licenses, customs clearance and destination compliance — handled by a team that ships cars every week.",
+"why.4t": "Global Logistics Support",
+"why.4p": "RoRo, container and rail freight to 50+ countries, with real-time tracking from Chinese port to your destination terminal.",
+"proc.eyebrow": "04 — Export Service",
+"proc.title1": "From Selection to Delivery",
+"proc.title2": "in Five Clear Steps",
+"proc.1t": "Vehicle Selection",
+"proc.1p": "Share your target models and volume. We match factory and stock options within 24 hours.",
+"proc.2t": "Inspection",
+"proc.2p": "Every unit passes a multi-point pre-export check with photo and video condition reports.",
+"proc.3t": "Documentation",
+"proc.3p": "Commercial invoice, certificate of origin, export license and destination compliance papers.",
+"proc.4t": "Shipping",
+"proc.4p": "RoRo, container or rail — booked, loaded and tracked with live status updates to your port.",
+"proc.5t": "Delivery",
+"proc.5p": "Port handover with full document package. After-sales support keeps your fleet moving.",
+"proc.cta": "Start Your First Order",
+"proc.note1": "Typical lead time: ",
+"proc.note2": "15–25 working days",
+"proc.note3": " from deposit to vessel departure.",
+"mkt.eyebrow": "05 — Global Market",
+"mkt.title1": "Shipping Routes Across",
+"mkt.title2": "Four Continents",
+"mkt.sub": "Regular sailings and rail connections from Shanghai, Ningbo and Guangzhou ports to our core dealer markets.",
+"mkt.r1t": "Middle East",
+"mkt.r1d": "UAE · Saudi Arabia · Iraq · Kuwait — RoRo to Jebel Ali & Dammam",
+"mkt.r2t": "Africa",
+"mkt.r2d": "Nigeria · Ghana · Kenya · Egypt — container & RoRo to Lagos and Mombasa",
+"mkt.r3t": "Southeast Asia",
+"mkt.r3d": "Thailand · Vietnam · Philippines — short-sea sailings, 7-day transit",
+"mkt.r4t": "Latin America",
+"mkt.r4d": "Mexico · Brazil · Chile · Peru — direct RoRo to Veracruz & San Antonio",
+"part.eyebrow": "06 — Dealer Partnership",
+"part.t1": "Become Our",
+"part.t2": "Global Dealer",
+"part.t3": "Partner",
+"part.sub": "We are building long-term partnerships with overseas dealers, importers and fleet buyers. Lock in priority stock allocation, volume pricing and a dedicated export team for your market.",
+"part.perk1": "Priority Stock Allocation",
+"part.perk2": "Volume-Based Pricing",
+"part.perk3": "Market Exclusivity Options",
+"part.perk4": "Dedicated Account Manager",
+"part.cta": "Contact Export Team",
+"part.wa": "WhatsApp Us",
+"foot.about": "Professional vehicle export trading company connecting China's automotive supply with dealers and importers worldwide.",
+"foot.explore": "Explore",
+"foot.link1": "Vehicle Inventory",
+"foot.popular": "Popular Models",
+"foot.contactH": "Contact Export Team",
+"foot.wa": "WhatsApp",
+"foot.email": "Email",
+"foot.office": "Head Office",
+"foot.hours": "Business Hours",
+"foot.copy": "© 2025 AutoExport Trading Co., Ltd. All rights reserved.",
+"foot.pp": "Privacy Policy",
+"foot.tos": "Terms of Service",
+"foot.ec": "Export Compliance",
+"modal.eyebrow": "Request a Quote",
+"modal.title": "Get Export Pricing",
+"modal.model": "General Inquiry — Full Stock List",
+"form.name": "Contact Name *",
+"form.company": "Company",
+"form.email": "Business Email *",
+"form.qty": "Quantity & Destination *",
+"form.submit": "Send Inquiry",
+"form.ok": "Inquiry Received",
+"form.okp": "Our export team will reply with pricing and availability within 24 hours. For urgent orders, reach us instantly on WhatsApp.",
+"ph.name": "Your name",
+"ph.company": "Dealership / company",
+"ph.email": "name@company.com",
+"ph.wa": "+966 ...",
+"ph.msg": "e.g. 20 units of BYD Song Plus DM-i to Jebel Ali, UAE",
+"brand.tag": "China Vehicle Export Partner"
+},
+"zh": {
+"nav.home": "首页",
+"nav.about": "关于我们",
+"nav.vehicles": "车辆",
+"nav.service": "出口服务",
+"nav.markets": "全球市场",
+"nav.partnership": "合作伙伴",
+"nav.news": "新闻",
+"nav.contact": "联系我们",
+"nav.getquote": "获取报价",
+"hero.eyebrow": "全球汽车供应 · 仅限 B2B",
+"hero.t1": "中国车辆",
+"hero.t2": "出口合作伙伴",
+"hero.sub1": "可靠的汽车供应",
+"hero.sub2": "从中国走向全球市场",
+"hero.adv1": "批量车辆供应",
+"hero.adv2": "全球出口服务",
+"hero.adv3": "经销商合作",
+"hero.stat1": "已出口车辆",
+"hero.stat2": "服务国家",
+"hero.stat3": "合作经销商",
+"hero.stat4": "年行业经验",
+"hero.scroll": "向下滚动",
+"hero.cta1": "查看车辆",
+"hero.cta2": "成为我们的合作伙伴",
+"about.eyebrow": "01 — 关于我们",
+"about.title1": "您通往中国",
+"about.title2": "汽车供应链",
+"about.p1": "AutoExport 是一家总部位于中国的专业车辆出口贸易公司。我们直接整合来自整车厂、授权经销商网络及认证库存渠道的车源，涵盖 50+ 品牌的新能源、燃油及混动车型。",
+"about.p2": "从批量采购、出口前检验到单证办理与海运，我们的团队管理整条出口链条，让海外经销商以出厂价采购，全程零猜疑。",
+"about.pt1t": "供应链整合",
+"about.pt1d": "直连整车厂与经销商网络",
+"about.pt2t": "批量采购",
+"about.pt2d": "批量采购与库存调配",
+"about.pt3t": "出口专长",
+"about.pt3d": "10+ 年跨境贸易经验",
+"about.pt4t": "全球客户服务",
+"about.pt4d": "多语言团队，专属支持",
+"about.badge": "出口年限",
+"inv.eyebrow": "02 — 车辆库存",
+"inv.title": "可供出口",
+"inv.sub": "来自工厂与港口仓库的实时库存。每台车均经过检验、建档，随时可发运。",
+"inv.f1": "全部车型",
+"inv.f3": "混动 / 插混",
+"inv.status": "可出口",
+"inv.more": "获取完整库存清单",
+"car.ev": "纯电",
+"car.petrol": "燃油",
+"car.year": "2025",
+"car.phev": "插电混动",
+"car.suv": "SUV",
+"car.hatch": "两厢",
+"car.suv7": "7座SUV",
+"car.shoot": "猎装车",
+"car.available": "库存",
+"car.stock1": "50 台",
+"car.stock2": "120 台",
+"car.stock3": "80 台",
+"car.stock4": "45 台",
+"car.stock5": "200 台",
+"car.stock6": "30 台",
+"car.request": "询价",
+"why.eyebrow": "03 — 为何选择我们",
+"why.title1": "为经销商打造，",
+"why.title2": "而非展厅",
+"why.1t": "中国车源",
+"why.1p": "直接对接 50+ 品牌——整车厂配额、授权经销商库存与认证车源，覆盖纯电、混动与燃油全系。",
+"why.2t": "有竞争力的出厂价",
+"why.2p": "没有中间环节。直接从源头批发定价，按订单量阶梯折扣。",
+"why.3t": "专业出口流程",
+"why.3p": "检验报告、出口许可证、清关及目的国合规——由每周发运车辆的团队一手处理。",
+"why.4t": "全球物流支持",
+"why.4p": "滚装、集装箱与铁路货运直达 50+ 国家，从中国港口到目的港实时追踪。",
+"proc.eyebrow": "04 — 出口服务",
+"proc.title1": "从选车到交付",
+"proc.title2": "只需五步",
+"proc.1t": "车辆选择",
+"proc.1p": "告知目标车型与数量，24 小时内匹配工厂与库存方案。",
+"proc.2t": "检验",
+"proc.2p": "每台车均通过多项出口前检查，附照片与视频车况报告。",
+"proc.3t": "单证",
+"proc.3p": "商业发票、原产地证、出口许可证及目的国合规文件。",
+"proc.4t": "运输",
+"proc.4p": "滚装、集装箱或铁路——订舱、装船并实时追踪，状态直送您的港口。",
+"proc.5t": "交付",
+"proc.5p": "港口交接，全套单证齐全。售后支持让您的车队持续运转。",
+"proc.cta": "开启首单",
+"proc.note1": "典型交期：",
+"proc.note2": "15–25 个工作日",
+"proc.note3": " 从定金到装船。",
+"mkt.eyebrow": "05 — 全球市场",
+"mkt.title1": "航运网络覆盖",
+"mkt.title2": "四大洲",
+"mkt.sub": "从上海、宁波、广州港定期班轮与铁路联运，直达核心经销商市场。",
+"mkt.r1t": "中东",
+"mkt.r1d": "阿联酋 · 沙特 · 伊拉克 · 科威特 — 滚装至杰贝阿里与达曼",
+"mkt.r2t": "非洲",
+"mkt.r2d": "尼日利亚 · 加纳 · 肯尼亚 · 埃及 — 集装箱与滚装至拉各斯与蒙巴萨",
+"mkt.r3t": "东南亚",
+"mkt.r3d": "泰国 · 越南 · 菲律宾 — 近海班轮，7 天达",
+"mkt.r4t": "拉丁美洲",
+"mkt.r4d": "墨西哥 · 巴西 · 智利 · 秘鲁 — 直航滚装至韦拉克鲁斯与圣安东尼奥",
+"part.eyebrow": "06 — 经销商合作",
+"part.t1": "成为我们的",
+"part.t2": "全球经销商",
+"part.t3": "合作伙伴",
+"part.sub": "我们正在与海外经销商、进口商及车队采购方建立长期合作。锁定优先配车、批量定价，以及专属您的出口团队。",
+"part.perk1": "优先配车",
+"part.perk2": "按量定价",
+"part.perk3": "市场独家选项",
+"part.perk4": "专属客户经理",
+"part.cta": "联系出口团队",
+"part.wa": "WhatsApp 联系",
+"foot.about": "专业车辆出口贸易公司，连接中国整车供应与全球经销商、进口商。",
+"foot.explore": "探索",
+"foot.link1": "车辆库存",
+"foot.popular": "热门车型",
+"foot.contactH": "联系出口团队",
+"foot.wa": "WhatsApp",
+"foot.email": "邮箱",
+"foot.office": "总部",
+"foot.hours": "营业时间",
+"foot.copy": "© 2025 AutoExport 贸易有限公司。保留所有权利。",
+"foot.pp": "隐私政策",
+"foot.tos": "服务条款",
+"foot.ec": "出口合规",
+"modal.eyebrow": "索取报价",
+"modal.title": "获取出口报价",
+"modal.model": "一般询盘 — 完整库存清单",
+"form.name": "联系人姓名 *",
+"form.company": "公司",
+"form.email": "企业邮箱 *",
+"form.qty": "数量与目的地 *",
+"form.submit": "发送询盘",
+"form.ok": "询盘已收到",
+"form.okp": "我们的出口团队将在 24 小时内回复价格与库存。紧急订单请通过 WhatsApp 即时联系我们。",
+"ph.name": "您的姓名",
+"ph.company": "经销商 / 公司",
+"ph.email": "name@company.com",
+"ph.wa": "+966 ...",
+"ph.msg": "例如：20 台比亚迪宋 Plus DM-i 发往阿联酋杰贝阿里",
+"brand.tag": "中国车辆出口合作伙伴"
+},
+"ar": {
+"nav.home": "الرئيسية",
+"nav.about": "معلومات عنا",
+"nav.vehicles": "المركبات",
+"nav.service": "خدمات التصدير",
+"nav.markets": "السوق العالمية",
+"nav.partnership": "الشراكة",
+"nav.news": "الأخبار",
+"nav.contact": "اتصل بنا",
+"nav.getquote": "احصل على عرض سعر",
+"hero.eyebrow": "توريد سيارات عالمي · للشركات فقط",
+"hero.t1": "مركبات الصين",
+"hero.t2": "شريك التصدير",
+"hero.sub1": "إمداد موثوق بالسيارات",
+"hero.sub2": "من الصين إلى الأسواق العالمية",
+"hero.adv1": "توريد مركبات بالجملة",
+"hero.adv2": "خدمة تصدير عالمية",
+"hero.adv3": "شراكة مع الوكلاء",
+"hero.stat1": "مركبات تم تصديرها",
+"hero.stat2": "الدول التي نخدمها",
+"hero.stat3": "وكلاء شركاء",
+"hero.stat4": "سنوات من الخبرة",
+"hero.scroll": "مرر للأسفل",
+"hero.cta1": "عرض المركبات",
+"hero.cta2": "كن شريكنا",
+"about.eyebrow": "01 — من نحن",
+"about.title1": "جسركم إلى الصين",
+"about.title2": "سلسلة إمداد السيارات",
+"about.p1": "أوتوإكسبورت شركة تجارية متخصصة في تصدير المركبات مقرها الصين. ندمج موارد المركبات مباشرة من مصانع OEM وشبكات الوكلاء المعتمدين وقنوات المخزون المعتمدة — نغطي المركبات الجديدة الطاقة والوقود والهجينة عبر أكثر من 50 علامة تجارية.",
+"about.p2": "من الشراء بالجملة والفحص قبل التصدير إلى التوثيق والشحن البحري، يدير فريقنا سلسلة التصدير بالكامل، ليتمكن الوكلاء في الخارج من الشراء من الصين بأسعار المصنع دون أي مجهول.",
+"about.pt1t": "تكامل سلسلة الإمداد",
+"about.pt1d": "وصول مباشر إلى مصانع OEM وشبكات الوكلاء",
+"about.pt2t": "الشراء بالحجم",
+"about.pt2d": "المشتريات بالجملة وتخصيص المخزون",
+"about.pt3t": "خبرة التصدير",
+"about.pt3d": "أكثر من 10 سنوات في التجارة العابرة للحدود",
+"about.pt4t": "خدمة العملاء العالمية",
+"about.pt4d": "فريق متعدد اللغات ودعم مخصص",
+"about.badge": "سنوات في التصدير",
+"inv.eyebrow": "02 — مخزون المركبات",
+"inv.title": "متاح للتصدير",
+"inv.sub": "مخزون حي من مصانع ومستودعات قرب الميناء. كل وحدة مفحوصة وموثقة وجاهزة للشحن.",
+"inv.f1": "جميع الموديلات",
+"inv.f3": "هجين / Plug-in",
+"inv.status": "جاهز للتصدير",
+"inv.more": "اطلب قائمة المخزون الكاملة",
+"car.ev": "كهربائي",
+"car.petrol": "بنزين",
+"car.year": "2025",
+"car.phev": "هجين قابل للشحن",
+"car.suv": "SUV",
+"car.hatch": "هاتشباك",
+"car.suv7": "SUV بـ 7 مقاعد",
+"car.shoot": "شوتينج بريك",
+"car.available": "متاح",
+"car.stock1": "50 وحدة",
+"car.stock2": "120 وحدة",
+"car.stock3": "80 وحدة",
+"car.stock4": "45 وحدة",
+"car.stock5": "200 وحدة",
+"car.stock6": "30 وحدة",
+"car.request": "اطلب السعر",
+"why.eyebrow": "03 — لماذا تختارنا",
+"why.title1": "مصمم للوكلاء،",
+"why.title2": "وليس لصالات العرض",
+"why.1t": "موارد المركبات الصينية",
+"why.1p": "وصول مباشر إلى أكثر من 50 علامة — حصص المصانع ومخزون الوكلاء المعتمدين ومخزون معتمد عبر الطاقة والهجين والوقود.",
+"why.2t": "أسعار المصنع التنافسية",
+"why.2p": "بلا وسطاء. أسعار الجملة مباشرة من المصدر، مع خصومات متدرجة حسب حجم طلبك.",
+"why.3t": "عملية تصدير احترافية",
+"why.3p": "تقارير فحص ورخص تصدير وتخليص جمركي وامتثال الوجهة — يتولاها فريق يشحن السيارات كل أسبوع.",
+"why.4t": "دعم لوجستي عالمي",
+"why.4p": "شحن RoRo والحاويات والسكك إلى أكثر من 50 دولة، مع تتبع لحظي من الميناء الصيني إلى محطتك.",
+"proc.eyebrow": "04 — خدمة التصدير",
+"proc.title1": "من الاختيار إلى التسليم",
+"proc.title2": "في خمس خطوات واضحة",
+"proc.1t": "اختيار المركبة",
+"proc.1p": "شارك موديلاتك المستهدفة وحجمها. نطابق خيارات المصنع والمخزون خلال 24 ساعة.",
+"proc.2t": "الفحص",
+"proc.2p": "تجتاز كل وحدة فحصاً متعدد النقاط قبل التصدير مع تقارير حالة بالصور والفيديو.",
+"proc.3t": "التوثيق",
+"proc.3p": "فاتورة تجارية وشهادة منشأ ورخصة تصدير وأوراق امتثال الوجهة.",
+"proc.4t": "الشحن",
+"proc.4p": "RoRo أو حاويات أو سكك — محجوزة ومحملة ومتتبعة بتحديثات حية إلى مينائك.",
+"proc.5t": "التسليم",
+"proc.5p": "تسليم في الميناء مع حزمة وثائق كاملة. دعم ما بعد البيع يحافظ على حركة أسطولك.",
+"proc.cta": "ابدأ طلبك الأول",
+"proc.note1": "مدة التسليم النموذجية: ",
+"proc.note2": "15–25 يوم عمل",
+"proc.note3": " من الإيداع إلى مغادرة السفينة.",
+"mkt.eyebrow": "05 — السوق العالمية",
+"mkt.title1": "طرق الشحن عبر",
+"mkt.title2": "أربع قارات",
+"mkt.sub": "رحلات منتظمة وربط سككي من موانئ شنغهاي ونينغبو وغوانغتشو إلى أسواق وكلائنا الأساسية.",
+"mkt.r1t": "الشرق الأوسط",
+"mkt.r1d": "الإمارات · السعودية · العراق · الكويت — RoRo إلى جبل علي والدمام",
+"mkt.r2t": "أفريقيا",
+"mkt.r2d": "نيجيريا · غانا · كينيا · مصر — حاويات وRoRo إلى لاغوس ومومباسا",
+"mkt.r3t": "جنوب شرق آسيا",
+"mkt.r3d": "تايلاند · فيتنام · الفلبين — رحلات بحرية قصيرة، 7 أيام",
+"mkt.r4t": "أمريكا اللاتينية",
+"mkt.r4d": "المكسيك · البرازيل · تشيلي · بيرو — RoRo مباشر إلى فيراكروز وسان أنطونيو",
+"part.eyebrow": "06 — شراكة الوكلاء",
+"part.t1": "كن",
+"part.t2": "وكيلنا العالمي",
+"part.t3": "شريك",
+"part.sub": "نبني شراكات طويلة الأمد مع الوكلاء والمستوردين ومشتري الأساطيل في الخارج. احصل على تخصيص مخزون ذي أولوية وأسعار حجم وفريق تصدير مخصص لسوقك.",
+"part.perk1": "تخصيص مخزون ذي أولوية",
+"part.perk2": "تسعير حسب الحجم",
+"part.perk3": "خيارات حصرية للسوق",
+"part.perk4": "مدير حساب مخصص",
+"part.cta": "تواصل مع فريق التصدير",
+"part.wa": "راسلنا واتساب",
+"foot.about": "شركة تجارة تصدير مركبات احترافية تربط إمداد الصين من السيارات بالوكلاء والمستوردين حول العالم.",
+"foot.explore": "استكشف",
+"foot.link1": "مخزون المركبات",
+"foot.popular": "موديلات شائعة",
+"foot.contactH": "تواصل مع فريق التصدير",
+"foot.wa": "واتساب",
+"foot.email": "البريد الإلكتروني",
+"foot.office": "المقر الرئيسي",
+"foot.hours": "ساعات العمل",
+"foot.copy": "© 2025 شركة أوتوإكسبورت للتجارة. جميع الحقوق محفوظة.",
+"foot.pp": "سياسة الخصوصية",
+"foot.tos": "شروط الخدمة",
+"foot.ec": "امتثال التصدير",
+"modal.eyebrow": "اطلب عرض سعر",
+"modal.title": "احصل على أسعار التصدير",
+"modal.model": "استفسار عام — قائمة المخزون الكاملة",
+"form.name": "اسم جهة الاتصال *",
+"form.company": "الشركة",
+"form.email": "البريد الأعمال *",
+"form.qty": "الكمية والوجهة *",
+"form.submit": "أرسل الاستفسار",
+"form.ok": "تم استلام الاستفسار",
+"form.okp": "سيرد فريق التصدير لدينا بالأسعار والتوفر خلال 24 ساعة. للطلبات العاجلة تواصل معنا فوراً عبر واتساب.",
+"ph.name": "اسمك",
+"ph.company": "وكالة / شركة",
+"ph.email": "name@company.com",
+"ph.wa": "+966 ...",
+"ph.msg": "مثال: 20 وحدة BYD Song Plus DM-i إلى جبل علي، الإمارات",
+"brand.tag": "شريك تصدير المركبات الصينية"
+},
+"ru": {
+"nav.home": "Главная",
+"nav.about": "О нас",
+"nav.vehicles": "Автомобили",
+"nav.service": "Экспортные услуги",
+"nav.markets": "Мировой рынок",
+"nav.partnership": "Партнёрство",
+"nav.news": "Новости",
+"nav.contact": "Контакты",
+"nav.getquote": "Получить расчёт",
+"hero.eyebrow": "Глобальные поставки авто · только B2B",
+"hero.t1": "Китайские авто",
+"hero.t2": "Партнёр по экспорту",
+"hero.sub1": "Надёжные поставки авто",
+"hero.sub2": "Из Китая на мировые рынки",
+"hero.adv1": "Оптовые поставки авто",
+"hero.adv2": "Глобальный экспорт",
+"hero.adv3": "Сотрудничество с дилерами",
+"hero.stat1": "Экспортировано авто",
+"hero.stat2": "Стран-партнёров",
+"hero.stat3": "Дилеров-партнёров",
+"hero.stat4": "Лет опыта",
+"hero.scroll": "Листайте вниз",
+"hero.cta1": "Смотреть авто",
+"hero.cta2": "Станьте партнёром",
+"about.eyebrow": "01 — Кто мы",
+"about.title1": "Ваш мост в Китай",
+"about.title2": "Автомобильная цепочка поставок",
+"about.p1": "AutoExport — профессиональная торговая компания по экспорту автомобилей из Китая. Мы напрямую объединяем ресурсы от заводов-изготовителей, авторизованных дилеров и сертифицированных складов — более 50 брендов электромобилей, бензиновых и гибридных моделей.",
+"about.p2": "От оптовой закупки и предэкспортной инспекции до оформления документов и морской перевозки — наша команда управляет всей цепочкой экспорта, чтобы зарубежные дилеры покупали в Китае по заводским ценам без лишних вопросов.",
+"about.pt1t": "Интеграция поставок",
+"about.pt1d": "Прямой доступ к OEM и дилерам",
+"about.pt2t": "Объёмные закупки",
+"about.pt2d": "Оптовые закупки и распределение склада",
+"about.pt3t": "Экспертиза в экспорте",
+"about.pt3d": "10+ лет трансграничной торговли",
+"about.pt4t": "Глобальный сервис",
+"about.pt4d": "Многоязычная команда, персональная поддержка",
+"about.badge": "Лет на экспорте",
+"inv.eyebrow": "02 — Склад авто",
+"inv.title": "Доступно для экспорта",
+"inv.sub": "Актуальный склад с заводов и портовых складов. Каждый автомобиль проверен, задокументирован и готов к отгрузке.",
+"inv.f1": "Все модели",
+"inv.f3": "Гибрид / PHEV",
+"inv.status": "Готов к экспорту",
+"inv.more": "Запросить полный склад",
+"car.ev": "Электро",
+"car.petrol": "Бензин",
+"car.year": "2025",
+"car.phev": "Подзаряжаемый гибрид",
+"car.suv": "SUV",
+"car.hatch": "Хэтчбек",
+"car.suv7": "7-местный SUV",
+"car.shoot": "Шутинг-брейк",
+"car.available": "В наличии",
+"car.stock1": "50 шт",
+"car.stock2": "120 шт",
+"car.stock3": "80 шт",
+"car.stock4": "45 шт",
+"car.stock5": "200 шт",
+"car.stock6": "30 шт",
+"car.request": "Запросить цену",
+"why.eyebrow": "03 — Почему мы",
+"why.title1": "Создано для дилеров,",
+"why.title2": "а не для салонов",
+"why.1t": "Китайские авторесурсы",
+"why.1p": "Прямой доступ к 50+ брендам — заводские квоты, склады авторизованных дилеров и сертифицированный склад электро, гибридов и ДВС.",
+"why.2t": "Конкурентные заводские цены",
+"why.2p": "Без посредников. Оптовые цены напрямую от источника со ступенчатыми скидками в зависимости от объёма заказа.",
+"why.3t": "Профессиональный экспорт",
+"why.3p": "Отчёты о проверке, экспортные лицензии, таможенное оформление и соответствие стране назначения — всем этим занимается команда, отправляющая авто каждую неделю.",
+"why.4t": "Глобальная логистика",
+"why.4p": "Паромная, контейнерная и железнодорожная доставка в 50+ стран с отслеживанием в реальном времени от китайского порта до терминала назначения.",
+"proc.eyebrow": "04 — Экспорт",
+"proc.title1": "От выбора до доставки",
+"proc.title2": "в пять понятных шагов",
+"proc.1t": "Выбор авто",
+"proc.1p": "Сообщите целевые модели и объём. Мы подберём заводские и складские варианты за 24 часа.",
+"proc.2t": "Инспекция",
+"proc.2p": "Каждый автомобиль проходит многоэтапную предэкспортную проверку с фото- и видеоотчётами о состоянии.",
+"proc.3t": "Документы",
+"proc.3p": "Коммерческий инвойс, сертификат происхождения, экспортная лицензия и документы соответствия стране назначения.",
+"proc.4t": "Перевозка",
+"proc.4p": "Паром, контейнер или ж/д — бронирование, погрузка и отслеживание с живыми обновлениями до вашего порта.",
+"proc.5t": "Доставка",
+"proc.5p": "Передача в порту с полным пакетом документов. Послепродажная поддержка держит ваш автопарк в движении.",
+"proc.cta": "Начните первый заказ",
+"proc.note1": "Типичный срок: ",
+"proc.note2": "15–25 рабочих дней",
+"proc.note3": " от депозита до погрузки на судно.",
+"mkt.eyebrow": "05 — Мировой рынок",
+"mkt.title1": "Маршруты перевозок по",
+"mkt.title2": "четырём континентам",
+"mkt.sub": "Регулярные рейсы и ж/д сообщение из портов Шанхая, Нинбо и Гуанчжоу в наши ключевые рынки дилеров.",
+"mkt.r1t": "Ближний Восток",
+"mkt.r1d": "ОАЭ · Саудовская Аравия · Ирак · Кувейт — паром в Джабель Али и Даммам",
+"mkt.r2t": "Африка",
+"mkt.r2d": "Нигерия · Гана · Кения · Египет — контейнеры и паром в Лагос и Момбасу",
+"mkt.r3t": "Юго-Восточная Азия",
+"mkt.r3d": "Таиланд · Вьетнам · Филиппины — каботажные рейсы, 7 дней",
+"mkt.r4t": "Латинская Америка",
+"mkt.r4d": "Мексика · Бразилия · Чили · Перу — прямой паром в Веракрус и Сан-Антонио",
+"part.eyebrow": "06 — Партнёрство дилеров",
+"part.t1": "Станьте нашим",
+"part.t2": "глобальным дилером",
+"part.t3": "партнёром",
+"part.sub": "Мы выстраиваем долгосрочные партнёрства с зарубежными дилерами, импортёрами и автопарками. Закрепите приоритетное выделение склада, объёмные цены и выделенную экспортную команду для вашего рынка.",
+"part.perk1": "Приоритетный склад",
+"part.perk2": "Цены по объёму",
+"part.perk3": "Опции эксклюзива",
+"part.perk4": "Персональный менеджер",
+"part.cta": "Связаться с экспортной командой",
+"part.wa": "WhatsApp нам",
+"foot.about": "Профессиональная торговая компания по экспорту автомобилей, соединяющая китайские поставки авто с дилерами и импортёрами по всему миру.",
+"foot.explore": "Навигация",
+"foot.link1": "Склад авто",
+"foot.popular": "Популярные модели",
+"foot.contactH": "Связаться с экспортной командой",
+"foot.wa": "WhatsApp",
+"foot.email": "Email",
+"foot.office": "Головной офис",
+"foot.hours": "Часы работы",
+"foot.copy": "© 2025 AutoExport Trading Co., Ltd. Все права защищены.",
+"foot.pp": "Политика конфиденциальности",
+"foot.tos": "Условия обслуживания",
+"foot.ec": "Экспортный комплаенс",
+"modal.eyebrow": "Запросить расчёт",
+"modal.title": "Получить экспортные цены",
+"modal.model": "Общий запрос — полный склад",
+"form.name": "Имя контакта *",
+"form.company": "Компания",
+"form.email": "Рабочий Email *",
+"form.qty": "Количество и назначение *",
+"form.submit": "Отправить запрос",
+"form.ok": "Запрос получен",
+"form.okp": "Наша экспортная команда ответит по ценам и наличию в течение 24 часов. По срочным заказам пишите нам в WhatsApp.",
+"ph.name": "Ваше имя",
+"ph.company": "Дилер / компания",
+"ph.email": "name@company.com",
+"ph.wa": "+966 ...",
+"ph.msg": "напр.: 20 BYD Song Plus DM-i в Джабель Али, ОАЭ",
+"brand.tag": "Партнёр по экспорту китайских авто"
+}
+};
+const RTL = { ar: true };
+const LANG_CODE = { en: "EN", zh: "中", ar: "العربية", ru: "RU" };
+function applyLang(lang) {
+  const d = I18N[lang] || I18N.en;
+  const root = document.documentElement;
+  root.lang = lang;
+  root.dir = RTL[lang] ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i18n]").forEach(function (el) {
+    const v = d[el.dataset.i18n];
+    if (v != null) el.textContent = v;
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(function (el) {
+    const v = d[el.dataset.i18nPh];
+    if (v != null) el.setAttribute("placeholder", v);
+  });
+  const label = document.getElementById("langLabel");
+  if (label) label.textContent = LANG_CODE[lang] || "EN";
+  const menu = document.getElementById("langMenu");
+  if (menu) menu.querySelectorAll("li").forEach(function (li) {
+    li.classList.toggle("active", li.dataset.lang === lang);
+  });
+  try { localStorage.setItem("aex_lang", lang); } catch (e) {}
+}
+(function () {
+  const cur = document.getElementById("langCurrent");
+  const menu = document.getElementById("langMenu");
+  if (cur && menu) {
+    cur.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const open = menu.classList.toggle("open");
+      cur.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    menu.querySelectorAll("li").forEach(function (li) {
+      li.addEventListener("click", function () {
+        applyLang(li.dataset.lang);
+        menu.classList.remove("open");
+        cur.setAttribute("aria-expanded", "false");
+      });
+    });
+    document.addEventListener("click", function () {
+      menu.classList.remove("open");
+      cur.setAttribute("aria-expanded", "false");
+    });
+  }
+  let saved = "en";
+  try { saved = localStorage.getItem("aex_lang") || "en"; } catch (e) {}
+  applyLang(saved);
+})();
+</script>
+</body>
+</html>
