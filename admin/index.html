@@ -420,7 +420,8 @@
   /* ---------- github api ---------- */
   function headers(extra){var h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(state.token)h["Authorization"]="Bearer "+state.token;if(extra)for(var k in extra)h[k]=extra[k];return h;}
   function api(path,opts){opts=opts||{};return fetch(API+path,{method:opts.method||"GET",headers:headers(opts.headers),body:opts.body});}
-  function repoPath(p){return "/repos/"+state.owner+"/"+state.repo+"/contents/"+p+(state.branch?"?ref="+encodeURIComponent(state.branch):"");}
+  function encPath(p){return p.split("/").map(encodeURIComponent).join("/");}
+  function repoPath(p){return "/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath(p)+(state.branch?"?ref="+encodeURIComponent(state.branch):"");}
   function getFile(path){
     return api(repoPath(path)).then(function(r){
       if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
@@ -541,7 +542,7 @@
   function getFileSha(path){return api(repoPath(path)).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});throw new Error("not found");});}
   function fileToBase64(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result.split(",")[1]);};fr.onerror=rej;fr.readAsDataURL(file);});}
   function putImage(path,base64,sha,message){var body={message:message,content:base64};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
-    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
+    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath(path),{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
   function saveVehicles(){
     if(!state.veh)return;
     setStatus("保存车型中…","busy");
@@ -659,7 +660,7 @@
     api(repoPath("data/config.json")).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});return null;})
     .then(function(sha){
       var body={message:"Update site settings",content:utf8ToB64(JSON.stringify(state.config,null,2)+"\n")};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
-      return api("/repos/"+state.owner+"/"+state.repo+"/contents/data/config.json",{method:"PUT",body:JSON.stringify(body)});
+      return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath("data/config.json"),{method:"PUT",body:JSON.stringify(body)});
     }).then(function(r){if(!r.ok)throw new Error("保存失败");return r.json();})
     .then(function(){state.configSha=null;setStatus("已连接 · "+state.branch,"ok");toast("设置已保存 ✓","ok");})
     .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
@@ -697,6 +698,7 @@
   function wireUpload(){
     $("vFile").addEventListener("change",function(){
       var file=this.files&&this.files[0];if(!file)return;
+      if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再上传图片","err");return;}
       setStatus("上传图片中…","busy");
       fileToBase64(file).then(function(b64){
         return getFileSha("assets/"+file.name).then(function(sha){return putImage("assets/"+file.name,b64,sha,"Upload "+file.name);},function(){return putImage("assets/"+file.name,b64,null,"Upload "+file.name);});
