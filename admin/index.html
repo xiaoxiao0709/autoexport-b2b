@@ -1,64 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto Export · Admin</title>
+<title>Auto Export · Dealer Admin</title>
 <style>
   :root{
-    --brand:#1f3a8a; --brand-600:#2742a6; --brand-50:#eef2ff;
-    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
-    --bg:#f6f8fb; --card:#fff; --ok:#16a34a; --warn:#d97706; --err:#dc2626;
-    --r:12px; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+    --side:#0f172a; --side-2:#111c34; --side-line:rgba(255,255,255,.08);
+    --brand:#4f6bff; --brand-2:#22d3ee; --brand-grad:linear-gradient(90deg,#6366f1,#22d3ee);
+    --ink:#0f172a; --muted:#64748b; --line:#e6eaf2;
+    --bg:#f4f6fb; --card:#fff; --ok:#16a34a; --warn:#d97706; --err:#dc2626;
+    --r:14px; --shadow:0 1px 2px rgba(16,24,40,.05),0 10px 30px rgba(16,24,40,.07);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  html,body{margin:0;height:100%}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
     background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
   a{color:var(--brand)}
-  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 80px}
-  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--brand)}
-  .pill{font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);display:inline-flex;gap:7px;align-items:center}
-  .pill .led{width:8px;height:8px;border-radius:50%;background:var(--muted)}
-  .pill.ok .led{background:var(--ok)} .pill.ok{color:var(--ok);border-color:#bbf7d0}
-  .pill.err .led{background:var(--err)} .pill.err{color:var(--err);border-color:#fecaca}
-  .pill.busy .led{background:var(--warn);animation:pulse 1s infinite}
-  @keyframes pulse{50%{opacity:.3}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
-  .card h2{margin:0 0 14px;font-size:15px}
-  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
-  input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand-50);border-color:var(--brand)}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-  button{font:inherit;cursor:pointer;border:1px solid transparent;border-radius:9px;padding:9px 16px;font-weight:600;background:var(--brand);color:#fff}
-  button:hover{background:var(--brand-600)}
+  button{font:inherit;cursor:pointer;border:1px solid transparent;border-radius:10px;padding:9px 16px;font-weight:600;background:var(--brand);color:#fff}
+  button:hover{filter:brightness(.95)}
   button.ghost{background:#fff;border-color:var(--line);color:var(--ink)}
-  button.ghost:hover{background:var(--brand-50)}
+  button.ghost:hover{background:#f6f8ff}
   button.danger{background:#fff;border-color:#fecaca;color:var(--err)}
   button.danger:hover{background:#fef2f2}
   button:disabled{opacity:.5;cursor:not-allowed}
-  .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .tab{padding:10px 16px;border:none;background:none;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px}
-  .tab.active{color:var(--brand);border-bottom-color:var(--brand)}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
-  .toast.show{opacity:1}
-  .toast.err{background:var(--err)} .toast.ok{background:var(--ok)}
-  /* vehicles table */
-  table{width:100%;border-collapse:collapse}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-  th{font-size:12px;color:var(--muted);font-weight:700}
-  td img{width:64px;height:40px;object-fit:cover;border-radius:6px;background:#eee}
-  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--brand-50);color:var(--brand);font-weight:600}
+
+  /* ---------- layout ---------- */
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:248px;flex:none;background:linear-gradient(180deg,var(--side),var(--side-2));color:#cbd5e1;
+    display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand-block{display:flex;align-items:center;gap:11px;padding:22px 20px 18px}
+  .logo{width:40px;height:40px;border-radius:11px;background:var(--brand-grad);display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#fff;font-size:18px;box-shadow:0 6px 16px rgba(79,107,255,.45)}
+  .b-name{color:#fff;font-weight:800;font-size:16px;line-height:1.15}
+  .b-sub{font-size:11px;color:#7c8aa5;letter-spacing:.5px}
+  .nav{display:flex;flex-direction:column;gap:4px;padding:8px 12px;flex:1}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border:none;background:none;color:#aeb9cc;
+    border-radius:10px;text-align:left;width:100%;position:relative}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:#eef2ff}
+  .nav-item.active{background:rgba(79,107,255,.16);color:#fff}
+  .nav-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--brand-grad)}
+  .nav-item svg{width:19px;height:19px;flex:none;opacity:.85}
+  .nav-zh{font-weight:700;font-size:14px}
+  .nav-en{font-size:11px;color:#7c8aa5;margin-top:1px}
+  .nav-item.active .nav-en{color:#9fb0ff}
+  .side-foot{padding:14px 16px;border-top:1px solid var(--side-line)}
+  .user-block{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+  .un{color:#fff;font-size:13px;font-weight:600}
+  .ur{font-size:11px;color:#7c8aa5}
+
+  .content{flex:1;min-width:0;padding:24px 28px 60px}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .page-head h1{margin:0;font-size:26px;font-weight:800;letter-spacing:.5px}
+  .page-sub{font-size:15px;font-style:italic;font-weight:700;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:3px}
+  .head-actions{display:flex;gap:10px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+  .card h2{margin:0 0 4px;font-size:16px}
+  .card .csub{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid #dfe6ff;border-color:var(--brand)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+  .errbox{color:var(--err);font-size:12px;margin-top:8px;display:none}
+
+  /* connection status pill */
+  .status-pill{display:inline-flex;gap:8px;align-items:center;font-size:12px;padding:7px 12px;border-radius:999px;
+    background:rgba(255,255,255,.06);color:#aeb9cc;border:1px solid var(--side-line)}
+  .status-pill .led{width:8px;height:8px;border-radius:50%;background:#94a3b8;flex:none}
+  .status-pill.ok{color:#7dffb0}.status-pill.ok .led{background:var(--ok)}
+  .status-pill.err{color:#ffb4b4}.status-pill.err .led{background:var(--err)}
+  .status-pill.busy{color:#ffe09a}.status-pill.busy .led{background:var(--warn);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+
+  /* dashboard stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden}
+  .stat .si{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+  .stat .sl{font-size:12px;color:var(--muted);font-weight:600}
+  .stat .sv{font-size:28px;font-weight:800;margin-top:6px;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .sd{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* inventory two-col */
+  .inv-layout{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+  .form-card{position:sticky;top:18px}
+  .form-banner{display:none;align-items:center;justify-content:space-between;gap:10px;background:#eef2ff;border:1px solid #c7d2fe;
+    color:#3730a3;font-size:12px;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:14px}
+  .form-banner button{background:none;border:none;color:#4338ca;padding:0;font-size:12px;text-decoration:underline}
+  /* vehicle grid */
+  .veh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .veh-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:.15s}
+  .veh-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+  .veh-thumb{height:132px;background:#eef2f7;position:relative}
+  .veh-thumb img{width:100%;height:100%;object-fit:cover}
+  .veh-thumb .ph{display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:12px}
+  .veh-pub{position:absolute;top:8px;left:8px;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;backdrop-filter:blur(2px)}
+  .veh-pub.on{background:#dcfce7;color:#15803d}.veh-pub.off{background:#fee2e2;color:#b91c1c}
+  .veh-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:6px}
+  .veh-bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .veh-bhead b{font-size:15px}.veh-bhead .model{font-size:13px;color:var(--muted)}
+  .veh-cat{font-size:11px;color:#6366f1;font-weight:600}
+  .veh-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .veh-specs{font-size:11px;color:#475569;background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:6px 8px;line-height:1.6}
+  .veh-stock{margin-top:2px;font-size:12px}.veh-stock b{color:var(--ink)}
+  .veh-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+  .veh-actions button{flex:1;padding:7px 0;font-size:13px}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;font-weight:600}
   .tag.ev{background:#dcfce7;color:#15803d}.tag.phev{background:#fef9c3;color:#a16207}.tag.petrol{background:#ffe4e6;color:#be123c}
-  /* modal */
-  .modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;z-index:40}
-  .modal.open{display:flex}
-  .modal .box{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:22px;box-shadow:var(--shadow)}
-  .modal .box h3{margin:0 0 16px}
-  .modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+
+  /* switch */
+  .switch{position:relative;display:inline-block;width:42px;height:23px;flex:none}
+  .switch input{display:none}
+  .switch .sl{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s;cursor:pointer}
+  .switch .sl:before{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .switch input:checked+.sl{background:var(--ok)}
+  .switch input:checked+.sl:before{transform:translateX(19px)}
+
+  /* numbered settings groups */
+  .grp-card{display:flex;gap:16px;align-items:flex-start}
+  .grp-num{flex:none;width:46px;height:46px;border-radius:12px;background:var(--brand-grad);color:#fff;font-weight:800;font-size:18px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(79,107,255,.35)}
+  .grp-body{flex:1}
+
+  /* inbox table */
+  .inq-table{width:100%;border-collapse:collapse}
+  .inq-table th{text-align:left;padding:10px 12px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);font-weight:700}
+  .inq-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .conv-row{cursor:pointer}
+  .conv-row:hover{background:#f8fafc}
+  .conv-row.active{background:#eef2ff}
+  .conv-row .ct{font-weight:700;font-size:13px}
+  .conv-row .cm{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
+  .conv-row .num{color:#94a3b8;font-size:12px}
+  .badge{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:700}
+  .badge.b-open{background:#dcfce7;color:#15803d}
+  .badge.b-closed{background:#e2e8f0;color:#64748b}
+  .thread{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+  .msg{padding:9px 12px;border-radius:12px;max-width:82%;font-size:13px;white-space:pre-wrap;word-break:break-word}
+  .msg.me{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .msg.them{background:#f1f5f9;align-self:flex-start;border-bottom-left-radius:3px}
+  .msg .who{font-size:10px;opacity:.7;margin-bottom:2px}
+  .reply-box{display:flex;gap:8px;margin-top:12px}
+  .reply-box textarea{flex:1;min-height:44px;resize:vertical}
+  .empty{color:var(--muted);font-size:13px;padding:30px;text-align:center}
+
   /* content editor */
   .grp{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
   .grp>summary{padding:11px 14px;cursor:pointer;font-weight:700;background:#fafbff;list-style:none;display:flex;justify-content:space-between}
@@ -67,201 +155,239 @@
   .field .k{font-size:12px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;margin-bottom:8px}
   .langrow{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;margin-bottom:7px}
   .langrow span{font-size:12px;font-weight:700;color:var(--muted)}
-  .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
   .kv{font-size:12px;color:var(--muted)} .kv b{color:var(--ink)}
-  .errbox{color:var(--err);font-size:12px;margin-top:8px;display:none}
-  /* vehicle grid */
-  .veh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-  .veh-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:.15s}
-  .veh-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-  .veh-thumb{height:128px;background:#eef2f7;position:relative}
-  .veh-thumb img{width:100%;height:100%;object-fit:cover}
-  .veh-thumb .ph{display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:12px}
-  .veh-pub{position:absolute;top:8px;left:8px;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;backdrop-filter:blur(2px)}
-  .veh-pub.on{background:#dcfce7;color:#15803d}.veh-pub.off{background:#fee2e2;color:#b91c1c}
-  .veh-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:6px}
-  .veh-bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-  .veh-bhead b{font-size:15px}.veh-bhead .model{font-size:13px;color:var(--muted)}
-  .veh-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-  .veh-stock{margin-top:2px;font-size:12px}.veh-stock b{color:var(--ink)}
-  .veh-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
-  .veh-actions button{flex:1;padding:7px 0;font-size:13px}
-  /* switch */
-  .switch{position:relative;display:inline-block;width:40px;height:22px}
-  .switch input{display:none}
-  .switch .sl{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s;cursor:pointer}
-  .switch .sl:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-  .switch input:checked+.sl{background:var(--ok)}
-  .switch input:checked+.sl:before{transform:translateX(18px)}
-  /* inbox */
-  .inbox{display:grid;grid-template-columns:280px 1fr;gap:14px}
-  .conv{border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;margin-bottom:8px;background:#fff}
-  .conv:hover{border-color:var(--brand)}
-  .conv.active{background:var(--brand-50);border-color:var(--brand)}
-  .conv .ct{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .conv .cm{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .conv .cmeta{font-size:11px;color:#94a3b8;margin-top:4px;display:flex;justify-content:space-between}
-  .conv .dot-open{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
-  .thread{max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
-  .msg{padding:9px 12px;border-radius:12px;max-width:82%;font-size:13px;white-space:pre-wrap;word-break:break-word}
-  .msg.me{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
-  .msg.them{background:#f1f5f9;align-self:flex-start;border-bottom-left-radius:3px}
-  .msg .who{font-size:10px;opacity:.7;margin-bottom:2px}
-  .reply-box{display:flex;gap:8px;margin-top:12px}
-  .reply-box textarea{flex:1;min-height:44px;resize:vertical}
-  .empty{color:var(--muted);font-size:13px;padding:30px;text-align:center}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
+  .toast.show{opacity:1}
+  .toast.err{background:var(--err)} .toast.ok{background:var(--ok)}
+
+  .page{display:none}
+  .page.active{display:block}
+
+  @media (max-width:980px){
+    .inv-layout{grid-template-columns:1fr}
+    .form-card{position:static}
+    .sidebar{width:70px}
+    .b-name,.b-sub,.nav-zh,.nav-en,.user-block,.side-foot .status-pill span:last-child{display:none}
+    .brand-block{justify-content:center;padding:18px 0}
+    .nav-item{justify-content:center;padding:12px 0}
+    .content{padding:18px}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand"><span class="dot"></span> Auto Export · Admin</div>
-    <div id="status" class="pill"><span class="led"></span> <span id="statusText">Not connected</span></div>
-  </header>
-
-  <!-- Connection / config -->
-  <div class="card">
-    <h2>Repository &amp; GitHub Token</h2>
-    <div class="grid2">
-      <div><label>Owner</label><input id="cfgOwner" value="xiaoxiao0709"></div>
-      <div><label>Repository</label><input id="cfgRepo" value="autoexport-b2b"></div>
-      <div><label>Branch</label><input id="cfgBranch" placeholder="auto-detect (main/master)"></div>
-      <div><label>Token (PAT)</label><input id="cfgToken" type="password" placeholder="ghp_… or github_pat_…"></div>
-    </div>
-    <div class="hint">Token needs <b>public_repo</b> (public repo) or <b>repo</b> scope. It is stored only in this browser's localStorage and sent directly to api.github.com — never to any third party.</div>
-    <div class="row" style="margin-top:12px">
-      <button id="btnConnect">Connect</button>
-      <button class="ghost" id="btnShowTok">Show / Hide token</button>
-    </div>
-    <div id="cfgErr" class="errbox"></div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="vehicles">Vehicles</button>
-    <button class="tab" data-tab="content">Homepage Content</button>
-    <button class="tab" data-tab="inbox">Inbox · 客服</button>
-    <button class="tab" data-tab="settings">Settings</button>
-    <button class="tab" data-tab="deploy">Deploy</button>
-  </div>
-
-  <!-- VEHICLES -->
-  <section id="tab-vehicles">
-    <div class="card">
-      <div class="bar">
-        <h2 style="margin:0">Vehicle Inventory</h2>
-        <div style="display:flex;gap:10px">
-          <button class="ghost" id="btnAddVehicle">+ Add Vehicle</button>
-          <button id="btnSaveVehicles">Save Vehicles</button>
-        </div>
-      </div>
-      <div id="vehEmpty" class="hint">Connect to load vehicles.</div>
-      <div id="vehGrid" class="veh-grid" style="display:none"></div>
-    </div>
-  </section>
-
-  <!-- CONTENT -->
-  <section id="tab-content" style="display:none">
-    <div class="card">
-      <div class="bar">
-        <h2 style="margin:0">Homepage Copy (EN / ZH / AR / RU)</h2>
-        <button id="btnSaveContent">Save Content</button>
-      </div>
-      <div class="row" style="margin-bottom:12px">
-        <div style="flex:1;min-width:200px"><input id="contentSearch" placeholder="Filter keys… (e.g. hero, form, inv)"></div>
-      </div>
-      <div id="contentArea"><div class="hint">Connect to load homepage copy.</div></div>
-    </div>
-  </section>
-
-  <!-- DEPLOY -->
-  <section id="tab-deploy" style="display:none">
-    <div class="card">
-      <h2>Deploy &amp; Status</h2>
-      <div class="kv" id="deployInfo">Connect to see repository status.</div>
-      <div class="hint" style="margin-top:10px">Saving vehicles or content commits a new file to the repository, which triggers a GitHub Pages rebuild automatically (usually within ~1 minute).</div>
-      <div class="row" style="margin-top:14px">
-        <button class="ghost" id="btnOpenLive">Open Live Site ↗</button>
-        <button class="ghost" id="btnOpenAdmin">Copy Admin URL</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- INBOX / 客服 -->
-  <section id="tab-inbox" style="display:none">
-    <div class="card">
-      <div class="bar">
-        <h2 style="margin:0">Customer Inbox · 客服对话</h2>
-        <button class="ghost" id="btnRefreshInbox">Refresh</button>
-      </div>
-      <div class="hint" style="margin-bottom:12px">访客通过前端"在线咨询"发起的对话会以 GitHub Issue 形式出现在这里。客服可直接回复，回复会实时显示给访客。</div>
-      <div class="inbox">
-        <div id="convList"><div class="empty">Connect to load conversations.</div></div>
-        <div>
-          <div id="thread" class="thread"><div class="empty">Select a conversation on the left.</div></div>
-          <div class="reply-box">
-            <textarea id="replyText" placeholder="输入客服回复…"></textarea>
-            <button id="btnSendReply">Send</button>
-          </div>
-          <div class="row" style="margin-top:10px">
-            <button class="ghost" id="btnCloseConv">Mark Resolved / Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SETTINGS -->
-  <section id="tab-settings" style="display:none">
-    <div class="card">
-      <div class="bar">
-        <h2 style="margin:0">Site Settings</h2>
-        <button id="btnSaveSettings">Save Settings</button>
-      </div>
-      <div class="grid2">
-        <div><label>Business Name</label><input id="sBiz" placeholder="Auto Export"></div>
-        <div><label>WhatsApp (with country code)</label><input id="sWa" placeholder="8613800000000"></div>
-        <div><label>Email</label><input id="sEmail" placeholder="sales@example.com"></div>
-        <div><label>Chat Inbox Token (fine-grained, Issues:write)</label><input id="sChatTok" type="password" placeholder="github_pat_… (Issues write only)"></div>
-      </div>
-      <div class="hint" style="margin-top:8px">Chat Token 用于前端访客创建对话 Issue，请使用<strong>细粒度 Token</strong>且仅授权该仓库的 <strong>Issues 读写</strong>（不要给 contents/repo 全权限），即使泄露也改不了网站文件。访客消息将以 Issue 形式存入仓库。</div>
-      <div id="settingsErr" class="errbox"></div>
-    </div>
-  </section>
-</div>
-
-<!-- Vehicle modal -->
-<div class="modal" id="vehModal">
-  <div class="box">
-    <h3 id="vehModalTitle">Add Vehicle</h3>
-    <div class="grid2">
-      <div><label>Brand</label><input id="vBrand" placeholder="BYD"></div>
-      <div><label>Model Name</label><input id="vName" placeholder="Song Plus DM-i"></div>
+<div class="app">
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="brand-block">
+      <div class="logo">A</div>
       <div>
-        <label>Type</label>
-        <select id="vType"><option value="ev">Electric (EV)</option><option value="phev">Plug-in Hybrid (PHEV)</option><option value="petrol">Petrol</option></select>
+        <div class="b-name">Auto Export</div>
+        <div class="b-sub">DEALER ADMIN</div>
       </div>
-      <div><label>Body Type</label><input id="vBody" placeholder="SUV / Hatchback …"></div>
-      <div><label>Year</label><input id="vYear" type="number" value="2025"></div>
-      <div><label>Stock (units)</label><input id="vStock" type="number" value="1"></div>
-      <div><label>Status</label><input id="vStatus" value="Export Ready"></div>
-      <div><label>Image URL</label><input id="vImage" placeholder="assets/car-xxx.png"></div>
     </div>
-    <div style="margin-top:4px;display:flex;align-items:center;gap:10px">
-      <label class="switch"><input id="vPublished" type="checkbox" checked><span class="sl"></span></label>
-      <label style="margin:0">上架 / Published（在前台展示该车辆）</label>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <div><div class="nav-zh">仪表盘</div><div class="nav-en">Dashboard</div></div>
+      </button>
+      <button class="nav-item" data-page="inventory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.3 10h5.4a2 2 0 0 1 1.8 1.5L18 17"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg>
+        <div><div class="nav-zh">车型管理</div><div class="nav-en">Inventory</div></div>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>
+        <div><div class="nav-zh">官网设置</div><div class="nav-en">Site Settings</div></div>
+      </button>
+      <button class="nav-item" data-page="inbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
+        <div><div class="nav-zh">客户询盘</div><div class="nav-en">Inquiries</div></div>
+      </button>
+      <button class="nav-item" data-page="deploy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 1 5 4 5 7 0 2-1 4-2 6H9c-1-2-2-4-2-6 0-3 2-6 5-7z"/><path d="M9 16l-2 5M15 16l2 5M12 16v5"/></svg>
+        <div><div class="nav-zh">部署发布</div><div class="nav-en">Deploy</div></div>
+      </button>
+    </nav>
+    <div class="side-foot">
+      <div class="status-pill" id="status"><span class="led"></span><span id="statusText">未连接</span></div>
+      <div class="user-block">
+        <div class="avatar">A</div>
+        <div><div class="un">Admin</div><div class="ur" id="footRepo">仓库未设置</div></div>
+      </div>
     </div>
-    <div style="margin-top:12px">
-      <label>Or upload image to repo</label>
-      <input id="vFile" type="file" accept="image/*">
-      <div class="hint">Uploaded files are committed to <code>assets/</code> and the URL is filled in automatically.</div>
-    </div>
-    <div class="errbox" id="vehErr"></div>
-    <div class="actions">
-      <button class="ghost" id="vehCancel">Cancel</button>
-      <button id="vehSave">Save</button>
-    </div>
-  </div>
+  </aside>
+
+  <!-- ===== Content ===== -->
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <h1 id="pageZh">仪表盘</h1>
+        <div class="page-sub" id="pageEn">Dashboard</div>
+      </div>
+      <div class="head-actions" id="headActions"></div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="stats">
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.3 10h5.4a2 2 0 0 1 1.8 1.5L18 17"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg></div>
+          <div class="sl">车型总数</div><div class="sv" id="statTotal">0</div><div class="sd">Total vehicles</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#22d3ee,#06b6d4)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="sl">已上架</div><div class="sv" id="statLive">0</div><div class="sd">Published</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 3z"/></svg></div>
+          <div class="sl">待处理询盘</div><div class="sv" id="statInq">0</div><div class="sd">Open inquiries</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#10b981,#16a34a)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3zM3 7l9 6 9-6"/></svg></div>
+          <div class="sl">总库存</div><div class="sv" id="statStock">0</div><div class="sd">Units in stock</div></div>
+      </div>
+
+      <div class="card">
+        <h2>仓库连接 · GitHub</h2>
+        <div class="csub">连接 GitHub 仓库后，所有修改会直接提交并触发 GitHub Pages 自动重建。</div>
+        <div class="grid2">
+          <div><label>Owner</label><input id="cfgOwner" value="xiaoxiao0709"></div>
+          <div><label>Repository</label><input id="cfgRepo" value="autoexport-b2b"></div>
+          <div><label>Branch</label><input id="cfgBranch" placeholder="自动探测 (main/master)"></div>
+          <div><label>Token (PAT)</label><input id="cfgToken" type="password" placeholder="ghp_… 或 github_pat_…"></div>
+        </div>
+        <div class="hint">Token 需要 <b>public_repo</b>（公开仓库）或 <b>repo</b> 权限。仅保存在本浏览器 localStorage，并直接发往 api.github.com，不会经过任何第三方。</div>
+        <div class="row" style="margin-top:14px">
+          <button id="btnConnect">连接仓库</button>
+          <button class="ghost" id="btnShowTok">显示 / 隐藏 Token</button>
+        </div>
+        <div id="cfgErr" class="errbox"></div>
+      </div>
+
+      <div class="card">
+        <h2>快速访问</h2>
+        <div class="kv" id="deployInfo">连接仓库后显示线上地址。</div>
+        <div class="row" style="margin-top:14px">
+          <button class="ghost" id="btnOpenLive">打开官网 ↗</button>
+          <button class="ghost" id="btnOpenAdmin">复制后台地址</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="page" id="page-inventory">
+      <div class="inv-layout">
+        <div class="card form-card">
+          <h2 id="vehFormTitle">添加车型</h2>
+          <div class="csub">填写完成后点击「添加车型」。</div>
+          <div class="form-banner" id="vehFormBanner"><span>编辑中：<b class="bf-name"></b></span><button id="btnCancelEdit" type="button">取消编辑</button></div>
+          <div class="grid2">
+            <div><label>品牌 Brand</label><input id="vBrand" placeholder="BYD"></div>
+            <div><label>车型 Model</label><input id="vName" placeholder="Song Plus DM-i"></div>
+            <div>
+              <label>类型 Type</label>
+              <select id="vType"><option value="ev">Electric (EV)</option><option value="phev">Plug-in Hybrid (PHEV)</option><option value="petrol">Petrol</option></select>
+            </div>
+            <div><label>分类(中) Category</label><input id="vCategoryZh" placeholder="SUV"></div>
+            <div><label>分类(英) Category EN</label><input id="vCategoryEn" placeholder="SUV"></div>
+            <div><label>车身 Body</label><input id="vBody" placeholder="SUV / Hatchback"></div>
+            <div><label>年份 Year</label><input id="vYear" type="number" value="2025"></div>
+            <div><label>续航 Range</label><input id="vRange" placeholder="550 km"></div>
+            <div><label>动力 Power</label><input id="vPower" placeholder="150 kW"></div>
+            <div><label>驱动 Drivetrain</label><input id="vDrivetrain" placeholder="FWD / AWD"></div>
+            <div><label>库存 Stock</label><input id="vStock" type="number" value="1"></div>
+            <div><label>状态 Status</label><input id="vStatus" value="Export Ready"></div>
+            <div><label>目标市场(中) Market</label><input id="vMarketZh" placeholder="中东"></div>
+            <div><label>目标市场(英) Market EN</label><input id="vMarketEn" placeholder="Middle East"></div>
+          </div>
+          <div style="margin-top:12px"><label>图片 URL</label><input id="vImage" placeholder="assets/car-xxx.png"></div>
+          <div style="margin-top:12px">
+            <label>或上传图片到仓库</label>
+            <input id="vFile" type="file" accept="image/*">
+            <div class="hint">上传文件会提交到 <code>assets/</code>，并自动填入上方 URL。</div>
+          </div>
+          <div style="margin-top:12px"><label>描述(中) Description</label><textarea id="vDescZh" rows="2" placeholder="中文描述…"></textarea></div>
+          <div style="margin-top:10px"><label>描述(英) Description EN</label><textarea id="vDescEn" rows="2" placeholder="English description…"></textarea></div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+            <label class="switch"><input id="vPublished" type="checkbox" checked><span class="sl"></span></label>
+            <label style="margin:0">上架 / Published（在前台展示该车辆）</label>
+          </div>
+          <div class="errbox" id="vehErr"></div>
+          <div class="row" style="margin-top:16px">
+            <button id="btnVehSubmit">添加车型</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>车型列表</h2>
+          <div class="csub">点击卡片上的「编辑」可载入左侧表单修改；「下架」仅在前台隐藏，「删除」会移除数据。</div>
+          <div id="vehEmpty" class="hint">请先连接仓库以加载车型。</div>
+          <div id="vehGrid" class="veh-grid" style="display:none"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="card">
+        <div class="grp-card">
+          <div class="grp-num">01</div>
+          <div class="grp-body">
+            <h2 style="margin-bottom:2px">品牌与首页文案</h2>
+            <div class="csub">设置品牌名称，并维护官网首页的四语（EN / ZH / AR / RU）文案。</div>
+            <div style="margin-bottom:16px"><label>Business Name</label><input id="sBiz" placeholder="Auto Export"></div>
+            <div id="contentArea"><div class="hint">连接仓库后加载首页文案。</div></div>
+            <div class="row" style="margin-top:14px"><input id="contentSearch" placeholder="过滤键名… (如 hero, form, inv)" style="flex:1;min-width:200px"></div>
+            <div class="row" style="margin-top:12px"><button id="btnSaveContent">保存首页文案</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="grp-card">
+          <div class="grp-num">02</div>
+          <div class="grp-body">
+            <h2 style="margin-bottom:2px">联系渠道</h2>
+            <div class="csub">配置 WhatsApp、邮箱，以及前端「在线咨询」所用的客服对话 Token。</div>
+            <div class="grid2">
+              <div><label>WhatsApp（含国家码）</label><input id="sWa" placeholder="8613800000000"></div>
+              <div><label>Email</label><input id="sEmail" placeholder="sales@example.com"></div>
+            </div>
+            <div style="margin-top:13px"><label>Chat Inbox Token（细粒度，仅 Issues:write）</label><input id="sChatTok" type="password" placeholder="github_pat_… (仅 Issues 写权限)"></div>
+            <div class="hint" style="margin-top:8px">Chat Token 用于前端访客创建对话 Issue，请使用<strong>细粒度 Token</strong>且仅授权该仓库的 <strong>Issues 读写</strong>（不要给 contents/repo 全权限），即使泄露也改不了网站文件。访客消息将以 Issue 形式存入仓库。</div>
+            <div id="settingsErr" class="errbox"></div>
+            <div class="row" style="margin-top:14px"><button id="btnSaveSettings">保存联系渠道</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INBOX -->
+    <section class="page" id="page-inbox">
+      <div class="card">
+        <h2>客户询盘 · 客服对话</h2>
+        <div class="csub">访客通过前端「在线咨询」发起的对话会以 GitHub Issue 形式出现在此，客服可直接回复，回复会实时显示给访客。</div>
+        <div id="convList"><div class="empty">连接仓库后加载对话。</div></div>
+      </div>
+      <div class="card" id="threadCard" style="display:none">
+        <h2>对话详情</h2>
+        <div class="thread" id="thread"><div class="empty">选择左侧对话。</div></div>
+        <div class="reply-box">
+          <textarea id="replyText" placeholder="输入客服回复…"></textarea>
+          <button id="btnSendReply">发送</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="ghost" id="btnCloseConv">标记已解决 / 关闭</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPLOY -->
+    <section class="page" id="page-deploy">
+      <div class="card">
+        <h2>部署与状态</h2>
+        <div class="kv" id="deployInfo2">连接仓库后查看仓库状态。</div>
+        <div class="hint" style="margin-top:10px">保存车型或文案会向仓库提交新文件，通常会自动触发 GitHub Pages 重建（约 1 分钟内生效）。</div>
+        <div class="row" style="margin-top:14px">
+          <button class="ghost" id="btnOpenLive2">打开官网 ↗</button>
+          <button class="ghost" id="btnOpenAdmin2">复制后台地址</button>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -276,9 +402,9 @@
   /* ---------- helpers ---------- */
   function $(id){return document.getElementById(id);}
   function el(tag,attrs,html){var e=document.createElement(tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
-  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
   function toast(msg,kind){var t=$("toast");t.textContent=msg;t.className="toast show"+(kind?(" "+kind):"");setTimeout(function(){t.className="toast";},3200);}
-  function setStatus(text,kind){var p=$("status");p.className="pill"+(kind?(" "+kind):"");$("statusText").textContent=text;}
+  function setStatus(text,kind){var p=$("status");p.className="status-pill"+(kind?(" "+kind):"");$("statusText").textContent=text;$("footRepo").textContent=state.owner?state.owner+"/"+state.repo:"仓库未设置";}
   function utf8ToB64(str){var bytes=new TextEncoder().encode(str);var bin="";var chunk=0x8000;for(var i=0;i<bytes.length;i+=chunk){bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));}return btoa(bin);}
   function b64ToUtf8(b64){var bin=atob(b64);var bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder().decode(bytes);}
   function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
@@ -295,7 +421,6 @@
   function headers(extra){var h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(state.token)h["Authorization"]="Bearer "+state.token;if(extra)for(var k in extra)h[k]=extra[k];return h;}
   function api(path,opts){opts=opts||{};return fetch(API+path,{method:opts.method||"GET",headers:headers(opts.headers),body:opts.body});}
   function repoPath(p){return "/repos/"+state.owner+"/"+state.repo+"/contents/"+p+(state.branch?"?ref="+encodeURIComponent(state.branch):"");}
-
   function getFile(path){
     return api(repoPath(path)).then(function(r){
       if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
@@ -320,91 +445,117 @@
   /* ---------- connect ---------- */
   function connect(){
     saveCfg();
-    if(!state.owner||!state.repo){$("cfgErr").style.display="block";$("cfgErr").textContent="Owner and Repository are required.";return;}
-    if(!state.token){$("cfgErr").style.display="block";$("cfgErr").textContent="A GitHub token is required to read/write the repository.";return;}
+    if(!state.owner||!state.repo){$("cfgErr").style.display="block";$("cfgErr").textContent="Owner 与 Repository 为必填。";return;}
+    if(!state.token){$("cfgErr").style.display="block";$("cfgErr").textContent="需要 GitHub Token 才能读写仓库。";return;}
     $("cfgErr").style.display="none";
-    setStatus("Connecting…","busy");
-    // detect default branch if empty
-    var repoReq=state.branch?Promise.resolve():api("/repos/"+state.owner+"/"+state.repo).then(function(r){if(!r.ok)throw new Error("Repository not found or token lacks access.");return r.json();}).then(function(d){state.branch=d.default_branch;$("cfgBranch").value=state.branch;saveCfg();return true;});
+    setStatus("连接中…","busy");
+    var repoReq=state.branch?Promise.resolve():api("/repos/"+state.owner+"/"+state.repo).then(function(r){if(!r.ok)throw new Error("仓库不存在或 Token 无权限。");return r.json();}).then(function(d){state.branch=d.default_branch;$("cfgBranch").value=state.branch;saveCfg();return true;});
     repoReq.then(function(){
-      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json"),getConfig()]);
+      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json"),getConfig(),
+        api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){return r.ok?r.json():[];})]);
     }).then(function(res){
       state.site=JSON.parse(res[0].text);state.siteSha=res[0].sha;
       state.veh=JSON.parse(res[1].text);state.vehSha=res[1].sha;
-      setStatus("Connected · "+state.branch,"ok");
-      renderVehicles();renderContent();renderDeploy();renderSettings();
-      toast("Loaded site data","ok");
+      state.convs=res[3]||[];
+      setStatus("已连接 · "+state.branch,"ok");
+      renderVehicles();renderContent();renderSettings();renderDeploy();updateStats();
+      toast("已加载站点数据","ok");
     }).catch(function(err){
-      setStatus("Connection failed","err");
+      setStatus("连接失败","err");
       $("cfgErr").style.display="block";$("cfgErr").textContent=err.message;
     });
   }
 
-  /* ---------- vehicles ---------- */
+  /* ---------- dashboard stats ---------- */
+  function updateStats(){
+    var total=state.veh?state.veh.length:0;
+    var live=state.veh?state.veh.filter(function(v){return v.published!==false;}).length:0;
+    var stock=state.veh?state.veh.reduce(function(a,v){return a+(+v.stock||0);},0):0;
+    var open=state.convs?state.convs.filter(function(i){return i.state!=="closed";}).length:0;
+    $("statTotal").textContent=total;$("statLive").textContent=live;$("statStock").textContent=stock;$("statInq").textContent=open;
+  }
+
+  /* ---------- vehicles (inline form) ---------- */
   var TYPE_LABEL={ev:"EV",phev:"PHEV",petrol:"Petrol"};
+  function blankVeh(){return {brand:"",name:"",type:"ev",categoryZh:"",categoryEn:"",bodyType:"",year:2025,range:"",power:"",drivetrain:"",stock:1,status:"Export Ready",marketZh:"",marketEn:"",image:"",published:true,descZh:"",descEn:""};}
+  function populateVehForm(i){
+    state.editing=i;
+    var v=i>=0?state.veh[i]:blankVeh();
+    $("vBrand").value=v.brand;$("vName").value=v.name;$("vType").value=v.type;
+    $("vCategoryZh").value=v.categoryZh||"";$("vCategoryEn").value=v.categoryEn||"";
+    $("vBody").value=v.bodyType;$("vYear").value=v.year;$("vRange").value=v.range||"";$("vPower").value=v.power||"";$("vDrivetrain").value=v.drivetrain||"";
+    $("vStock").value=v.stock;$("vStatus").value=v.status;$("vMarketZh").value=v.marketZh||"";$("vMarketEn").value=v.marketEn||"";
+    $("vImage").value=v.image;$("vFile").value="";
+    $("vDescZh").value=v.descZh||"";$("vDescEn").value=v.descEn||"";
+    $("vPublished").checked=v.published!==false;
+    var banner=$("vehFormBanner");
+    if(i>=0){banner.style.display="flex";banner.querySelector(".bf-name").textContent=v.brand+" "+v.name;$("vehFormTitle").textContent="编辑车型";$("btnVehSubmit").textContent="保存修改";}
+    else{banner.style.display="none";$("vehFormTitle").textContent="添加车型";$("btnVehSubmit").textContent="添加车型";}
+    $("vehErr").style.display="none";
+  }
+  function readVehForm(){
+    var brand=$("vBrand").value.trim(),name=$("vName").value.trim();
+    if(!brand||!name){$("vehErr").style.display="block";$("vehErr").textContent="品牌和车型为必填项。";return null;}
+    return {brand:brand,name:name,type:$("vType").value,categoryZh:$("vCategoryZh").value.trim(),categoryEn:$("vCategoryEn").value.trim(),
+      bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,range:$("vRange").value.trim(),power:$("vPower").value.trim(),drivetrain:$("vDrivetrain").value.trim(),
+      stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",marketZh:$("vMarketZh").value.trim(),marketEn:$("vMarketEn").value.trim(),
+      image:$("vImage").value.trim(),published:$("vPublished").checked,descZh:$("vDescZh").value.trim(),descEn:$("vDescEn").value.trim()};
+  }
+  function submitVehForm(){
+    var v=readVehForm();if(!v)return;
+    if(state.editing>=0){v.id=state.veh[state.editing].id;state.veh[state.editing]=v;toast("已更新（记得点「保存车型」）","");}
+    else{v.id=slug(v.brand+"-"+v.name);if(state.veh.some(function(x){return x.id===v.id;}))v.id=v.id+"-"+Date.now();state.veh.push(v);toast("已添加（记得点「保存车型」）","");}
+    renderVehicles();updateStats();populateVehForm(-1);
+  }
   function renderVehicles(){
     var grid=$("vehGrid");grid.innerHTML="";
-    if(!state.veh||!state.veh.length){$("vehGrid").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="No vehicles yet. Click '+ Add Vehicle'.";return;}
+    if(!state.veh||!state.veh.length){$("vehGrid").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="暂无车型，请在左侧添加。";return;}
     $("vehGrid").style.display="grid";$("vehEmpty").style.display="none";
     state.veh.forEach(function(v,i){
       var pub=v.published!==false;
-      var thumb=v.image?'<img src="'+esc(v.image)+'" alt="">':'<div class="ph">No image</div>';
+      var thumb=v.image?'<img src="'+esc(v.image)+'" alt="">':'<div class="ph">暂无图片</div>';
+      var cat=(v.categoryZh||v.categoryEn)?'<div class="veh-cat">'+(esc(v.categoryZh)||esc(v.categoryEn))+'</div>':"";
+      var specs=[v.range,v.power,v.drivetrain].filter(Boolean);
+      var specsHtml=specs.length?'<div class="veh-specs">'+specs.map(esc).join(" · ")+(v.marketZh||v.marketEn?'<br>目标市场：'+(esc(v.marketZh)||esc(v.marketEn)):"")+'</div>':"";
       var card=el("div","class","veh-card");
       card.innerHTML=
         '<div class="veh-thumb">'+thumb+'<span class="veh-pub '+(pub?"on":"off")+'">'+(pub?"上架":"下架")+'</span></div>'+
         '<div class="veh-body">'+
           '<div class="veh-bhead"><div><b>'+esc(v.brand)+'</b><div class="model">'+esc(v.name)+'</div></div>'+
             '<span class="tag '+(TYPE_LABEL[v.type]||'').toLowerCase()+'">'+(TYPE_LABEL[v.type]||v.type)+'</span></div>'+
+          cat+
           '<div class="veh-meta"><span>'+esc(v.bodyType)+'</span><span>· '+esc(v.year)+'</span></div>'+
-          '<div class="veh-stock">Stock: <b>'+(v.stock!=null?v.stock:"—")+'</b> · '+esc(v.status||"Export Ready")+'</div>'+
+          specsHtml+
+          '<div class="veh-stock">库存：<b>'+(v.stock!=null?v.stock:"—")+'</b> · '+esc(v.status||"Export Ready")+'</div>'+
         '</div>'+
-        '<div class="veh-actions"><button class="ghost" data-edit="'+i+'">Edit</button>'+
-          '<button class="danger" data-del="'+i+'">Delete</button></div>';
+        '<div class="veh-actions"><button class="ghost" data-edit="'+i+'">编辑</button>'+
+          (pub?'<button class="ghost" data-unpub="'+i+'">下架</button>':'<button class="ghost" data-pub="'+i+'">上架</button>')+
+          '<button class="danger" data-del="'+i+'">删除</button></div>';
       grid.appendChild(card);
     });
-    grid.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){openVehModal(+b.dataset.edit);};});
+    grid.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){populateVehForm(+b.dataset.edit);};});
     grid.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){
-      if(confirm("Delete "+state.veh[+b.dataset.del].brand+" "+state.veh[+b.dataset.del].name+"?")){state.veh.splice(+b.dataset.del,1);renderVehicles();}
-    };});
-  }
-  function openVehModal(i){
-    state.editing=i;
-    var v=i>=0?state.veh[i]:{brand:"",name:"",type:"ev",bodyType:"",year:2025,stock:1,status:"Export Ready",image:"",published:true,description:""};
-    $("vehModalTitle").textContent=i>=0?"Edit Vehicle":"Add Vehicle";
-    $("vBrand").value=v.brand;$("vName").value=v.name;$("vType").value=v.type;$("vBody").value=v.bodyType;
-    $("vYear").value=v.year;$("vStock").value=v.stock;$("vStatus").value=v.status;$("vImage").value=v.image;$("vFile").value="";
-    $("vPublished").checked=v.published!==false;
-    $("vehErr").style.display="none";
-    $("vehModal").classList.add("open");
-  }
-  function closeVehModal(){$("vehModal").classList.remove("open");}
-  function saveVehModal(){
-    var brand=$("vBrand").value.trim(),name=$("vName").value.trim();
-    if(!brand||!name){$("vehErr").style.display="block";$("vehErr").textContent="Brand and Model Name are required.";return;}
-    var v={brand:brand,name:name,type:$("vType").value,bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",image:$("vImage").value.trim(),published:$("vPublished").checked};
-    if(state.editing>=0){v.id=state.veh[state.editing].id;state.veh[state.editing]=v;}else{v.id=slug(brand+"-"+name);state.veh.push(v);}
-    renderVehicles();closeVehModal();toast("Vehicle updated locally — remember to Save Vehicles","");
+      if(confirm("删除 "+state.veh[+b.dataset.del].brand+" "+state.veh[+b.dataset.del].name+"？")){state.veh.splice(+b.dataset.del,1);renderVehicles();updateStats();}};});
+    grid.querySelectorAll("[data-unpub],[data-pub]").forEach(function(b){b.onclick=function(){var i=+b.dataset.unpub+b.dataset.pub;state.veh[i].published=!!b.dataset.pub;renderVehicles();updateStats();toast(state.veh[i].published?"已上架":"已下架","");};});
   }
   function getFileSha(path){return api(repoPath(path)).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});throw new Error("not found");});}
   function fileToBase64(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result.split(",")[1]);};fr.onerror=rej;fr.readAsDataURL(file);});}
-  // override putFile for binary image: encode base64 from dataURL
   function putImage(path,base64,sha,message){var body={message:message,content:base64};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
     return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
   function saveVehicles(){
     if(!state.veh)return;
-    setStatus("Saving vehicles…","busy");
-    // re-fetch sha to avoid 409, then put
+    setStatus("保存车型中…","busy");
     getFile("data/vehicles.json").then(function(cur){state.vehSha=cur.sha;
       return putFile("data/vehicles.json",JSON.stringify(state.veh,null,2)+"\n",state.vehSha,"Update vehicles ("+state.veh.length+" units)");
-    }).then(function(){setStatus("Connected · "+state.branch,"ok");toast("Vehicles saved ✓","ok");renderDeploy();})
-    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+    }).then(function(){setStatus("已连接 · "+state.branch,"ok");toast("车型已保存 ✓","ok");renderDeploy();})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
   }
 
   /* ---------- content ---------- */
   function groupKeys(obj){var g={};Object.keys(obj).forEach(function(k){var p=k.indexOf(".")>-1?k.split(".")[0]:"(root)";(g[p]=g[p]||[]).push(k);});return g;}
   function renderContent(){
     var area=$("contentArea");
-    if(!state.site){area.innerHTML='<div class="hint">Connect to load homepage copy.</div>';return;}
+    if(!state.site){area.innerHTML='<div class="hint">连接仓库后加载首页文案。</div>';return;}
     var filter=($("contentSearch").value||"").toLowerCase();
     var groups=groupKeys(state.site.en);
     area.innerHTML="";
@@ -432,47 +583,46 @@
   }
   function saveContent(){
     if(!state.site)return;
-    setStatus("Saving content…","busy");
+    setStatus("保存文案中…","busy");
     getFile("data/site.json").then(function(cur){state.siteSha=cur.sha;
       return putFile("data/site.json",JSON.stringify(state.site,null,2)+"\n",state.siteSha,"Update homepage content");
-    }).then(function(){setStatus("Connected · "+state.branch,"ok");toast("Content saved ✓","ok");renderDeploy();})
-    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+    }).then(function(){setStatus("已连接 · "+state.branch,"ok");toast("文案已保存 ✓","ok");})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
   }
 
   /* ---------- inbox / chat ---------- */
   function loadInbox(){
-    if(!state.token){toast("Connect first","err");return;}
-    setStatus("Loading inbox…","busy");
-    api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){if(!r.ok)throw new Error("Failed to load issues");return r.json();})
+    if(!state.token){toast("请先连接仓库","err");return;}
+    setStatus("加载询盘中…","busy");
+    api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){if(!r.ok)throw new Error("加载 Issue 失败");return r.json();})
     .then(function(issues){
       state.convs=issues||[];
-      setStatus("Connected · "+state.branch,"ok");
-      renderInbox();
+      setStatus("已连接 · "+state.branch,"ok");updateStats();renderInbox();
       if(!state.activeConv&&state.convs.length)selectConv(state.convs[0].number);
-    }).catch(function(err){setStatus("Inbox failed","err");toast(err.message,"err");});
+    }).catch(function(err){setStatus("询盘加载失败","err");toast(err.message,"err");});
   }
   function renderInbox(){
     var list=$("convList");
-    if(!state.convs.length){list.innerHTML='<div class="empty">No conversations yet.</div>';$("thread").innerHTML='<div class="empty">Select a conversation on the left.</div>';return;}
-    list.innerHTML="";
-    state.convs.forEach(function(iss){
-      var c=el("div","class","conv"+(state.activeConv===iss.number?" active":""));
-      var first=(iss.body||"").replace(/\n/g," ").slice(0,60);
-      c.innerHTML='<div class="ct">'+(iss.title||"Chat")+'</div>'+
-        '<div class="cm">'+esc(first)+'</div>'+
-        '<div class="cmeta"><span>'+(iss.state==="closed"?"✓ resolved":"● open")+'</span><span>#'+(iss.number)+'</span></div>';
-      c.onclick=function(){selectConv(iss.number);};
-      list.appendChild(c);
-    });
+    if(!state.convs.length){list.innerHTML='<div class="empty">暂无询盘对话。</div>';return;}
+    var rows=state.convs.map(function(iss){
+      var first=(iss.body||"").replace(/\n/g," ").slice(0,90);
+      var open=iss.state!=="closed";
+      return '<tr class="conv-row'+(state.activeConv===iss.number?" active":"")+'" data-n="'+iss.number+'">'+
+        '<td><div class="ct">'+esc(iss.title||"Chat")+'</div><div class="cm">'+esc(first)+'</div></td>'+
+        '<td><span class="badge '+(open?"b-open":"b-closed")+'">'+(open?"待处理":"已解决")+'</span></td>'+
+        '<td class="num">#'+iss.number+'</td></tr>';
+    }).join("");
+    list.innerHTML='<table class="inq-table"><thead><tr><th>客户 / 需求</th><th>状态</th><th>#</th></tr></thead><tbody>'+rows+'</tbody></table>';
+    list.querySelectorAll(".conv-row").forEach(function(r){r.onclick=function(){selectConv(+r.dataset.n);};});
   }
   function selectConv(num){
-    state.activeConv=num;renderInbox();
+    state.activeConv=num;renderInbox();$("threadCard").style.display="block";
     var iss=state.convs.filter(function(x){return x.number===num;})[0];
     if(!iss)return;
-    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+num+"/comments").then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+num+"/comments").then(function(r){if(!r.ok)throw new Error("加载失败");return r.json();})
     .then(function(comments){
       var thread=$("thread");thread.innerHTML="";
-      thread.appendChild(msgEl("Visitor · 访客", iss.body||"", "them"));
+      thread.appendChild(msgEl("访客 · Visitor", iss.body||"", "them"));
       (comments||[]).forEach(function(c){
         var me=(c.user&&c.user.login===state.owner);
         thread.appendChild(msgEl(c.user?c.user.login:"visitor", c.body, me?"me":"them"));
@@ -482,18 +632,18 @@
   }
   function msgEl(who,text,side){var m=el("div","class","msg "+side);m.innerHTML='<div class="who">'+esc(who)+'</div>'+esc(text);return m;}
   function sendReply(){
-    if(state.activeConv==null){toast("Select a conversation","err");return;}
-    var txt=$("replyText").value.trim();if(!txt){toast("Type a reply","err");return;}
+    if(state.activeConv==null){toast("请选择一个对话","err");return;}
+    var txt=$("replyText").value.trim();if(!txt){toast("请输入回复","err");return;}
     api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv+"/comments",{method:"POST",body:JSON.stringify({body:txt})})
-    .then(function(r){if(!r.ok)throw new Error("Failed to post reply");return r.json();})
-    .then(function(){$("replyText").value="";selectConv(state.activeConv);toast("Reply sent ✓","ok");})
+    .then(function(r){if(!r.ok)throw new Error("回复发送失败");return r.json();})
+    .then(function(){$("replyText").value="";selectConv(state.activeConv);toast("已回复 ✓","ok");})
     .catch(function(err){toast(err.message,"err");});
   }
   function closeConv(){
-    if(state.activeConv==null){toast("Select a conversation","err");return;}
+    if(state.activeConv==null){toast("请选择一个对话","err");return;}
     api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv,{method:"PATCH",body:JSON.stringify({state:"closed"})})
-    .then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
-    .then(function(){loadInbox();toast("Marked resolved","ok");})
+    .then(function(r){if(!r.ok)throw new Error("操作失败");return r.json();})
+    .then(function(){loadInbox();toast("已标记为解决","ok");})
     .catch(function(err){toast(err.message,"err");});
   }
 
@@ -505,67 +655,78 @@
   }
   function saveSettings(){
     state.config={businessName:$("sBiz").value.trim(),whatsapp:$("sWa").value.trim(),email:$("sEmail").value.trim(),chatToken:$("sChatTok").value.trim()};
-    setStatus("Saving settings…","busy");
+    setStatus("保存设置中…","busy");
     api(repoPath("data/config.json")).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});return null;})
     .then(function(sha){
       var body={message:"Update site settings",content:utf8ToB64(JSON.stringify(state.config,null,2)+"\n")};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
       return api("/repos/"+state.owner+"/"+state.repo+"/contents/data/config.json",{method:"PUT",body:JSON.stringify(body)});
-    }).then(function(r){if(!r.ok)throw new Error("Failed");return r.json();})
-    .then(function(){state.configSha=null;setStatus("Connected · "+state.branch,"ok");toast("Settings saved ✓","ok");renderDeploy();})
-    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+    }).then(function(r){if(!r.ok)throw new Error("保存失败");return r.json();})
+    .then(function(){state.configSha=null;setStatus("已连接 · "+state.branch,"ok");toast("设置已保存 ✓","ok");})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
   }
 
   /* ---------- deploy ---------- */
   function renderDeploy(){
+    if(!state.owner)return;
     var live="https://"+state.owner+".github.io/"+state.repo+"/";
-    var info=$("deployInfo");
-    info.innerHTML="Repository: <b>"+esc(state.owner)+"/"+esc(state.repo)+"</b> · Branch: <b>"+esc(state.branch)+"</b><br>"+
-      "Live site: <a href='"+live+"' target='_blank' rel='noopener'>"+live+"</a><br>"+
-      "Admin: <a href='"+live+"admin/' target='_blank' rel='noopener'>"+live+"admin/</a><br><br>"+
-      "Vehicles: <b>"+(state.veh?state.veh.length:0)+"</b> · Content keys (EN): <b>"+(state.site?Object.keys(state.site.en).length:0)+"</b>";
-    $("btnOpenLive").onclick=function(){window.open(live,"_blank");};
-    $("btnOpenAdmin").onclick=function(){navigator.clipboard.writeText(live+"admin/").then(function(){toast("Admin URL copied","ok");},function(){toast(live+"admin/");});};
+    var info="仓库：<b>"+esc(state.owner)+"/"+esc(state.repo)+"</b> · 分支：<b>"+esc(state.branch)+"</b><br>"+
+      "官网：<a href='"+live+"' target='_blank' rel='noopener'>"+live+"</a><br>"+
+      "后台：<a href='"+live+"admin/' target='_blank' rel='noopener'>"+live+"admin/</a><br><br>"+
+      "车型：<b>"+(state.veh?state.veh.length:0)+"</b> · 首页文案键(EN)：<b>"+(state.site?Object.keys(state.site.en).length:0)+"</b>";
+    if($("deployInfo"))$("deployInfo").innerHTML=info;
+    if($("deployInfo2"))$("deployInfo2").innerHTML=info;
   }
 
-  /* ---------- tabs ---------- */
-  function initTabs(){
-    document.querySelectorAll(".tab").forEach(function(t){
-      t.onclick=function(){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});t.classList.add("active");
-        var name=t.dataset.tab;["vehicles","content","inbox","settings","deploy"].forEach(function(s){$("tab-"+s).style.display=s===name?"block":"none";});
-        if(name==="inbox")loadInbox();
-        if(name==="settings")renderSettings();
-      };
-    });
+  /* ---------- navigation / pages ---------- */
+  var PAGE_META={
+    dashboard:{zh:"仪表盘",en:"Dashboard"},
+    inventory:{zh:"车型管理",en:"Inventory Management"},
+    settings:{zh:"官网设置",en:"Site Settings"},
+    inbox:{zh:"客户询盘",en:"Customer Inquiries"},
+    deploy:{zh:"部署发布",en:"Deploy & Publish"}
+  };
+  function showPage(name){
+    document.querySelectorAll(".nav-item").forEach(function(n){n.classList.toggle("active",n.dataset.page===name);});
+    document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="page-"+name);});
+    $("pageZh").textContent=PAGE_META[name].zh;$("pageEn").textContent=PAGE_META[name].en;
+    if(name==="inbox")loadInbox();
+    if(name==="settings"){renderContent();renderSettings();}
   }
 
   /* ---------- image upload wiring ---------- */
   function wireUpload(){
     $("vFile").addEventListener("change",function(){
       var file=this.files&&this.files[0];if(!file)return;
-      setStatus("Uploading image…","busy");
+      setStatus("上传图片中…","busy");
       fileToBase64(file).then(function(b64){
         return getFileSha("assets/"+file.name).then(function(sha){return putImage("assets/"+file.name,b64,sha,"Upload "+file.name);},function(){return putImage("assets/"+file.name,b64,null,"Upload "+file.name);});
-      }).then(function(){var url="assets/"+file.name;$("vImage").value=url;setStatus("Connected · "+state.branch,"ok");toast("Image uploaded ✓","ok");})
-      .catch(function(err){setStatus("Upload failed","err");toast(err.message,"err");});
+      }).then(function(){var url="assets/"+file.name;$("vImage").value=url;setStatus("已连接 · "+state.branch,"ok");toast("图片已上传 ✓","ok");})
+      .catch(function(err){setStatus("上传失败","err");toast(err.message,"err");});
     });
   }
 
   /* ---------- init ---------- */
   function init(){
-    loadCfg();initTabs();wireUpload();
+    loadCfg();wireUpload();
+    document.querySelectorAll(".nav-item").forEach(function(n){n.onclick=function(){showPage(n.dataset.page);};});
     $("btnConnect").onclick=connect;
     $("btnShowTok").onclick=function(){var i=$("cfgToken");i.type=i.type==="password"?"text":"password";};
-    $("btnAddVehicle").onclick=function(){openVehModal(-1);};
-    $("vehCancel").onclick=closeVehModal;
-    $("vehSave").onclick=saveVehModal;
-    $("btnSaveVehicles").onclick=saveVehicles;
+    $("btnVehSubmit").onclick=submitVehForm;
+    $("btnCancelEdit").onclick=function(){populateVehForm(-1);};
+    $("btnSaveVehicles")&&($("btnSaveVehicles").onclick=saveVehicles);
     $("btnSaveContent").onclick=saveContent;
     $("contentSearch").oninput=renderContent;
-    $("btnRefreshInbox").onclick=loadInbox;
     $("btnSendReply").onclick=sendReply;
     $("btnCloseConv").onclick=closeConv;
     $("btnSaveSettings").onclick=saveSettings;
-    if(state.token)setStatus("Token present — click Connect","");
+    var open=function(u){window.open(u,"_blank");};
+    var copy=function(u){navigator.clipboard.writeText(u).then(function(){toast("后台地址已复制","ok");},function(){toast(u);});};
+    $("btnOpenLive").onclick=function(){open("https://"+state.owner+".github.io/"+state.repo+"/");};
+    $("btnOpenAdmin").onclick=function(){copy("https://"+state.owner+".github.io/"+state.repo+"/admin/");};
+    $("btnOpenLive2")&&($("btnOpenLive2").onclick=$("btnOpenLive").onclick);
+    $("btnOpenAdmin2")&&($("btnOpenAdmin2").onclick=$("btnOpenAdmin").onclick);
+    if(state.token)setStatus("Token 已存在 — 点击连接","");
+    populateVehForm(-1);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();

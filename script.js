@@ -264,6 +264,14 @@
           "<span>" + typeIcon(v.type) + '<span data-i18n="' + typeKey + '">' + escapeHtml(v.type) + "</span></span>" +
           "<span>" + bodyIcon() + bodyLabel + "</span>" +
         "</div>" +
+        (function () {
+          var specs = [v.range, v.power, v.drivetrain].filter(Boolean).map(function (s) {
+            return '<span style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:2px 7px;font-size:11px;color:#475569">' + escapeHtml(s) + "</span>";
+          }).join("");
+          var specsHtml = specs ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">' + specs + "</div>" : "";
+          var market = (v.marketZh || v.marketEn) ? '<div style="margin-top:6px;font-size:11px;color:#94a3b8">目标市场 / Market: ' + escapeHtml(v.marketZh || v.marketEn) + "</div>" : "";
+          return specsHtml + market;
+        })() +
         '<div class="car-foot">' +
           '<div class="car-stock"><span data-i18n="car.available">Available</span><b>' +
             '<span class="car-stock-num">' + escapeHtml(v.stock) + '</span> ' +
