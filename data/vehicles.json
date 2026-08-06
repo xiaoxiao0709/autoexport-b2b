@@ -1,0 +1,74 @@
+[
+  {
+    "id": "byd-song-plus",
+    "brand": "BYD",
+    "name": "Song Plus DM-i",
+    "type": "phev",
+    "bodyType": "SUV",
+    "year": 2025,
+    "stock": 50,
+    "status": "Export Ready",
+    "image": "assets/car-byd-song-plus.png",
+    "description": ""
+  },
+  {
+    "id": "byd-seagull",
+    "brand": "BYD",
+    "name": "Seagull",
+    "type": "ev",
+    "bodyType": "Hatchback",
+    "year": 2025,
+    "stock": 120,
+    "status": "Export Ready",
+    "image": "assets/car-byd-seagull.png",
+    "description": ""
+  },
+  {
+    "id": "chery-tiggo8-pro",
+    "brand": "Chery",
+    "name": "Tiggo 8 Pro",
+    "type": "petrol",
+    "bodyType": "7-Seat SUV",
+    "year": 2025,
+    "stock": 80,
+    "status": "Export Ready",
+    "image": "assets/car-chery-tiggo8.png",
+    "description": ""
+  },
+  {
+    "id": "geely-monjaro",
+    "brand": "Geely",
+    "name": "Monjaro",
+    "type": "petrol",
+    "bodyType": "SUV",
+    "year": 2025,
+    "stock": 45,
+    "status": "Export Ready",
+    "image": "assets/car-geely-monjaro.png",
+    "description": ""
+  },
+  {
+    "id": "haval-h6",
+    "brand": "Haval",
+    "name": "H6",
+    "type": "petrol",
+    "bodyType": "SUV",
+    "year": 2025,
+    "stock": 200,
+    "status": "Export Ready",
+    "image": "assets/car-haval-h6.png",
+    "description": ""
+  },
+  {
+    "id": "zeekr-001",
+    "brand": "Zeekr",
+    "name": "001",
+    "type": "ev",
+    "bodyType": "Shooting Brake",
+    "year": 2025,
+    "stock": 30,
+    "status": "Export Ready",
+    "image": "assets/car-zeekr-001.png",
+    "description": ""
+  }
+]

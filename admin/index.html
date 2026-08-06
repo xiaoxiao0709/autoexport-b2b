@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Export · Admin</title>
+<style>
+  :root{
+    --brand:#1f3a8a; --brand-600:#2742a6; --brand-50:#eef2ff;
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --bg:#f6f8fb; --card:#fff; --ok:#16a34a; --warn:#d97706; --err:#dc2626;
+    --r:12px; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+  a{color:var(--brand)}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 80px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--brand)}
+  .pill{font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);display:inline-flex;gap:7px;align-items:center}
+  .pill .led{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .pill.ok .led{background:var(--ok)} .pill.ok{color:var(--ok);border-color:#bbf7d0}
+  .pill.err .led{background:var(--err)} .pill.err{color:var(--err);border-color:#fecaca}
+  .pill.busy .led{background:var(--warn);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+  .card h2{margin:0 0 14px;font-size:15px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand-50);border-color:var(--brand)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  button{font:inherit;cursor:pointer;border:1px solid transparent;border-radius:9px;padding:9px 16px;font-weight:600;background:var(--brand);color:#fff}
+  button:hover{background:var(--brand-600)}
+  button.ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  button.ghost:hover{background:var(--brand-50)}
+  button.danger{background:#fff;border-color:#fecaca;color:var(--err)}
+  button.danger:hover{background:#fef2f2}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{padding:10px 16px;border:none;background:none;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
+  .toast.show{opacity:1}
+  .toast.err{background:var(--err)} .toast.ok{background:var(--ok)}
+  /* vehicles table */
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:12px;color:var(--muted);font-weight:700}
+  td img{width:64px;height:40px;object-fit:cover;border-radius:6px;background:#eee}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--brand-50);color:var(--brand);font-weight:600}
+  .tag.ev{background:#dcfce7;color:#15803d}.tag.phev{background:#fef9c3;color:#a16207}.tag.petrol{background:#ffe4e6;color:#be123c}
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;z-index:40}
+  .modal.open{display:flex}
+  .modal .box{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:22px;box-shadow:var(--shadow)}
+  .modal .box h3{margin:0 0 16px}
+  .modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  /* content editor */
+  .grp{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .grp>summary{padding:11px 14px;cursor:pointer;font-weight:700;background:#fafbff;list-style:none;display:flex;justify-content:space-between}
+  .grp>summary::-webkit-details-marker{display:none}
+  .field{border-top:1px solid var(--line);padding:12px 14px}
+  .field .k{font-size:12px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;margin-bottom:8px}
+  .langrow{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;margin-bottom:7px}
+  .langrow span{font-size:12px;font-weight:700;color:var(--muted)}
+  .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .kv{font-size:12px;color:var(--muted)} .kv b{color:var(--ink)}
+  .errbox{color:var(--err);font-size:12px;margin-top:8px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="dot"></span> Auto Export · Admin</div>
+    <div id="status" class="pill"><span class="led"></span> <span id="statusText">Not connected</span></div>
+  </header>
+
+  <!-- Connection / config -->
+  <div class="card">
+    <h2>Repository &amp; GitHub Token</h2>
+    <div class="grid2">
+      <div><label>Owner</label><input id="cfgOwner" value="xiaoxiao0709"></div>
+      <div><label>Repository</label><input id="cfgRepo" value="autoexport-b2b"></div>
+      <div><label>Branch</label><input id="cfgBranch" placeholder="auto-detect (main/master)"></div>
+      <div><label>Token (PAT)</label><input id="cfgToken" type="password" placeholder="ghp_… or github_pat_…"></div>
+    </div>
+    <div class="hint">Token needs <b>public_repo</b> (public repo) or <b>repo</b> scope. It is stored only in this browser's localStorage and sent directly to api.github.com — never to any third party.</div>
+    <div class="row" style="margin-top:12px">
+      <button id="btnConnect">Connect</button>
+      <button class="ghost" id="btnShowTok">Show / Hide token</button>
+    </div>
+    <div id="cfgErr" class="errbox"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="vehicles">Vehicles</button>
+    <button class="tab" data-tab="content">Homepage Content</button>
+    <button class="tab" data-tab="deploy">Deploy &amp; Status</button>
+  </div>
+
+  <!-- VEHICLES -->
+  <section id="tab-vehicles">
+    <div class="card">
+      <div class="bar">
+        <h2 style="margin:0">Vehicle Inventory</h2>
+        <div style="display:flex;gap:10px">
+          <button class="ghost" id="btnAddVehicle">+ Add Vehicle</button>
+          <button id="btnSaveVehicles">Save Vehicles</button>
+        </div>
+      </div>
+      <div id="vehEmpty" class="hint">Connect to load vehicles.</div>
+      <table id="vehTable" style="display:none">
+        <thead><tr><th>Image</th><th>Brand</th><th>Model</th><th>Type</th><th>Body</th><th>Year</th><th>Stock</th><th></th></tr></thead>
+        <tbody id="vehBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <section id="tab-content" style="display:none">
+    <div class="card">
+      <div class="bar">
+        <h2 style="margin:0">Homepage Copy (EN / ZH / AR / RU)</h2>
+        <button id="btnSaveContent">Save Content</button>
+      </div>
+      <div class="row" style="margin-bottom:12px">
+        <div style="flex:1;min-width:200px"><input id="contentSearch" placeholder="Filter keys… (e.g. hero, form, inv)"></div>
+      </div>
+      <div id="contentArea"><div class="hint">Connect to load homepage copy.</div></div>
+    </div>
+  </section>
+
+  <!-- DEPLOY -->
+  <section id="tab-deploy" style="display:none">
+    <div class="card">
+      <h2>Deploy &amp; Status</h2>
+      <div class="kv" id="deployInfo">Connect to see repository status.</div>
+      <div class="hint" style="margin-top:10px">Saving vehicles or content commits a new file to the repository, which triggers a GitHub Pages rebuild automatically (usually within ~1 minute).</div>
+      <div class="row" style="margin-top:14px">
+        <button class="ghost" id="btnOpenLive">Open Live Site ↗</button>
+        <button class="ghost" id="btnOpenAdmin">Copy Admin URL</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Vehicle modal -->
+<div class="modal" id="vehModal">
+  <div class="box">
+    <h3 id="vehModalTitle">Add Vehicle</h3>
+    <div class="grid2">
+      <div><label>Brand</label><input id="vBrand" placeholder="BYD"></div>
+      <div><label>Model Name</label><input id="vName" placeholder="Song Plus DM-i"></div>
+      <div>
+        <label>Type</label>
+        <select id="vType"><option value="ev">Electric (EV)</option><option value="phev">Plug-in Hybrid (PHEV)</option><option value="petrol">Petrol</option></select>
+      </div>
+      <div><label>Body Type</label><input id="vBody" placeholder="SUV / Hatchback …"></div>
+      <div><label>Year</label><input id="vYear" type="number" value="2025"></div>
+      <div><label>Stock (units)</label><input id="vStock" type="number" value="1"></div>
+      <div><label>Status</label><input id="vStatus" value="Export Ready"></div>
+      <div><label>Image URL</label><input id="vImage" placeholder="assets/car-xxx.png"></div>
+    </div>
+    <div style="margin-top:12px">
+      <label>Or upload image to repo</label>
+      <input id="vFile" type="file" accept="image/*">
+      <div class="hint">Uploaded files are committed to <code>assets/</code> and the URL is filled in automatically.</div>
+    </div>
+    <div class="errbox" id="vehErr"></div>
+    <div class="actions">
+      <button class="ghost" id="vehCancel">Cancel</button>
+      <button id="vehSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API="https://api.github.com";
+  var LS_KEY="aex_admin_cfg_v1";
+  var state={owner:"",repo:"",branch:"",token:"",site:null,siteSha:null,veh:null,vehSha:null,editing:-1};
+
+  /* ---------- helpers ---------- */
+  function $(id){return document.getElementById(id);}
+  function el(tag,attrs,html){var e=document.createElement(tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+  function toast(msg,kind){var t=$("toast");t.textContent=msg;t.className="toast show"+(kind?(" "+kind):"");setTimeout(function(){t.className="toast";},3200);}
+  function setStatus(text,kind){var p=$("status");p.className="pill"+(kind?(" "+kind):"");$("statusText").textContent=text;}
+  function utf8ToB64(str){var bytes=new TextEncoder().encode(str);var bin="";var chunk=0x8000;for(var i=0;i<bytes.length;i+=chunk){bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));}return btoa(bin);}
+  function b64ToUtf8(b64){var bin=atob(b64);var bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder().decode(bytes);}
+  function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+
+  /* ---------- config persistence ---------- */
+  function loadCfg(){
+    try{var c=JSON.parse(localStorage.getItem(LS_KEY));if(c){state.owner=c.owner||"xiaoxiao0709";state.repo=c.repo||"autoexport-b2b";state.branch=c.branch||"";state.token=c.token||"";}}catch(e){}
+    $("cfgOwner").value=state.owner;$("cfgRepo").value=state.repo;$("cfgBranch").value=state.branch;$("cfgToken").value=state.token;
+  }
+  function saveCfg(){state.owner=$("cfgOwner").value.trim();state.repo=$("cfgRepo").value.trim();state.branch=$("cfgBranch").value.trim();state.token=$("cfgToken").value.trim();
+    localStorage.setItem(LS_KEY,JSON.stringify({owner:state.owner,repo:state.repo,branch:state.branch,token:state.token}));}
+
+  /* ---------- github api ---------- */
+  function headers(extra){var h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(state.token)h["Authorization"]="Bearer "+state.token;if(extra)for(var k in extra)h[k]=extra[k];return h;}
+  function api(path,opts){opts=opts||{};return fetch(API+path,{method:opts.method||"GET",headers:headers(opts.headers),body:opts.body});}
+  function repoPath(p){return "/repos/"+state.owner+"/"+state.repo+"/contents/"+p+(state.branch?"?ref="+encodeURIComponent(state.branch):"");}
+
+  function getFile(path){
+    return api(repoPath(path)).then(function(r){
+      if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
+      return r.json();
+    }).then(function(d){return {sha:d.sha,text:b64ToUtf8(d.content)};});
+  }
+  function putFile(path,text,sha,message){
+    var body={message:message,content:utf8ToB64(text),sha:sha};
+    if(state.branch)body.branch=state.branch;
+    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){
+      if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
+      return r.json();
+    });
+  }
+
+  /* ---------- connect ---------- */
+  function connect(){
+    saveCfg();
+    if(!state.owner||!state.repo){$("cfgErr").style.display="block";$("cfgErr").textContent="Owner and Repository are required.";return;}
+    if(!state.token){$("cfgErr").style.display="block";$("cfgErr").textContent="A GitHub token is required to read/write the repository.";return;}
+    $("cfgErr").style.display="none";
+    setStatus("Connecting…","busy");
+    // detect default branch if empty
+    var repoReq=state.branch?Promise.resolve():api("/repos/"+state.owner+"/"+state.repo).then(function(r){if(!r.ok)throw new Error("Repository not found or token lacks access.");return r.json();}).then(function(d){state.branch=d.default_branch;$("cfgBranch").value=state.branch;saveCfg();return true;});
+    repoReq.then(function(){
+      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json")]);
+    }).then(function(res){
+      state.site=JSON.parse(res[0].text);state.siteSha=res[0].sha;
+      state.veh=JSON.parse(res[1].text);state.vehSha=res[1].sha;
+      setStatus("Connected · "+state.branch,"ok");
+      renderVehicles();renderContent();renderDeploy();
+      toast("Loaded site data","ok");
+    }).catch(function(err){
+      setStatus("Connection failed","err");
+      $("cfgErr").style.display="block";$("cfgErr").textContent=err.message;
+    });
+  }
+
+  /* ---------- vehicles ---------- */
+  var TYPE_LABEL={ev:"EV",phev:"PHEV",petrol:"Petrol"};
+  function renderVehicles(){
+    var body=$("vehBody");body.innerHTML="";
+    if(!state.veh||!state.veh.length){$("vehTable").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="No vehicles yet. Click '+ Add Vehicle'.";return;}
+    $("vehTable").style.display="table";$("vehEmpty").style.display="none";
+    state.veh.forEach(function(v,i){
+      var tr=el("tr");
+      tr.innerHTML=
+        '<td><img src="'+esc(v.image)+'" alt=""></td>'+
+        '<td><b>'+esc(v.brand)+'</b></td>'+
+        '<td>'+esc(v.name)+'</td>'+
+        '<td><span class="tag '+(TYPE_LABEL[v.type]||'').toLowerCase()+'">'+(TYPE_LABEL[v.type]||v.type)+'</span></td>'+
+        '<td>'+esc(v.bodyType)+'</td>'+
+        '<td>'+esc(v.year)+'</td>'+
+        '<td>'+esc(v.stock)+'</td>'+
+        '<td style="white-space:nowrap"><button class="ghost" data-edit="'+i+'">Edit</button> '+
+        '<button class="danger" data-del="'+i+'">Delete</button></td>';
+      body.appendChild(tr);
+    });
+    body.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){openVehModal(+b.dataset.edit);};});
+    body.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){
+      if(confirm("Delete "+state.veh[+b.dataset.del].brand+" "+state.veh[+b.dataset.del].name+"?")){state.veh.splice(+b.dataset.del,1);renderVehicles();}
+    };});
+  }
+  function openVehModal(i){
+    state.editing=i;
+    var v=i>=0?state.veh[i]:{brand:"",name:"",type:"ev",bodyType:"",year:2025,stock:1,status:"Export Ready",image:"",description:""};
+    $("vehModalTitle").textContent=i>=0?"Edit Vehicle":"Add Vehicle";
+    $("vBrand").value=v.brand;$("vName").value=v.name;$("vType").value=v.type;$("vBody").value=v.bodyType;
+    $("vYear").value=v.year;$("vStock").value=v.stock;$("vStatus").value=v.status;$("vImage").value=v.image;$("vFile").value="";
+    $("vehErr").style.display="none";
+    $("vehModal").classList.add("open");
+  }
+  function closeVehModal(){$("vehModal").classList.remove("open");}
+  function saveVehModal(){
+    var brand=$("vBrand").value.trim(),name=$("vName").value.trim();
+    if(!brand||!name){$("vehErr").style.display="block";$("vehErr").textContent="Brand and Model Name are required.";return;}
+    var v={brand:brand,name:name,type:$("vType").value,bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",image:$("vImage").value.trim()};
+    if(state.editing>=0){v.id=state.veh[state.editing].id;state.veh[state.editing]=v;}else{v.id=slug(brand+"-"+name);state.veh.push(v);}
+    renderVehicles();closeVehModal();toast("Vehicle updated locally — remember to Save Vehicles","");
+  }
+  function getFileSha(path){return api(repoPath(path)).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});throw new Error("not found");});}
+  function fileToBase64(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result.split(",")[1]);};fr.onerror=rej;fr.readAsDataURL(file);});}
+  // override putFile for binary image: encode base64 from dataURL
+  function putImage(path,base64,sha,message){var body={message:message,content:base64};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
+    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
+  function saveVehicles(){
+    if(!state.veh)return;
+    setStatus("Saving vehicles…","busy");
+    // re-fetch sha to avoid 409, then put
+    getFile("data/vehicles.json").then(function(cur){state.vehSha=cur.sha;
+      return putFile("data/vehicles.json",JSON.stringify(state.veh,null,2)+"\n",state.vehSha,"Update vehicles ("+state.veh.length+" units)");
+    }).then(function(){setStatus("Connected · "+state.branch,"ok");toast("Vehicles saved ✓","ok");renderDeploy();})
+    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+  }
+
+  /* ---------- content ---------- */
+  function groupKeys(obj){var g={};Object.keys(obj).forEach(function(k){var p=k.indexOf(".")>-1?k.split(".")[0]:"(root)";(g[p]=g[p]||[]).push(k);});return g;}
+  function renderContent(){
+    var area=$("contentArea");
+    if(!state.site){area.innerHTML='<div class="hint">Connect to load homepage copy.</div>';return;}
+    var filter=($("contentSearch").value||"").toLowerCase();
+    var groups=groupKeys(state.site.en);
+    area.innerHTML="";
+    Object.keys(groups).sort().forEach(function(grp){
+      var keys=groups[grp].filter(function(k){return !filter||k.toLowerCase().indexOf(filter)>-1;});
+      if(!keys.length)return;
+      var det=el("details","","");det.open=true;
+      var sum=el("summary","",esc(grp)+' <span style="color:var(--muted);font-weight:400">('+keys.length+')</span>');
+      det.appendChild(sum);
+      keys.sort().forEach(function(k){
+        var f=el("div","class","field");
+        f.innerHTML='<div class="k">'+esc(k)+'</div>';
+        ["en","zh","ar","ru"].forEach(function(lang){
+          var val=state.site[lang]?state.site[lang][k]:"";
+          var lr=el("div","class","langrow");
+          lr.innerHTML='<span>'+lang.toUpperCase()+'</span>';
+          var inp=el("input",{value:esc(val),"data-lang":lang,"data-key":k});
+          inp.oninput=function(){state.site[lang]=state.site[lang]||{};state.site[lang][k]=inp.value;};
+          lr.appendChild(inp);f.appendChild(lr);
+        });
+        det.appendChild(f);
+      });
+      area.appendChild(det);
+    });
+  }
+  function saveContent(){
+    if(!state.site)return;
+    setStatus("Saving content…","busy");
+    getFile("data/site.json").then(function(cur){state.siteSha=cur.sha;
+      return putFile("data/site.json",JSON.stringify(state.site,null,2)+"\n",state.siteSha,"Update homepage content");
+    }).then(function(){setStatus("Connected · "+state.branch,"ok");toast("Content saved ✓","ok");renderDeploy();})
+    .catch(function(err){setStatus("Save failed","err");toast(err.message,"err");});
+  }
+
+  /* ---------- deploy ---------- */
+  function renderDeploy(){
+    var live="https://"+state.owner+".github.io/"+state.repo+"/";
+    var info=$("deployInfo");
+    info.innerHTML="Repository: <b>"+esc(state.owner)+"/"+esc(state.repo)+"</b> · Branch: <b>"+esc(state.branch)+"</b><br>"+
+      "Live site: <a href='"+live+"' target='_blank' rel='noopener'>"+live+"</a><br>"+
+      "Admin: <a href='"+live+"admin/' target='_blank' rel='noopener'>"+live+"admin/</a><br><br>"+
+      "Vehicles: <b>"+(state.veh?state.veh.length:0)+"</b> · Content keys (EN): <b>"+(state.site?Object.keys(state.site.en).length:0)+"</b>";
+    $("btnOpenLive").onclick=function(){window.open(live,"_blank");};
+    $("btnOpenAdmin").onclick=function(){navigator.clipboard.writeText(live+"admin/").then(function(){toast("Admin URL copied","ok");},function(){toast(live+"admin/");});};
+  }
+
+  /* ---------- tabs ---------- */
+  function initTabs(){
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.onclick=function(){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});t.classList.add("active");
+        var name=t.dataset.tab;["vehicles","content","deploy"].forEach(function(s){$("tab-"+s).style.display=s===name?"block":"none";});};
+    });
+  }
+
+  /* ---------- image upload wiring ---------- */
+  function wireUpload(){
+    $("vFile").addEventListener("change",function(){
+      var file=this.files&&this.files[0];if(!file)return;
+      setStatus("Uploading image…","busy");
+      fileToBase64(file).then(function(b64){
+        return getFileSha("assets/"+file.name).then(function(sha){return putImage("assets/"+file.name,b64,sha,"Upload "+file.name);},function(){return putImage("assets/"+file.name,b64,null,"Upload "+file.name);});
+      }).then(function(){var url="assets/"+file.name;$("vImage").value=url;setStatus("Connected · "+state.branch,"ok");toast("Image uploaded ✓","ok");})
+      .catch(function(err){setStatus("Upload failed","err");toast(err.message,"err");});
+    });
+  }
+
+  /* ---------- init ---------- */
+  function init(){
+    loadCfg();initTabs();wireUpload();
+    $("btnConnect").onclick=connect;
+    $("btnShowTok").onclick=function(){var i=$("cfgToken");i.type=i.type==="password"?"text":"password";};
+    $("btnAddVehicle").onclick=function(){openVehModal(-1);};
+    $("vehCancel").onclick=closeVehModal;
+    $("vehSave").onclick=saveVehModal;
+    $("btnSaveVehicles").onclick=saveVehicles;
+    $("btnSaveContent").onclick=saveContent;
+    $("contentSearch").oninput=renderContent;
+    if(state.token)setStatus("Token present — click Connect","");
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
+</body>
+</html>
