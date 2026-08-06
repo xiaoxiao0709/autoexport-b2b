@@ -95,6 +95,8 @@ Token **仅保存在你当前浏览器的 localStorage**,直接发送给 `api.gi
 
 ## 部署
 
+### A. GitHub Pages（默认）
+
 任意一种方式均可:
 
 1. **通过后台**:在 `admin/` 中保存即部署(需上述 PAT)。
@@ -102,3 +104,29 @@ Token **仅保存在你当前浏览器的 localStorage**,直接发送给 `api.gi
 
 线上地址:`https://xiaoxiao0709.github.io/autoexport-b2b/`
 后台地址:`https://xiaoxiao0709.github.io/autoexport-b2b/admin/`
+
+### B. 腾讯云 COS + CDN（双轨同步，推荐国内访问）
+
+站点为纯静态,可托管到腾讯云 COS(+CDN)。后台编辑逻辑**不变**——仍写回 GitHub,由 GitHub Actions 在每次 push 后自动把静态文件同步到 COS。
+
+前置(均需你自备):
+
+1. 一个**专用**的腾讯云 COS 存储桶(建议开启静态网站托管 / 挂 CDN),记下 `bucket 名称` 与 `地域`(如 `ap-guangzhou`)。
+2. 一对腾讯云访问密钥 `SecretId` / `SecretKey`(在访问管理 → API 密钥中心获取)。
+3. 在本仓库 **Settings → Secrets and variables → Actions** 中添加 4 个仓库 Secret:
+   - `TENCENT_SECRET_ID`
+   - `TENCENT_SECRET_KEY`
+   - `COS_BUCKET`(桶名,形如 `my-bucket-1234567890`)
+   - `COS_REGION`(地域,如 `ap-guangzhou`)
+
+推送 `main` 后,工作流 `.github/workflows/deploy-to-cos.yml` 会:
+
+- 仅挑选站点文件(`index.html` / `script.js` / `chat.js` / `assets/` / `data/` / `admin/`)放入 `dist/`;
+- 用 `TencentCloud/cos-action@v1` 上传到 COS,并 `clean: true` 做镜像同步(请确保该桶仅用于本站点)。
+
+> 若在 COS 前挂了腾讯云 CDN,请在 CDN 控制台把 `/data/*` 的缓存 TTL 设为较短值(如 60s),或在上传后手动刷新 CDN 缓存,这样后台编辑后数据更新能在 TTL 内生效。
+> 绑定自定义域名到腾讯云(国内)通常需要 ICP 备案;使用 COS/EdgeOne 默认域名则无需备案。
+
+## 车辆上架 / 下架
+
+每辆车的 `published` 字段控制是否在前台展示（`true` 上架 / `false` 下架）。在后台 Vehicles 页的编辑弹窗中通过开关设置；前台只渲染 `published !== false` 的车辆。
