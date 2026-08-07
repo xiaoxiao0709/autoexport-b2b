@@ -41,9 +41,9 @@
   function buildWidget() {
     var style = el("style");
     style.textContent =
-      ".aex-chat-btn{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;align-items:center;gap:8px;background:#1f3a8a;color:#fff;border:none;border-radius:999px;padding:13px 18px;font:600 14px system-ui;box-shadow:0 8px 24px rgba(16,24,40,.25);cursor:pointer}" +
+      ".aex-chat-btn{position:fixed;right:24px;bottom:96px;z-index:90;display:flex;align-items:center;gap:8px;background:#1f3a8a;color:#fff;border:none;border-radius:999px;padding:13px 18px;font:600 14px system-ui;box-shadow:0 8px 24px rgba(16,24,40,.25);cursor:pointer}" +
       ".aex-chat-btn:hover{background:#2742a6}" +
-      ".aex-chat-panel{position:fixed;right:20px;bottom:80px;z-index:60;width:330px;max-width:calc(100vw - 32px);height:440px;max-height:calc(100vh - 110px);background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 16px 48px rgba(16,24,40,.22);display:none;flex-direction:column;overflow:hidden;font-family:system-ui,'PingFang SC','Microsoft YaHei',sans-serif}" +
+      ".aex-chat-panel{position:fixed;right:24px;bottom:154px;z-index:100;width:330px;max-width:calc(100vw - 32px);height:440px;max-height:calc(100vh - 178px);background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 16px 48px rgba(16,24,40,.22);display:none;flex-direction:column;overflow:hidden;font-family:system-ui,'PingFang SC','Microsoft YaHei',sans-serif}" +
       ".aex-chat-panel.open{display:flex}" +
       ".aex-chat-head{background:#1f3a8a;color:#fff;padding:13px 15px;display:flex;justify-content:space-between;align-items:center}" +
       ".aex-chat-head b{font-size:14px}.aex-chat-head small{opacity:.8;font-weight:400}" +
@@ -58,7 +58,8 @@
       ".aex-chat-foot button{background:#1f3a8a;color:#fff;border:none;border-radius:9px;padding:9px;font-weight:600;cursor:pointer}" +
       ".aex-chat-fallback{text-align:center;font-size:13px;color:#64748b;padding:14px}" +
       ".aex-chat-fallback a{display:inline-block;margin:6px 4px;padding:8px 14px;border-radius:9px;background:#eef2ff;color:#1f3a8a;text-decoration:none;font-weight:600}" +
-      ".aex-chat-hint{font-size:11px;color:#94a3b8;text-align:center}";
+      ".aex-chat-hint{font-size:11px;color:#94a3b8;text-align:center}" +
+      "@media(max-width:640px){.aex-chat-btn{right:16px;bottom:84px;padding:12px 15px}.aex-chat-panel{right:16px;bottom:140px;width:calc(100vw - 32px);max-height:calc(100vh - 156px)}}";
     document.head.appendChild(style);
 
     var btn = el("button", "aex-chat-btn");
@@ -170,10 +171,17 @@
   }
 
   /* ---------- init ---------- */
+  function loadConfig() {
+    return fetch("data/config.json?v=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (c) { cfg = c; if (panel.classList.contains("open")) render(); })
+      .catch(function () { if (!cfg) cfg = { businessName: "Auto Export", whatsapp: "", email: "", chatToken: "" }; });
+  }
+
   function init() {
     buildWidget();
-    fetch("data/config.json").then(function (r) { return r.json(); }).then(function (c) { cfg = c; if (panel.classList.contains("open")) render(); })
-      .catch(function () { cfg = { businessName: "Auto Export", whatsapp: "", email: "", chatToken: "" }; });
+    loadConfig();
+    setInterval(loadConfig, 30000);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
