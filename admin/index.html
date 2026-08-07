@@ -253,6 +253,7 @@
         <div class="row" style="margin-top:14px">
           <button id="btnConnect">连接仓库</button>
           <button class="ghost" id="btnShowTok">显示 / 隐藏 Token</button>
+          <button class="ghost" id="btnDisconnect" style="color:#c0392b">断开连接</button>
         </div>
         <div id="cfgErr" class="errbox"></div>
       </div>
@@ -715,6 +716,7 @@
     loadCfg();wireUpload();
     document.querySelectorAll(".nav-item").forEach(function(n){n.onclick=function(){showPage(n.dataset.page);};});
     $("btnConnect").onclick=connect;
+    $("btnDisconnect").onclick=function(){try{localStorage.removeItem(LS_KEY);}catch(e){}state.token="";state.owner="xiaoxiao0709";state.repo="autoexport-b2b";state.branch="";state.site=null;state.veh=null;state.convs=null;state.config=null;setStatus("已断开","err");toast("已清除本地连接信息，请重新连接","ok");};
     $("btnShowTok").onclick=function(){var i=$("cfgToken");i.type=i.type==="password"?"text":"password";};
     $("btnVehSubmit").onclick=submitVehForm;
     $("btnCancelEdit").onclick=function(){populateVehForm(-1);};
@@ -730,7 +732,7 @@
     $("btnOpenAdmin").onclick=function(){copy("https://"+state.owner+".github.io/"+state.repo+"/admin/");};
     $("btnOpenLive2")&&($("btnOpenLive2").onclick=$("btnOpenLive").onclick);
     $("btnOpenAdmin2")&&($("btnOpenAdmin2").onclick=$("btnOpenAdmin").onclick);
-    if(state.token)setStatus("Token 已存在 — 点击连接","");
+    if(state.token&&state.owner&&state.repo){connect();}else{setStatus("未连接","");}
     populateVehForm(-1);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
