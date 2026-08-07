@@ -544,6 +544,7 @@
   function putImage(path,base64,sha,message){var body={message:message,content:base64};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
     return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath(path),{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
   function saveVehicles(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存车型","err");return;}
     if(!state.veh)return;
     setStatus("保存车型中…","busy");
     getFile("data/vehicles.json").then(function(cur){state.vehSha=cur.sha;
@@ -583,6 +584,7 @@
     });
   }
   function saveContent(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存文案","err");return;}
     if(!state.site)return;
     setStatus("保存文案中…","busy");
     getFile("data/site.json").then(function(cur){state.siteSha=cur.sha;
@@ -655,13 +657,14 @@
     $("sEmail").value=state.config.email||"";$("sChatTok").value=state.config.chatToken||"";
   }
   function saveSettings(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存设置","err");return;}
     state.config={businessName:$("sBiz").value.trim(),whatsapp:$("sWa").value.trim(),email:$("sEmail").value.trim(),chatToken:$("sChatTok").value.trim()};
     setStatus("保存设置中…","busy");
     api(repoPath("data/config.json")).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});return null;})
     .then(function(sha){
       var body={message:"Update site settings",content:utf8ToB64(JSON.stringify(state.config,null,2)+"\n")};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
       return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath("data/config.json"),{method:"PUT",body:JSON.stringify(body)});
-    }).then(function(r){if(!r.ok)throw new Error("保存失败");return r.json();})
+    }).then(function(r){if(!r.ok)throw new Error("保存失败（HTTP "+r.status+"）");return r.json();})
     .then(function(){state.configSha=null;setStatus("已连接 · "+state.branch,"ok");toast("设置已保存 ✓","ok");})
     .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
   }
