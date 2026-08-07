@@ -222,6 +222,8 @@
   var activeType = "all";
   var searchTerm = "";
   var brandTerm = "all";
+  var lastSiteJSON = "";
+  var lastVehiclesJSON = "";
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -297,12 +299,20 @@
   function populateBrands() {
     var sel = document.getElementById("brandFilter");
     if (!sel) return;
+    var selected = sel.value || brandTerm;
+    while (sel.options.length > 1) sel.remove(1);
     var brands = Array.from(new Set(vehicles.map(function (v) { return v.brand; }))).sort();
     brands.forEach(function (b) {
       var o = document.createElement("option");
       o.value = b; o.textContent = b;
       sel.appendChild(o);
     });
+    if (brands.indexOf(selected) > -1) {
+      sel.value = selected;
+    } else {
+      sel.value = "all";
+      brandTerm = "all";
+    }
   }
 
   function applyFilters() {
@@ -354,21 +364,36 @@
   }
 
   /* ---------------- Data loading ---------------- */
-  function loadData() {
+  function fetchJSON(path, version) {
+    return fetch(path + "?v=" + version, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  }
+
+  function loadData(silent) {
+    var version = Date.now();
     Promise.all([
-      fetch("data/site.json").then(function (r) { return r.json(); }),
-      fetch("data/vehicles.json").then(function (r) { return r.json(); })
+      fetchJSON("data/site.json", version),
+      fetchJSON("data/vehicles.json", version)
     ]).then(function (res) {
+      var siteJSON = JSON.stringify(res[0]);
+      var vehiclesJSON = JSON.stringify(res[1]);
+      var vehiclesChanged = vehiclesJSON !== lastVehiclesJSON;
       I18N = res[0];
+      lastSiteJSON = siteJSON;
+      lastVehiclesJSON = vehiclesJSON;
       var saved = "en";
       try { saved = localStorage.getItem("aex_lang") || "en"; } catch (e) {}
       applyLang(pendingLang || saved);
-      vehicles = res[1];
-      populateBrands();
-      renderVehicles();
+      if (vehiclesChanged) {
+        vehicles = res[1];
+        populateBrands();
+        renderVehicles();
+      }
     }).catch(function (err) {
       console.error("Failed to load site data:", err);
-      if (grid) {
+      if (!silent && grid) {
         grid.innerHTML = '<p class="inv-empty">Failed to load vehicle data. ' +
           "Please run the site from a local server (e.g. <code>python -m http.server</code>).</p>";
       }
@@ -381,6 +406,11 @@
     setupInteractions();
     setupFilters();
     loadData();
+    setInterval(function () { loadData(true); }, 30000);
+    window.addEventListener("focus", function () { loadData(true); });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) loadData(true);
+    });
   }
 
   if (document.readyState === "loading") {
