@@ -273,6 +273,749 @@
       <div class="inv-layout">
         <div class="card form-card">
           <h2 id="vehFormTitle">添加车型</h2>
+          <div class="csub">保存后会自动提交并同步到前端。</div>
+          <div class="form-banner" id="vehFormBanner"><span>编辑中：<b class="bf-name"></b></span><button id="btnCancelEdit" type="button">取消编辑</button></div>
+          <div class="grid2">
+            <div><label>品牌 Brand</label><input id="vBrand" placeholder="BYD"></div>
+            <div><label>车型 Model</label><input id="vName" placeholder="Song Plus DM-i"></div>
+            <div>
+              <label>类型 Type</label>
+              <select id="vType"><option value="ev">Electric (EV)</option><option value="phev">Plug-in Hybrid (PHEV)</option><option value="petrol">Petrol</option></select>
+            </div>
+            <div><label>分类(中) Category</label><input id="vCategoryZh" placeholder="SUV"></div>
+            <div><label>分类(英) Category EN</label><input id="vCategoryEn" placeholder="SUV"></div>
+            <div><label>车身 Body</label><input id="vBody" placeholder="SUV / Hatchback"></div>
+            <div><label>年份 Year</label><input id="vYear" type="number" value="2025"></div>
+            <div><label>续航 Range</label><input id="vRange" placeholder="550 km"></div>
+            <div><label>动力 Power</label><input id="vPower" placeholder="150 kW"></div>
+            <div><label>驱动 Drivetrain</label><input id="vDrivetrain" placeholder="FWD / AWD"></div>
+            <div><label>库存 Stock</label><input id="vStock" type="number" value="1"></div>
+            <div><label>状态 Status</label><input id="vStatus" value="Export Ready"></div>
+            <div><label>目标市场(中) Market</label><input id="vMarketZh" placeholder="中东"></div>
+            <div><label>目标市场(英) Market EN</label><input id="vMarketEn" placeholder="Middle East"></div>
+          </div>
+          <div style="margin-top:12px"><label>图片 URL</label><input id="vImage" placeholder="assets/car-xxx.png"></div>
+          <div style="margin-top:12px">
+            <label>或上传图片到仓库</label>
+            <input id="vFile" type="file" accept="image/*">
+            <div class="hint">上传文件会提交到 <code>assets/</code>，并自动填入上方 URL。</div>
+          </div>
+          <div style="margin-top:12px"><label>描述(中) Description</label><textarea id="vDescZh" rows="2" placeholder="中文描述…"></textarea></div>
+          <div style="margin-top:10px"><label>描述(英) Description EN</label><textarea id="vDescEn" rows="2" placeholder="English description…"></textarea></div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+            <label class="switch"><input id="vPublished" type="checkbox" checked><span class="sl"></span></label>
+            <label style="margin:0">上架 / Published（在前台展示该车辆）</label>
+          </div>
+          <div class="errbox" id="vehErr"></div>
+          <div class="row" style="margin-top:16px">
+            <button id="btnVehSubmit">添加车型</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>车型列表</h2>
+          <div class="csub">点击卡片上的「编辑」可载入左侧表单修改；「下架」仅在前台隐藏，「删除」会移除数据。</div>
+          <div id="vehEmpty" class="hint">请先连接仓库以加载车型。</div>
+          <div id="vehGrid" class="veh-grid" style="display:none"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="page-settings">
+      <div class="card">
+        <div class="grp-card">
+          <div class="grp-num">01</div>
+          <div class="grp-body">
+            <h2 style="margin-bottom:2px">品牌与首页文案</h2>
+            <div class="csub">设置品牌名称，并维护官网首页的四语（EN / ZH / AR / RU）文案。</div>
+            <div style="margin-bottom:16px"><label>Business Name</label><input id="sBiz" placeholder="Auto Export"></div>
+            <div id="contentArea"><div class="hint">连接仓库后加载首页文案。</div></div>
+            <div class="row" style="margin-top:14px"><input id="contentSearch" placeholder="过滤键名… (如 hero, form, inv)" style="flex:1;min-width:200px"></div>
+            <div class="row" style="margin-top:12px"><button id="btnSaveContent">保存首页文案</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="grp-card">
+          <div class="grp-num">02</div>
+          <div class="grp-body">
+            <h2 style="margin-bottom:2px">联系渠道</h2>
+            <div class="csub">配置 WhatsApp、邮箱，以及前端「在线咨询」所用的客服对话 Token。</div>
+            <div class="grid2">
+              <div><label>WhatsApp（含国家码）</label><input id="sWa" placeholder="8613800000000"></div>
+              <div><label>Email</label><input id="sEmail" placeholder="sales@example.com"></div>
+            </div>
+            <div style="margin-top:13px"><label>Chat Inbox Token（细粒度，仅 Issues:write）</label><input id="sChatTok" type="password" placeholder="github_pat_… (仅 Issues 写权限)"></div>
+            <div class="hint" style="margin-top:8px">Chat Token 用于前端访客创建对话 Issue，请使用<strong>细粒度 Token</strong>且仅授权该仓库的 <strong>Issues 读写</strong>（不要给 contents/repo 全权限），即使泄露也改不了网站文件。访客消息将以 Issue 形式存入仓库。</div>
+            <div id="settingsErr" class="errbox"></div>
+            <div class="row" style="margin-top:14px"><button id="btnSaveSettings">保存联系渠道</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INBOX -->
+    <section class="page" id="page-inbox">
+      <div class="card">
+        <h2>客户询盘 · 客服对话</h2>
+        <div class="csub">访客通过前端「在线咨询」发起的对话会以 GitHub Issue 形式出现在此，客服可直接回复，回复会实时显示给访客。</div>
+        <div id="convList"><div class="empty">连接仓库后加载对话。</div></div>
+      </div>
+      <div class="card" id="threadCard" style="display:none">
+        <h2>对话详情</h2>
+        <div class="thread" id="thread"><div class="empty">选择左侧对话。</div></div>
+        <div class="reply-box">
+          <textarea id="replyText" placeholder="输入客服回复…"></textarea>
+          <button id="btnSendReply">发送</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="ghost" id="btnCloseConv">标记已解决 / 关闭</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPLOY -->
+    <section class="page" id="page-deploy">
+      <div class="card">
+        <h2>部署与状态</h2>
+        <div class="kv" id="deployInfo2">连接仓库后查看仓库状态。</div>
+        <div class="hint" style="margin-top:10px">保存车型或文案会向仓库提交新文件，通常会自动触发 GitHub Pages 重建（约 1 分钟内生效）。</div>
+        <div class="row" style="margin-top:14px">
+          <button class="ghost" id="btnOpenLive2">打开官网 ↗</button>
+          <button class="ghost" id="btnOpenAdmin2">复制后台地址</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API="https://api.github.com";
+  var LS_KEY="aex_admin_cfg_v1";
+  var state={owner:"",repo:"",branch:"",token:"",site:null,siteSha:null,veh:null,vehSha:null,editing:-1,config:null,configSha:null,convs:[],activeConv:null};
+
+  /* ---------- helpers ---------- */
+  function $(id){return document.getElementById(id);}
+  function el(tag,attrs,html){var e=document.createElement(tag);if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function toast(msg,kind){var t=$("toast");t.textContent=msg;t.className="toast show"+(kind?(" "+kind):"");setTimeout(function(){t.className="toast";},3200);}
+  function setStatus(text,kind){var p=$("status");p.className="status-pill"+(kind?(" "+kind):"");$("statusText").textContent=text;$("footRepo").textContent=state.owner?state.owner+"/"+state.repo:"仓库未设置";}
+  function utf8ToB64(str){var bytes=new TextEncoder().encode(str);var bin="";var chunk=0x8000;for(var i=0;i<bytes.length;i+=chunk){bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));}return btoa(bin);}
+  function b64ToUtf8(b64){var bin=atob(b64);var bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder().decode(bytes);}
+  function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+
+  /* ---------- config persistence ---------- */
+  function loadCfg(){
+    try{var c=JSON.parse(localStorage.getItem(LS_KEY));if(c){state.owner=c.owner||"xiaoxiao0709";state.repo=c.repo||"autoexport-b2b";state.branch=c.branch||"";state.token=c.token||"";}}catch(e){}
+    $("cfgOwner").value=state.owner;$("cfgRepo").value=state.repo;$("cfgBranch").value=state.branch;$("cfgToken").value=state.token;
+  }
+  function saveCfg(){state.owner=$("cfgOwner").value.trim();state.repo=$("cfgRepo").value.trim();state.branch=$("cfgBranch").value.trim();state.token=$("cfgToken").value.trim();
+    localStorage.setItem(LS_KEY,JSON.stringify({owner:state.owner,repo:state.repo,branch:state.branch,token:state.token}));}
+
+  /* ---------- github api ---------- */
+  function headers(extra){var h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(state.token)h["Authorization"]="Bearer "+state.token;if(extra)for(var k in extra)h[k]=extra[k];return h;}
+  function api(path,opts){opts=opts||{};return fetch(API+path,{method:opts.method||"GET",headers:headers(opts.headers),body:opts.body});}
+  function encPath(p){return p.split("/").map(encodeURIComponent).join("/");}
+  function repoPath(p){return "/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath(p)+(state.branch?"?ref="+encodeURIComponent(state.branch):"");}
+  function getFile(path){
+    return api(repoPath(path)).then(function(r){
+      if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
+      return r.json();
+    }).then(function(d){return {sha:d.sha,text:b64ToUtf8(d.content)};});
+  }
+  function putFile(path,text,sha,message){
+    var body={message:message,content:utf8ToB64(text),sha:sha};
+    if(state.branch)body.branch=state.branch;
+    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){
+      if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("HTTP "+r.status));});
+      return r.json();
+    });
+  }
+  function getConfig(){
+    return api(repoPath("data/config.json")).then(function(r){
+      if(r.ok)return r.json().then(function(d){state.config=JSON.parse(b64ToUtf8(d.content));state.configSha=d.sha;});
+      state.config={businessName:"Auto Export",whatsapp:"",email:"",chatToken:""};state.configSha=null;
+    });
+  }
+
+  /* ---------- connect ---------- */
+  function connect(){
+    saveCfg();
+    if(!state.owner||!state.repo){$("cfgErr").style.display="block";$("cfgErr").textContent="Owner 与 Repository 为必填。";return;}
+    if(!state.token){$("cfgErr").style.display="block";$("cfgErr").textContent="需要 GitHub Token 才能读写仓库。";return;}
+    $("cfgErr").style.display="none";
+    setStatus("连接中…","busy");
+    var repoReq=state.branch?Promise.resolve():api("/repos/"+state.owner+"/"+state.repo).then(function(r){if(!r.ok)throw new Error("仓库不存在或 Token 无权限。");return r.json();}).then(function(d){state.branch=d.default_branch;$("cfgBranch").value=state.branch;saveCfg();return true;});
+    repoReq.then(function(){
+      return Promise.all([getFile("data/site.json"),getFile("data/vehicles.json"),getConfig(),
+        api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){return r.ok?r.json():[];})]);
+    }).then(function(res){
+      state.site=JSON.parse(res[0].text);state.siteSha=res[0].sha;
+      state.veh=JSON.parse(res[1].text);state.vehSha=res[1].sha;
+      state.convs=res[3]||[];
+      setStatus("已连接 · "+state.branch,"ok");
+      renderVehicles();renderContent();renderSettings();renderDeploy();updateStats();
+      toast("已加载站点数据","ok");
+    }).catch(function(err){
+      setStatus("连接失败","err");
+      $("cfgErr").style.display="block";$("cfgErr").textContent=err.message;
+    });
+  }
+
+  /* ---------- dashboard stats ---------- */
+  function updateStats(){
+    var total=state.veh?state.veh.length:0;
+    var live=state.veh?state.veh.filter(function(v){return v.published!==false;}).length:0;
+    var stock=state.veh?state.veh.reduce(function(a,v){return a+(+v.stock||0);},0):0;
+    var open=state.convs?state.convs.filter(function(i){return i.state!=="closed";}).length:0;
+    $("statTotal").textContent=total;$("statLive").textContent=live;$("statStock").textContent=stock;$("statInq").textContent=open;
+  }
+
+  /* ---------- vehicles (inline form) ---------- */
+  var TYPE_LABEL={ev:"EV",phev:"PHEV",petrol:"Petrol"};
+  function blankVeh(){return {brand:"",name:"",type:"ev",categoryZh:"",categoryEn:"",bodyType:"",year:2025,range:"",power:"",drivetrain:"",stock:1,status:"Export Ready",marketZh:"",marketEn:"",image:"",published:true,descZh:"",descEn:""};}
+  function populateVehForm(i){
+    state.editing=i;
+    var v=i>=0?state.veh[i]:blankVeh();
+    $("vBrand").value=v.brand;$("vName").value=v.name;$("vType").value=v.type;
+    $("vCategoryZh").value=v.categoryZh||"";$("vCategoryEn").value=v.categoryEn||"";
+    $("vBody").value=v.bodyType;$("vYear").value=v.year;$("vRange").value=v.range||"";$("vPower").value=v.power||"";$("vDrivetrain").value=v.drivetrain||"";
+    $("vStock").value=v.stock;$("vStatus").value=v.status;$("vMarketZh").value=v.marketZh||"";$("vMarketEn").value=v.marketEn||"";
+    $("vImage").value=v.image;$("vFile").value="";
+    $("vDescZh").value=v.descZh||"";$("vDescEn").value=v.descEn||"";
+    $("vPublished").checked=v.published!==false;
+    var banner=$("vehFormBanner");
+    if(i>=0){banner.style.display="flex";banner.querySelector(".bf-name").textContent=v.brand+" "+v.name;$("vehFormTitle").textContent="编辑车型";$("btnVehSubmit").textContent="保存修改";}
+    else{banner.style.display="none";$("vehFormTitle").textContent="添加车型";$("btnVehSubmit").textContent="添加车型";}
+    $("vehErr").style.display="none";
+  }
+  function readVehForm(){
+    var brand=$("vBrand").value.trim(),name=$("vName").value.trim();
+    if(!brand||!name){$("vehErr").style.display="block";$("vehErr").textContent="品牌和车型为必填项。";return null;}
+    return {brand:brand,name:name,type:$("vType").value,categoryZh:$("vCategoryZh").value.trim(),categoryEn:$("vCategoryEn").value.trim(),
+      bodyType:$("vBody").value.trim(),year:+$("vYear").value||2025,range:$("vRange").value.trim(),power:$("vPower").value.trim(),drivetrain:$("vDrivetrain").value.trim(),
+      stock:+$("vStock").value||0,status:$("vStatus").value.trim()||"Export Ready",marketZh:$("vMarketZh").value.trim(),marketEn:$("vMarketEn").value.trim(),
+      image:$("vImage").value.trim(),published:$("vPublished").checked,descZh:$("vDescZh").value.trim(),descEn:$("vDescEn").value.trim()};
+  }
+  function submitVehForm(){
+    var v=readVehForm();if(!v)return;
+    if(state.editing>=0){v.id=state.veh[state.editing].id;state.veh[state.editing]=v;}
+    else{v.id=slug(v.brand+"-"+v.name);if(state.veh.some(function(x){return x.id===v.id;}))v.id=v.id+"-"+Date.now();state.veh.push(v);}
+    renderVehicles();updateStats();populateVehForm(-1);
+    saveVehicles();
+  }
+  function renderVehicles(){
+    var grid=$("vehGrid");grid.innerHTML="";
+    if(!state.veh||!state.veh.length){$("vehGrid").style.display="none";$("vehEmpty").style.display="block";$("vehEmpty").textContent="暂无车型，请在左侧添加。";return;}
+    $("vehGrid").style.display="grid";$("vehEmpty").style.display="none";
+    state.veh.forEach(function(v,i){
+      var pub=v.published!==false;
+      var thumb=v.image?'<img src="'+esc(v.image)+'" alt="">':'<div class="ph">暂无图片</div>';
+      var cat=(v.categoryZh||v.categoryEn)?'<div class="veh-cat">'+(esc(v.categoryZh)||esc(v.categoryEn))+'</div>':"";
+      var specs=[v.range,v.power,v.drivetrain].filter(Boolean);
+      var specsHtml=specs.length?'<div class="veh-specs">'+specs.map(esc).join(" · ")+(v.marketZh||v.marketEn?'<br>目标市场：'+(esc(v.marketZh)||esc(v.marketEn)):"")+'</div>':"";
+      var card=el("div","class","veh-card");
+      card.innerHTML=
+        '<div class="veh-thumb">'+thumb+'<span class="veh-pub '+(pub?"on":"off")+'">'+(pub?"上架":"下架")+'</span></div>'+
+        '<div class="veh-body">'+
+          '<div class="veh-bhead"><div><b>'+esc(v.brand)+'</b><div class="model">'+esc(v.name)+'</div></div>'+
+            '<span class="tag '+(TYPE_LABEL[v.type]||'').toLowerCase()+'">'+(TYPE_LABEL[v.type]||v.type)+'</span></div>'+
+          cat+
+          '<div class="veh-meta"><span>'+esc(v.bodyType)+'</span><span>· '+esc(v.year)+'</span></div>'+
+          specsHtml+
+          '<div class="veh-stock">库存：<b>'+(v.stock!=null?v.stock:"—")+'</b> · '+esc(v.status||"Export Ready")+'</div>'+
+        '</div>'+
+        '<div class="veh-actions"><button class="ghost" data-edit="'+i+'">编辑</button>'+
+          (pub?'<button class="ghost" data-unpub="'+i+'">下架</button>':'<button class="ghost" data-pub="'+i+'">上架</button>')+
+          '<button class="danger" data-del="'+i+'">删除</button></div>';
+      grid.appendChild(card);
+    });
+    grid.querySelectorAll("[data-edit]").forEach(function(b){b.onclick=function(){populateVehForm(+b.dataset.edit);};});
+    grid.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(){
+      if(confirm("删除 "+state.veh[+b.dataset.del].brand+" "+state.veh[+b.dataset.del].name+"？")){state.veh.splice(+b.dataset.del,1);renderVehicles();updateStats();saveVehicles();}};});
+    grid.querySelectorAll("[data-unpub],[data-pub]").forEach(function(b){b.onclick=function(){var i=+b.dataset.unpub+b.dataset.pub;state.veh[i].published=!!b.dataset.pub;renderVehicles();updateStats();saveVehicles();};});
+  }
+  function getFileSha(path){return api(repoPath(path)).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});throw new Error("not found");});}
+  function fileToBase64(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result.split(",")[1]);};fr.onerror=rej;fr.readAsDataURL(file);});}
+  function putImage(path,base64,sha,message){var body={message:message,content:base64};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
+    return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath(path),{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message);});return r.json();});}
+  function saveVehicles(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存车型","err");return;}
+    if(!state.veh)return;
+    setStatus("保存车型中…","busy");
+    getFile("data/vehicles.json").then(function(cur){state.vehSha=cur.sha;
+      return putFile("data/vehicles.json",JSON.stringify(state.veh,null,2)+"\n",state.vehSha,"Update vehicles ("+state.veh.length+" units)");
+    }).then(function(){setStatus("已连接 · "+state.branch,"ok");toast("车型已保存，前端将在发布后自动更新 ✓","ok");renderDeploy();})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
+  }
+
+  /* ---------- content ---------- */
+  function groupKeys(obj){var g={};Object.keys(obj).forEach(function(k){var p=k.indexOf(".")>-1?k.split(".")[0]:"(root)";(g[p]=g[p]||[]).push(k);});return g;}
+  function renderContent(){
+    var area=$("contentArea");
+    if(!state.site){area.innerHTML='<div class="hint">连接仓库后加载首页文案。</div>';return;}
+    var filter=($("contentSearch").value||"").toLowerCase();
+    var groups=groupKeys(state.site.en);
+    area.innerHTML="";
+    Object.keys(groups).sort().forEach(function(grp){
+      var keys=groups[grp].filter(function(k){return !filter||k.toLowerCase().indexOf(filter)>-1;});
+      if(!keys.length)return;
+      var det=el("details","","");det.open=true;
+      var sum=el("summary","",esc(grp)+' <span style="color:var(--muted);font-weight:400">('+keys.length+')</span>');
+      det.appendChild(sum);
+      keys.sort().forEach(function(k){
+        var f=el("div","class","field");
+        f.innerHTML='<div class="k">'+esc(k)+'</div>';
+        ["en","zh","ar","ru"].forEach(function(lang){
+          var val=state.site[lang]?state.site[lang][k]:"";
+          var lr=el("div","class","langrow");
+          lr.innerHTML='<span>'+lang.toUpperCase()+'</span>';
+          var inp=el("input",{value:esc(val),"data-lang":lang,"data-key":k});
+          inp.oninput=function(){state.site[lang]=state.site[lang]||{};state.site[lang][k]=inp.value;};
+          lr.appendChild(inp);f.appendChild(lr);
+        });
+        det.appendChild(f);
+      });
+      area.appendChild(det);
+    });
+  }
+  function saveContent(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存文案","err");return;}
+    if(!state.site)return;
+    setStatus("保存文案中…","busy");
+    getFile("data/site.json").then(function(cur){state.siteSha=cur.sha;
+      return putFile("data/site.json",JSON.stringify(state.site,null,2)+"\n",state.siteSha,"Update homepage content");
+    }).then(function(){setStatus("已连接 · "+state.branch,"ok");toast("文案已保存 ✓","ok");})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
+  }
+
+  /* ---------- inbox / chat ---------- */
+  function loadInbox(){
+    if(!state.token){toast("请先连接仓库","err");return;}
+    setStatus("加载询盘中…","busy");
+    api("/repos/"+state.owner+"/"+state.repo+"/issues?labels=chat&state=all&per_page=100").then(function(r){if(!r.ok)throw new Error("加载 Issue 失败");return r.json();})
+    .then(function(issues){
+      state.convs=issues||[];
+      setStatus("已连接 · "+state.branch,"ok");updateStats();renderInbox();
+      if(!state.activeConv&&state.convs.length)selectConv(state.convs[0].number);
+    }).catch(function(err){setStatus("询盘加载失败","err");toast(err.message,"err");});
+  }
+  function renderInbox(){
+    var list=$("convList");
+    if(!state.convs.length){list.innerHTML='<div class="empty">暂无询盘对话。</div>';return;}
+    var rows=state.convs.map(function(iss){
+      var first=(iss.body||"").replace(/\n/g," ").slice(0,90);
+      var open=iss.state!=="closed";
+      return '<tr class="conv-row'+(state.activeConv===iss.number?" active":"")+'" data-n="'+iss.number+'">'+
+        '<td><div class="ct">'+esc(iss.title||"Chat")+'</div><div class="cm">'+esc(first)+'</div></td>'+
+        '<td><span class="badge '+(open?"b-open":"b-closed")+'">'+(open?"待处理":"已解决")+'</span></td>'+
+        '<td class="num">#'+iss.number+'</td></tr>';
+    }).join("");
+    list.innerHTML='<table class="inq-table"><thead><tr><th>客户 / 需求</th><th>状态</th><th>#</th></tr></thead><tbody>'+rows+'</tbody></table>';
+    list.querySelectorAll(".conv-row").forEach(function(r){r.onclick=function(){selectConv(+r.dataset.n);};});
+  }
+  function selectConv(num){
+    state.activeConv=num;renderInbox();$("threadCard").style.display="block";
+    var iss=state.convs.filter(function(x){return x.number===num;})[0];
+    if(!iss)return;
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+num+"/comments").then(function(r){if(!r.ok)throw new Error("加载失败");return r.json();})
+    .then(function(comments){
+      var thread=$("thread");thread.innerHTML="";
+      thread.appendChild(msgEl("访客 · Visitor", iss.body||"", "them"));
+      (comments||[]).forEach(function(c){
+        var me=(c.user&&c.user.login===state.owner);
+        thread.appendChild(msgEl(c.user?c.user.login:"visitor", c.body, me?"me":"them"));
+      });
+      thread.scrollTop=thread.scrollHeight;
+    }).catch(function(err){toast(err.message,"err");});
+  }
+  function msgEl(who,text,side){var m=el("div","class","msg "+side);m.innerHTML='<div class="who">'+esc(who)+'</div>'+esc(text);return m;}
+  function sendReply(){
+    if(state.activeConv==null){toast("请选择一个对话","err");return;}
+    var txt=$("replyText").value.trim();if(!txt){toast("请输入回复","err");return;}
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv+"/comments",{method:"POST",body:JSON.stringify({body:txt})})
+    .then(function(r){if(!r.ok)throw new Error("回复发送失败");return r.json();})
+    .then(function(){$("replyText").value="";selectConv(state.activeConv);toast("已回复 ✓","ok");})
+    .catch(function(err){toast(err.message,"err");});
+  }
+  function closeConv(){
+    if(state.activeConv==null){toast("请选择一个对话","err");return;}
+    api("/repos/"+state.owner+"/"+state.repo+"/issues/"+state.activeConv,{method:"PATCH",body:JSON.stringify({state:"closed"})})
+    .then(function(r){if(!r.ok)throw new Error("操作失败");return r.json();})
+    .then(function(){loadInbox();toast("已标记为解决","ok");})
+    .catch(function(err){toast(err.message,"err");});
+  }
+
+  /* ---------- settings ---------- */
+  function renderSettings(){
+    if(!state.config)return;
+    $("sBiz").value=state.config.businessName||"";$("sWa").value=state.config.whatsapp||"";
+    $("sEmail").value=state.config.email||"";$("sChatTok").value=state.config.chatToken||"";
+  }
+  function saveSettings(){
+    if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再保存设置","err");return;}
+    state.config={businessName:$("sBiz").value.trim(),whatsapp:$("sWa").value.trim(),email:$("sEmail").value.trim(),chatToken:$("sChatTok").value.trim()};
+    setStatus("保存设置中…","busy");
+    api(repoPath("data/config.json")).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha;});return null;})
+    .then(function(sha){
+      var body={message:"Update site settings",content:utf8ToB64(JSON.stringify(state.config,null,2)+"\n")};if(state.branch)body.branch=state.branch;if(sha)body.sha=sha;
+      return api("/repos/"+state.owner+"/"+state.repo+"/contents/"+encPath("data/config.json"),{method:"PUT",body:JSON.stringify(body)});
+    }).then(function(r){if(!r.ok)throw new Error("保存失败（HTTP "+r.status+"）");return r.json();})
+    .then(function(){state.configSha=null;setStatus("已连接 · "+state.branch,"ok");toast("设置已保存 ✓","ok");})
+    .catch(function(err){setStatus("保存失败","err");toast(err.message,"err");});
+  }
+
+  /* ---------- deploy ---------- */
+  function renderDeploy(){
+    if(!state.owner)return;
+    var live="https://"+state.owner+".github.io/"+state.repo+"/";
+    var info="仓库：<b>"+esc(state.owner)+"/"+esc(state.repo)+"</b> · 分支：<b>"+esc(state.branch)+"</b><br>"+
+      "官网：<a href='"+live+"' target='_blank' rel='noopener'>"+live+"</a><br>"+
+      "后台：<a href='"+live+"admin/' target='_blank' rel='noopener'>"+live+"admin/</a><br><br>"+
+      "车型：<b>"+(state.veh?state.veh.length:0)+"</b> · 首页文案键(EN)：<b>"+(state.site?Object.keys(state.site.en).length:0)+"</b>";
+    if($("deployInfo"))$("deployInfo").innerHTML=info;
+    if($("deployInfo2"))$("deployInfo2").innerHTML=info;
+  }
+
+  /* ---------- navigation / pages ---------- */
+  var PAGE_META={
+    dashboard:{zh:"仪表盘",en:"Dashboard"},
+    inventory:{zh:"车型管理",en:"Inventory Management"},
+    settings:{zh:"官网设置",en:"Site Settings"},
+    inbox:{zh:"客户询盘",en:"Customer Inquiries"},
+    deploy:{zh:"部署发布",en:"Deploy & Publish"}
+  };
+  function showPage(name){
+    document.querySelectorAll(".nav-item").forEach(function(n){n.classList.toggle("active",n.dataset.page===name);});
+    document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id==="page-"+name);});
+    $("pageZh").textContent=PAGE_META[name].zh;$("pageEn").textContent=PAGE_META[name].en;
+    if(name==="inbox")loadInbox();
+    if(name==="settings"){renderContent();renderSettings();}
+  }
+
+  /* ---------- image upload wiring ---------- */
+  function wireUpload(){
+    $("vFile").addEventListener("change",function(){
+      var file=this.files&&this.files[0];if(!file)return;
+      if(!state.token){toast("请先在「仪表盘」连接仓库（需带 repo 权限的 Token）后再上传图片","err");return;}
+      setStatus("上传图片中…","busy");
+      fileToBase64(file).then(function(b64){
+        return getFileSha("assets/"+file.name).then(function(sha){return putImage("assets/"+file.name,b64,sha,"Upload "+file.name);},function(){return putImage("assets/"+file.name,b64,null,"Upload "+file.name);});
+      }).then(function(){var url="assets/"+file.name;$("vImage").value=url;setStatus("已连接 · "+state.branch,"ok");toast("图片已上传 ✓","ok");})
+      .catch(function(err){setStatus("上传失败","err");toast(err.message,"err");});
+    });
+  }
+
+  /* ---------- init ---------- */
+  function init(){
+    loadCfg();wireUpload();
+    document.querySelectorAll(".nav-item").forEach(function(n){n.onclick=function(){showPage(n.dataset.page);};});
+    $("btnConnect").onclick=connect;
+    $("btnDisconnect").onclick=function(){try{localStorage.removeItem(LS_KEY);}catch(e){}state.token="";state.owner="xiaoxiao0709";state.repo="autoexport-b2b";state.branch="";state.site=null;state.veh=null;state.convs=null;state.config=null;setStatus("已断开","err");toast("已清除本地连接信息，请重新连接","ok");};
+    $("btnShowTok").onclick=function(){var i=$("cfgToken");i.type=i.type==="password"?"text":"password";};
+    $("btnVehSubmit").onclick=submitVehForm;
+    $("btnCancelEdit").onclick=function(){populateVehForm(-1);};
+    $("btnSaveVehicles")&&($("btnSaveVehicles").onclick=saveVehicles);
+    $("btnSaveContent").onclick=saveContent;
+    $("contentSearch").oninput=renderContent;
+    $("btnSendReply").onclick=sendReply;
+    $("btnCloseConv").onclick=closeConv;
+    $("btnSaveSettings").onclick=saveSettings;
+    var open=function(u){window.open(u,"_blank");};
+    var copy=function(u){navigator.clipboard.writeText(u).then(function(){toast("后台地址已复制","ok");},function(){toast(u);});};
+    $("btnOpenLive").onclick=function(){open("https://"+state.owner+".github.io/"+state.repo+"/");};
+    $("btnOpenAdmin").onclick=function(){copy("https://"+state.owner+".github.io/"+state.repo+"/admin/");};
+    $("btnOpenLive2")&&($("btnOpenLive2").onclick=$("btnOpenLive").onclick);
+    $("btnOpenAdmin2")&&($("btnOpenAdmin2").onclick=$("btnOpenAdmin").onclick);
+    if(state.token&&state.owner&&state.repo){connect();}else{setStatus("未连接","");}
+    populateVehForm(-1);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Export · Dealer Admin</title>
+<style>
+  :root{
+    --side:#0f172a; --side-2:#111c34; --side-line:rgba(255,255,255,.08);
+    --brand:#4f6bff; --brand-2:#22d3ee; --brand-grad:linear-gradient(90deg,#6366f1,#22d3ee);
+    --ink:#0f172a; --muted:#64748b; --line:#e6eaf2;
+    --bg:#f4f6fb; --card:#fff; --ok:#16a34a; --warn:#d97706; --err:#dc2626;
+    --r:14px; --shadow:0 1px 2px rgba(16,24,40,.05),0 10px 30px rgba(16,24,40,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+  a{color:var(--brand)}
+  button{font:inherit;cursor:pointer;border:1px solid transparent;border-radius:10px;padding:9px 16px;font-weight:600;background:var(--brand);color:#fff}
+  button:hover{filter:brightness(.95)}
+  button.ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  button.ghost:hover{background:#f6f8ff}
+  button.danger{background:#fff;border-color:#fecaca;color:var(--err)}
+  button.danger:hover{background:#fef2f2}
+  button:disabled{opacity:.5;cursor:not-allowed}
+
+  /* ---------- layout ---------- */
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:248px;flex:none;background:linear-gradient(180deg,var(--side),var(--side-2));color:#cbd5e1;
+    display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .brand-block{display:flex;align-items:center;gap:11px;padding:22px 20px 18px}
+  .logo{width:40px;height:40px;border-radius:11px;background:var(--brand-grad);display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#fff;font-size:18px;box-shadow:0 6px 16px rgba(79,107,255,.45)}
+  .b-name{color:#fff;font-weight:800;font-size:16px;line-height:1.15}
+  .b-sub{font-size:11px;color:#7c8aa5;letter-spacing:.5px}
+  .nav{display:flex;flex-direction:column;gap:4px;padding:8px 12px;flex:1}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border:none;background:none;color:#aeb9cc;
+    border-radius:10px;text-align:left;width:100%;position:relative}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:#eef2ff}
+  .nav-item.active{background:rgba(79,107,255,.16);color:#fff}
+  .nav-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--brand-grad)}
+  .nav-item svg{width:19px;height:19px;flex:none;opacity:.85}
+  .nav-zh{font-weight:700;font-size:14px}
+  .nav-en{font-size:11px;color:#7c8aa5;margin-top:1px}
+  .nav-item.active .nav-en{color:#9fb0ff}
+  .side-foot{padding:14px 16px;border-top:1px solid var(--side-line)}
+  .user-block{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+  .un{color:#fff;font-size:13px;font-weight:600}
+  .ur{font-size:11px;color:#7c8aa5}
+
+  .content{flex:1;min-width:0;padding:24px 28px 60px}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .page-head h1{margin:0;font-size:26px;font-weight:800;letter-spacing:.5px}
+  .page-sub{font-size:15px;font-style:italic;font-weight:700;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:3px}
+  .head-actions{display:flex;gap:10px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+  .card h2{margin:0 0 4px;font-size:16px}
+  .card .csub{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid #dfe6ff;border-color:var(--brand)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+  .errbox{color:var(--err);font-size:12px;margin-top:8px;display:none}
+
+  /* connection status pill */
+  .status-pill{display:inline-flex;gap:8px;align-items:center;font-size:12px;padding:7px 12px;border-radius:999px;
+    background:rgba(255,255,255,.06);color:#aeb9cc;border:1px solid var(--side-line)}
+  .status-pill .led{width:8px;height:8px;border-radius:50%;background:#94a3b8;flex:none}
+  .status-pill.ok{color:#7dffb0}.status-pill.ok .led{background:var(--ok)}
+  .status-pill.err{color:#ffb4b4}.status-pill.err .led{background:var(--err)}
+  .status-pill.busy{color:#ffe09a}.status-pill.busy .led{background:var(--warn);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+
+  /* dashboard stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden}
+  .stat .si{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+  .stat .sl{font-size:12px;color:var(--muted);font-weight:600}
+  .stat .sv{font-size:28px;font-weight:800;margin-top:6px;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .sd{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* inventory two-col */
+  .inv-layout{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+  .form-card{position:sticky;top:18px}
+  .form-banner{display:none;align-items:center;justify-content:space-between;gap:10px;background:#eef2ff;border:1px solid #c7d2fe;
+    color:#3730a3;font-size:12px;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:14px}
+  .form-banner button{background:none;border:none;color:#4338ca;padding:0;font-size:12px;text-decoration:underline}
+  /* vehicle grid */
+  .veh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .veh-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:.15s}
+  .veh-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+  .veh-thumb{height:132px;background:#eef2f7;position:relative}
+  .veh-thumb img{width:100%;height:100%;object-fit:cover}
+  .veh-thumb .ph{display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:12px}
+  .veh-pub{position:absolute;top:8px;left:8px;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;backdrop-filter:blur(2px)}
+  .veh-pub.on{background:#dcfce7;color:#15803d}.veh-pub.off{background:#fee2e2;color:#b91c1c}
+  .veh-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:6px}
+  .veh-bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .veh-bhead b{font-size:15px}.veh-bhead .model{font-size:13px;color:var(--muted)}
+  .veh-cat{font-size:11px;color:#6366f1;font-weight:600}
+  .veh-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .veh-specs{font-size:11px;color:#475569;background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:6px 8px;line-height:1.6}
+  .veh-stock{margin-top:2px;font-size:12px}.veh-stock b{color:var(--ink)}
+  .veh-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+  .veh-actions button{flex:1;padding:7px 0;font-size:13px}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;font-weight:600}
+  .tag.ev{background:#dcfce7;color:#15803d}.tag.phev{background:#fef9c3;color:#a16207}.tag.petrol{background:#ffe4e6;color:#be123c}
+
+  /* switch */
+  .switch{position:relative;display:inline-block;width:42px;height:23px;flex:none}
+  .switch input{display:none}
+  .switch .sl{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.2s;cursor:pointer}
+  .switch .sl:before{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .switch input:checked+.sl{background:var(--ok)}
+  .switch input:checked+.sl:before{transform:translateX(19px)}
+
+  /* numbered settings groups */
+  .grp-card{display:flex;gap:16px;align-items:flex-start}
+  .grp-num{flex:none;width:46px;height:46px;border-radius:12px;background:var(--brand-grad);color:#fff;font-weight:800;font-size:18px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(79,107,255,.35)}
+  .grp-body{flex:1}
+
+  /* inbox table */
+  .inq-table{width:100%;border-collapse:collapse}
+  .inq-table th{text-align:left;padding:10px 12px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);font-weight:700}
+  .inq-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .conv-row{cursor:pointer}
+  .conv-row:hover{background:#f8fafc}
+  .conv-row.active{background:#eef2ff}
+  .conv-row .ct{font-weight:700;font-size:13px}
+  .conv-row .cm{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
+  .conv-row .num{color:#94a3b8;font-size:12px}
+  .badge{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:700}
+  .badge.b-open{background:#dcfce7;color:#15803d}
+  .badge.b-closed{background:#e2e8f0;color:#64748b}
+  .thread{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+  .msg{padding:9px 12px;border-radius:12px;max-width:82%;font-size:13px;white-space:pre-wrap;word-break:break-word}
+  .msg.me{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .msg.them{background:#f1f5f9;align-self:flex-start;border-bottom-left-radius:3px}
+  .msg .who{font-size:10px;opacity:.7;margin-bottom:2px}
+  .reply-box{display:flex;gap:8px;margin-top:12px}
+  .reply-box textarea{flex:1;min-height:44px;resize:vertical}
+  .empty{color:var(--muted);font-size:13px;padding:30px;text-align:center}
+
+  /* content editor */
+  .grp{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .grp>summary{padding:11px 14px;cursor:pointer;font-weight:700;background:#fafbff;list-style:none;display:flex;justify-content:space-between}
+  .grp>summary::-webkit-details-marker{display:none}
+  .field{border-top:1px solid var(--line);padding:12px 14px}
+  .field .k{font-size:12px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;margin-bottom:8px}
+  .langrow{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center;margin-bottom:7px}
+  .langrow span{font-size:12px;font-weight:700;color:var(--muted)}
+  .kv{font-size:12px;color:var(--muted)} .kv b{color:var(--ink)}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw}
+  .toast.show{opacity:1}
+  .toast.err{background:var(--err)} .toast.ok{background:var(--ok)}
+
+  .page{display:none}
+  .page.active{display:block}
+
+  @media (max-width:980px){
+    .inv-layout{grid-template-columns:1fr}
+    .form-card{position:static}
+    .sidebar{width:70px}
+    .b-name,.b-sub,.nav-zh,.nav-en,.user-block,.side-foot .status-pill span:last-child{display:none}
+    .brand-block{justify-content:center;padding:18px 0}
+    .nav-item{justify-content:center;padding:12px 0}
+    .content{padding:18px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="brand-block">
+      <div class="logo">A</div>
+      <div>
+        <div class="b-name">Auto Export</div>
+        <div class="b-sub">DEALER ADMIN</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <div><div class="nav-zh">仪表盘</div><div class="nav-en">Dashboard</div></div>
+      </button>
+      <button class="nav-item" data-page="inventory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.3 10h5.4a2 2 0 0 1 1.8 1.5L18 17"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg>
+        <div><div class="nav-zh">车型管理</div><div class="nav-en">Inventory</div></div>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>
+        <div><div class="nav-zh">官网设置</div><div class="nav-en">Site Settings</div></div>
+      </button>
+      <button class="nav-item" data-page="inbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
+        <div><div class="nav-zh">客户询盘</div><div class="nav-en">Inquiries</div></div>
+      </button>
+      <button class="nav-item" data-page="deploy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 1 5 4 5 7 0 2-1 4-2 6H9c-1-2-2-4-2-6 0-3 2-6 5-7z"/><path d="M9 16l-2 5M15 16l2 5M12 16v5"/></svg>
+        <div><div class="nav-zh">部署发布</div><div class="nav-en">Deploy</div></div>
+      </button>
+    </nav>
+    <div class="side-foot">
+      <div class="status-pill" id="status"><span class="led"></span><span id="statusText">未连接</span></div>
+      <div class="user-block">
+        <div class="avatar">A</div>
+        <div><div class="un">Admin</div><div class="ur" id="footRepo">仓库未设置</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== Content ===== -->
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <h1 id="pageZh">仪表盘</h1>
+        <div class="page-sub" id="pageEn">Dashboard</div>
+      </div>
+      <div class="head-actions" id="headActions"></div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="stats">
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.3 10h5.4a2 2 0 0 1 1.8 1.5L18 17"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg></div>
+          <div class="sl">车型总数</div><div class="sv" id="statTotal">0</div><div class="sd">Total vehicles</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#22d3ee,#06b6d4)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="sl">已上架</div><div class="sv" id="statLive">0</div><div class="sd">Published</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 3z"/></svg></div>
+          <div class="sl">待处理询盘</div><div class="sv" id="statInq">0</div><div class="sd">Open inquiries</div></div>
+        <div class="stat"><div class="si" style="background:linear-gradient(135deg,#10b981,#16a34a)"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3zM3 7l9 6 9-6"/></svg></div>
+          <div class="sl">总库存</div><div class="sv" id="statStock">0</div><div class="sd">Units in stock</div></div>
+      </div>
+
+      <div class="card">
+        <h2>仓库连接 · GitHub</h2>
+        <div class="csub">连接 GitHub 仓库后，所有修改会直接提交并触发 GitHub Pages 自动重建。</div>
+        <div class="grid2">
+          <div><label>Owner</label><input id="cfgOwner" value="xiaoxiao0709"></div>
+          <div><label>Repository</label><input id="cfgRepo" value="autoexport-b2b"></div>
+          <div><label>Branch</label><input id="cfgBranch" placeholder="自动探测 (main/master)"></div>
+          <div><label>Token (PAT)</label><input id="cfgToken" type="password" placeholder="ghp_… 或 github_pat_…"></div>
+        </div>
+        <div class="hint">Token 需要 <b>public_repo</b>（公开仓库）或 <b>repo</b> 权限。仅保存在本浏览器 localStorage，并直接发往 api.github.com，不会经过任何第三方。</div>
+        <div class="row" style="margin-top:14px">
+          <button id="btnConnect">连接仓库</button>
+          <button class="ghost" id="btnShowTok">显示 / 隐藏 Token</button>
+          <button class="ghost" id="btnDisconnect" style="color:#c0392b">断开连接</button>
+        </div>
+        <div id="cfgErr" class="errbox"></div>
+      </div>
+
+      <div class="card">
+        <h2>快速访问</h2>
+        <div class="kv" id="deployInfo">连接仓库后显示线上地址。</div>
+        <div class="row" style="margin-top:14px">
+          <button class="ghost" id="btnOpenLive">打开官网 ↗</button>
+          <button class="ghost" id="btnOpenAdmin">复制后台地址</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="page" id="page-inventory">
+      <div class="inv-layout">
+        <div class="card form-card">
+          <h2 id="vehFormTitle">添加车型</h2>
           <div class="csub">填写完成后点击「添加车型」。</div>
           <div class="form-banner" id="vehFormBanner"><span>编辑中：<b class="bf-name"></b></span><button id="btnCancelEdit" type="button">取消编辑</button></div>
           <div class="grid2">
