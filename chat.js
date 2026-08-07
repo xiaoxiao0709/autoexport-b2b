@@ -172,6 +172,21 @@
 
   /* ---------- init ---------- */
   function loadConfig() {
+    var backendCfg = window.AUTOEXPORT_SUPABASE;
+    if (backendCfg && window.supabase) {
+      var client = window.supabase.createClient(backendCfg.url, backendCfg.publishableKey);
+      return client.from("site_settings").select("business_name,whatsapp,email").eq("id", "main").single()
+        .then(function (result) {
+          if (result.error) throw result.error;
+          cfg = {
+            businessName: result.data.business_name || "Auto Export",
+            whatsapp: result.data.whatsapp || "",
+            email: result.data.email || "",
+            chatToken: ""
+          };
+          if (panel.classList.contains("open")) render();
+        });
+    }
     return fetch("data/config.json?v=" + Date.now(), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function (c) { cfg = c; if (panel.classList.contains("open")) render(); })
