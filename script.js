@@ -224,6 +224,8 @@
   var brandTerm = "all";
   var lastSiteJSON = "";
   var lastVehiclesJSON = "";
+  var dataClient = null;
+  var dataChannel = null;
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -371,12 +373,49 @@
     });
   }
 
+  function getDataClient() {
+    if (dataClient) return dataClient;
+    var cfg = window.AUTOEXPORT_SUPABASE;
+    if (!cfg || !window.supabase) return null;
+    dataClient = window.supabase.createClient(cfg.url, cfg.publishableKey);
+    return dataClient;
+  }
+
+  function fetchSiteData(version) {
+    var client = getDataClient();
+    if (!client) {
+      return Promise.all([
+        fetchJSON("data/site.json", version),
+        fetchJSON("data/vehicles.json", version)
+      ]);
+    }
+    return Promise.all([
+      client.from("site_content").select("content").eq("id", "main").single(),
+      client.from("vehicles").select("id,data,published,sort_order").order("sort_order")
+    ]).then(function (results) {
+      if (results[0].error) throw results[0].error;
+      if (results[1].error) throw results[1].error;
+      return [
+        results[0].data.content,
+        results[1].data.map(function (row) {
+          return Object.assign({}, row.data, { id: row.id, published: row.published });
+        })
+      ];
+    });
+  }
+
+  function subscribeToData() {
+    var client = getDataClient();
+    if (!client || dataChannel) return;
+    dataChannel = client.channel("public-site-data")
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_content" }, function () { loadData(true); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, function () { loadData(true); })
+      .subscribe();
+  }
+
   function loadData(silent) {
     var version = Date.now();
-    Promise.all([
-      fetchJSON("data/site.json", version),
-      fetchJSON("data/vehicles.json", version)
-    ]).then(function (res) {
+    fetchSiteData(version).then(function (res) {
       var siteJSON = JSON.stringify(res[0]);
       var vehiclesJSON = JSON.stringify(res[1]);
       var vehiclesChanged = vehiclesJSON !== lastVehiclesJSON;
@@ -406,6 +445,7 @@
     setupInteractions();
     setupFilters();
     loadData();
+    subscribeToData();
     setInterval(function () { loadData(true); }, 30000);
     window.addEventListener("focus", function () { loadData(true); });
     document.addEventListener("visibilitychange", function () {
