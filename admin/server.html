@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>汽车出口管理后台</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../data/supabase-config.js"></script>
+  <style>
+    :root{--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f6f8;--panel:#fff;--accent:#2563eb;--danger:#dc2626;--ok:#15803d}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,"Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+    .login{min-height:100vh;display:grid;place-items:center;padding:24px;background:#101318}.login-box{width:min(400px,100%);background:#fff;padding:32px;border-radius:8px}.login-mark{width:42px;height:42px;display:grid;place-items:center;background:#111827;color:#fff;font-size:20px;font-weight:800;border-radius:6px}.login h1{font-size:22px;margin:20px 0 4px}.login p{margin:0 0 24px;color:var(--muted)}
+    label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:6px;background:#fff;padding:10px 11px;color:var(--ink)}input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:var(--accent)}.field{margin-bottom:15px}.primary,.secondary,.danger{border:0;border-radius:6px;padding:9px 14px;font-weight:700}.primary{background:var(--accent);color:#fff}.secondary{background:#fff;color:var(--ink);border:1px solid #d1d5db}.danger{background:#fff;color:var(--danger);border:1px solid #fecaca}.wide{width:100%}
+    .shell{min-height:100vh;display:grid;grid-template-columns:224px 1fr}.side{background:#111318;color:#d1d5db;padding:18px 14px;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 24px;color:#fff;font-weight:800;font-size:16px}.brand b{width:34px;height:34px;display:grid;place-items:center;background:#fff;color:#111318;border-radius:5px}.nav{display:grid;gap:4px}.nav button{display:flex;align-items:center;gap:11px;width:100%;border:0;background:transparent;color:#9ca3af;padding:10px 12px;border-radius:6px;text-align:left}.nav button.active,.nav button:hover{background:#252932;color:#fff}.nav svg{width:17px}.side-foot{position:absolute;left:14px;right:14px;bottom:18px}.main{min-width:0}.top{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}.top h1{font-size:18px;margin:0}.top-actions{display:flex;align-items:center;gap:10px}.live{font-size:12px;color:var(--ok);display:flex;align-items:center;gap:6px}.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+    .content{padding:26px 28px}.page{display:none}.page.active{display:block}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.toolbar h2{margin:0;font-size:20px}.toolbar-actions{display:flex;gap:8px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:7px;padding:18px}.stat span{color:var(--muted);font-size:12px}.stat b{display:block;font-size:27px;margin-top:8px}.panel{background:#fff;border:1px solid var(--line);border-radius:7px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:11px;text-transform:uppercase;color:var(--muted);background:#fafafa}td img{width:74px;height:46px;object-fit:cover;border-radius:4px;background:#eee}.actions{display:flex;gap:6px}.icon-btn{width:34px;height:34px;display:grid;place-items:center;border:1px solid #d1d5db;background:#fff;border-radius:5px}.icon-btn svg{width:16px}.badge{display:inline-flex;padding:3px 8px;border-radius:99px;font-size:11px;background:#dcfce7;color:#166534}.badge.off{background:#f3f4f6;color:#6b7280}
+    .content-tools{display:flex;gap:10px;margin-bottom:14px}.content-tools input{max-width:360px}.content-list{display:grid;gap:10px}.content-group{border:1px solid var(--line);border-radius:6px;overflow:hidden}.content-group summary{padding:12px 14px;font-weight:800;background:#fafafa;cursor:pointer}.content-row{display:grid;grid-template-columns:190px repeat(4,1fr);gap:8px;padding:10px 12px;border-top:1px solid var(--line);align-items:center}.content-key{font:12px ui-monospace,monospace;color:#4b5563;word-break:break-all}.content-row input{padding:8px;font-size:12px}.lang-head{display:grid;grid-template-columns:190px repeat(4,1fr);gap:8px;padding:8px 12px;color:var(--muted);font-size:11px}
+    .settings{max-width:720px;padding:20px}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.settings .wide-field{grid-column:1/-1}.empty{padding:36px;text-align:center;color:var(--muted)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:50;display:grid;place-items:center;padding:20px}.modal-box{width:min(820px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:8px}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}.modal-head h3{margin:0}.modal-body{padding:20px}.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.span-2{grid-column:span 2}.span-3{grid-column:1/-1}.check{display:flex;align-items:center;gap:8px}.check input{width:auto}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+    .toast{position:fixed;right:20px;top:78px;z-index:80;background:#111827;color:#fff;padding:11px 15px;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.2)}.toast.error{background:#991b1b}
+    @media(max-width:900px){.shell{grid-template-columns:72px 1fr}.brand span,.nav span,.side-foot span{display:none}.brand{justify-content:center}.nav button{justify-content:center}.stats{grid-template-columns:1fr 1fr}.content-row,.lang-head{grid-template-columns:130px repeat(4,180px)}.content-group{overflow:auto}.form-grid{grid-template-columns:1fr 1fr}.span-3{grid-column:1/-1}}
+    @media(max-width:600px){.shell{display:block}.side{height:auto;position:sticky;z-index:30;padding:8px}.brand,.side-foot{display:none}.nav{grid-template-columns:repeat(5,1fr)}.nav button{padding:9px}.top{padding:0 16px}.content{padding:18px 14px}.stats{grid-template-columns:1fr 1fr}.toolbar{align-items:flex-start}.form-grid,.settings-grid{grid-template-columns:1fr}.span-2,.span-3,.settings .wide-field{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <section class="login" id="loginView">
+    <form class="login-box" id="loginForm">
+      <div class="login-mark">A</div><h1>管理后台</h1><p>汽车出口资源管理</p>
+      <div class="field"><label>管理员邮箱</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+      <div class="field"><label>密码</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="primary wide" type="submit">登录</button>
+      <p id="loginError" style="color:#dc2626;margin:14px 0 0"></p>
+    </form>
+  </section>
+
+  <div class="shell hidden" id="adminView">
+    <aside class="side">
+      <div class="brand"><b>A</b><span>汽车出口管理</span></div>
+      <nav class="nav">
+        <button class="active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span>概览</span></button>
+        <button data-page="vehicles"><i data-lucide="car-front"></i><span>车辆</span></button>
+        <button data-page="content"><i data-lucide="languages"></i><span>主页内容</span></button>
+        <button data-page="settings"><i data-lucide="settings"></i><span>联系信息</span></button>
+        <button data-page="inquiries"><i data-lucide="messages-square"></i><span>询盘</span></button>
+      </nav>
+      <div class="side-foot"><button class="nav-btn secondary wide" id="logoutBtn"><span>退出登录</span></button></div>
+    </aside>
+    <main class="main">
+      <header class="top"><h1 id="pageTitle">概览</h1><div class="top-actions"><span class="live">实时连接</span><a class="secondary" href="../" target="_blank" style="text-decoration:none">打开官网</a></div></header>
+      <div class="content">
+        <section class="page active" id="page-dashboard"><div class="toolbar"><h2>业务数据</h2></div><div class="stats"><div class="stat"><span>车辆总数</span><b id="statVehicles">0</b></div><div class="stat"><span>已上架</span><b id="statPublished">0</b></div><div class="stat"><span>库存总量</span><b id="statStock">0</b></div><div class="stat"><span>新询盘</span><b id="statInquiries">0</b></div></div></section>
+        <section class="page" id="page-vehicles"><div class="toolbar"><h2>车辆资源</h2><button class="primary" id="addVehicleBtn">新增车辆</button></div><div class="panel table-wrap"><table><thead><tr><th>图片</th><th>品牌 / 车型</th><th>类型</th><th>年份</th><th>库存</th><th>状态</th><th>操作</th></tr></thead><tbody id="vehicleRows"></tbody></table><div class="empty hidden" id="vehicleEmpty">暂无车辆</div></div></section>
+        <section class="page" id="page-content"><div class="toolbar"><h2>主页内容</h2><button class="primary" id="saveContentBtn">保存内容</button></div><div class="content-tools"><input id="contentSearch" placeholder="搜索内容键"></div><div class="content-list" id="contentList"></div></section>
+        <section class="page" id="page-settings"><div class="toolbar"><h2>联系信息</h2></div><form class="panel settings" id="settingsForm"><div class="settings-grid"><div class="wide-field"><label>企业名称</label><input id="settingBusiness"></div><div><label>联系电话</label><input id="settingWhatsapp"></div><div><label>企业邮箱</label><input id="settingEmail" type="email"></div></div><button class="primary" style="margin-top:18px">保存设置</button></form></section>
+        <section class="page" id="page-inquiries"><div class="toolbar"><h2>采购询盘</h2></div><div class="panel table-wrap"><table><thead><tr><th>时间</th><th>客户</th><th>企业</th><th>联系方式</th><th>内容</th><th>状态</th></tr></thead><tbody id="inquiryRows"></tbody></table><div class="empty hidden" id="inquiryEmpty">暂无询盘</div></div></section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="vehicleModal">
+    <form class="modal-box" id="vehicleForm"><div class="modal-head"><h3 id="vehicleModalTitle">新增车辆</h3><button class="icon-btn" type="button" id="closeVehicleBtn"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-grid">
+      <div><label>品牌</label><input id="vBrand" required></div><div><label>车型</label><input id="vName" required></div><div><label>类型</label><select id="vType"><option value="ev">纯电</option><option value="phev">混动</option><option value="petrol">燃油</option></select></div>
+      <div><label>年份</label><input id="vYear" type="number" value="2025"></div><div><label>车身</label><input id="vBody"></div><div><label>库存</label><input id="vStock" type="number" value="1"></div>
+      <div><label>续航</label><input id="vRange"></div><div><label>动力</label><input id="vPower"></div><div><label>驱动</label><input id="vDrivetrain"></div>
+      <div><label>目标市场（中文）</label><input id="vMarketZh"></div><div><label>目标市场（英文）</label><input id="vMarketEn"></div><div><label>状态</label><input id="vStatus" value="Export Ready"></div>
+      <div class="span-2"><label>图片地址</label><input id="vImage"></div><div><label>上传图片</label><input id="vFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
+      <div class="span-3"><label>中文描述</label><textarea id="vDescZh" rows="2"></textarea></div><div class="span-3"><label>英文描述</label><textarea id="vDescEn" rows="2"></textarea></div><div class="span-3 check"><input id="vPublished" type="checkbox" checked><label style="margin:0">前台上架</label></div>
+    </div></div><div class="modal-foot"><button class="secondary" type="button" id="cancelVehicleBtn">取消</button><button class="primary" type="submit">保存车辆</button></div></form>
+  </div>
+  <div class="toast hidden" id="toast"></div>
+  <script src="server.js?v=1"></script>
+</body>
+</html>
