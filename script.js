@@ -225,6 +225,7 @@
   var lastSiteJSON = "";
   var lastVehiclesJSON = "";
   var dataClient = null;
+  var siteSettings = null;
   var dataChannel = null;
 
   function escapeHtml(s) {
@@ -386,21 +387,45 @@
     if (!client) {
       return Promise.all([
         fetchJSON("data/site.json", version),
-        fetchJSON("data/vehicles.json", version)
+        fetchJSON("data/vehicles.json", version),
+        fetchJSON("data/config.json", version)
       ]);
     }
     return Promise.all([
       client.from("site_content").select("content").eq("id", "main").single(),
-      client.from("vehicles").select("id,data,published,sort_order").order("sort_order")
+      client.from("vehicles").select("id,data,published,sort_order").order("sort_order"),
+      client.from("site_settings").select("business_name,whatsapp,email").eq("id", "main").single()
     ]).then(function (results) {
       if (results[0].error) throw results[0].error;
       if (results[1].error) throw results[1].error;
+      if (results[2].error) throw results[2].error;
       return [
         results[0].data.content,
         results[1].data.map(function (row) {
           return Object.assign({}, row.data, { id: row.id, published: row.published });
-        })
+        }),
+        results[2].data
       ];
+    });
+  }
+
+  function applySiteSettings(settings) {
+    if (!settings) return;
+    var rawPhone = settings.whatsapp || "";
+    var digits = rawPhone.replace(/[^0-9]/g, "");
+    var phoneText = rawPhone;
+    if (digits === "8619310192287") phoneText = "+86 193 1019 2287";
+    else if (digits && rawPhone.indexOf("+") !== 0) phoneText = "+" + digits;
+    document.querySelectorAll("[data-contact-whatsapp]").forEach(function (link) {
+      if (digits) link.href = "https://wa.me/" + digits;
+    });
+    document.querySelectorAll("[data-contact-phone]").forEach(function (el) {
+      if (phoneText) el.textContent = phoneText;
+    });
+    document.querySelectorAll("[data-contact-email]").forEach(function (link) {
+      if (!settings.email) return;
+      link.href = "mailto:" + settings.email;
+      link.textContent = settings.email;
     });
   }
 
@@ -410,6 +435,7 @@
     dataChannel = client.channel("public-site-data")
       .on("postgres_changes", { event: "*", schema: "public", table: "site_content" }, function () { loadData(true); })
       .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, function () { loadData(true); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, function () { loadData(true); })
       .subscribe();
   }
 
@@ -420,11 +446,13 @@
       var vehiclesJSON = JSON.stringify(res[1]);
       var vehiclesChanged = vehiclesJSON !== lastVehiclesJSON;
       I18N = res[0];
+      siteSettings = res[2];
       lastSiteJSON = siteJSON;
       lastVehiclesJSON = vehiclesJSON;
       var saved = "en";
       try { saved = localStorage.getItem("aex_lang") || "en"; } catch (e) {}
       applyLang(pendingLang || saved);
+      applySiteSettings(siteSettings);
       if (vehiclesChanged) {
         vehicles = res[1];
         populateBrands();
