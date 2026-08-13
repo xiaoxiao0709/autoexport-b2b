@@ -36,6 +36,7 @@
       li.classList.toggle("active", li.dataset.lang === lang);
     });
     try { localStorage.setItem("aex_lang", lang); } catch (e) {}
+    if (location.hash.indexOf("#vehicle/") === 0 && vehicles.length) openVehicleFromHash();
   }
 
   function setupLangSwitcher() {
@@ -227,6 +228,14 @@
   var dataClient = null;
   var siteSettings = null;
   var dataChannel = null;
+  var VEHICLE_FACTS = {
+    "byd-song-plus": { dimensions:"4775 × 1890 × 1670 mm", wheelbase:"2765 mm", seats:"5", battery:"Blade Battery / DM-i", transmission:"E-CVT", price:"USD 18,900–24,500 FOB" },
+    "byd-seagull": { dimensions:"3780 × 1715 × 1540 mm", wheelbase:"2500 mm", seats:"4", battery:"30.08 / 38.88 kWh LFP", transmission:"Single-speed EV", price:"USD 9,500–12,500 FOB" },
+    "chery-tiggo8-pro": { dimensions:"4722 × 1860 × 1745 mm", wheelbase:"2710 mm", seats:"5 / 7", battery:"Petrol", transmission:"7-speed DCT", price:"USD 17,800–23,800 FOB" },
+    "geely-monjaro": { dimensions:"4770 × 1895 × 1689 mm", wheelbase:"2845 mm", seats:"5", battery:"Petrol", transmission:"8-speed AT", price:"USD 22,500–28,900 FOB" },
+    "haval-h6": { dimensions:"4683 × 1886 × 1730 mm", wheelbase:"2738 mm", seats:"5", battery:"Petrol", transmission:"7-speed DCT", price:"USD 14,800–20,800 FOB" },
+    "zeekr-001": { dimensions:"4977 × 1999 × 1533 mm", wheelbase:"3005 mm", seats:"5", battery:"95 / 100 kWh", transmission:"Single-speed EV", price:"USD 39,800–52,800 FOB" }
+  };
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -254,10 +263,10 @@
     var bodyLabel = bodyKey
       ? '<span data-i18n="' + bodyKey + '">' + escapeHtml(v.bodyType) + "</span>"
       : escapeHtml(v.bodyType);
-    return '<article class="car-card reveal" data-type="' + escapeAttr(v.type) +
+    return '<article class="car-card reveal" data-vehicle-id="' + escapeAttr(v.id) + '" data-type="' + escapeAttr(v.type) +
       '" data-brand="' + escapeAttr(v.brand) + '" data-name="' + escapeAttr(v.name) +
       '" style="--i:' + (i % 3) + '">' +
-      '<div class="car-media">' +
+      '<div class="car-media" role="link" tabindex="0" aria-label="View ' + escapeAttr(v.brand + " " + v.name) + '">' +
         '<img src="' + escapeAttr(v.image) + '" alt="' + escapeAttr(v.brand + " " + v.name) + '" loading="lazy">' +
         '<span class="car-status"><span data-i18n="inv.status">Export Ready</span></span>' +
       "</div>" +
@@ -295,8 +304,72 @@
     grid.querySelectorAll("[data-quote]").forEach(function (btn) {
       btn.addEventListener("click", function () { window.__openModal(btn.dataset.model); });
     });
+    grid.querySelectorAll("[data-vehicle-id]").forEach(function (card) {
+      var open = function () { window.location.hash = "vehicle/" + encodeURIComponent(card.dataset.vehicleId); };
+      card.addEventListener("click", function (event) {
+        if (!event.target.closest("button, a, input, select")) open();
+      });
+      card.querySelector(".car-media").addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); open(); }
+      });
+    });
     observeReveals(grid.querySelectorAll(".reveal"));
     applyFilters();
+    openVehicleFromHash();
+  }
+
+  function vehicleDescription(v) {
+    return v.detailEn || v.descEn || v.description ||
+      (v.brand + " " + v.name + " is available for dealer and importer orders from China. Multiple trims, exterior colours and shipment options can be matched against current factory and port-side stock.");
+  }
+
+  function openVehicleDetail(v) {
+    var detail = document.getElementById("vehicleDetail");
+    if (!detail || !v) return;
+    var gallery = (v.gallery && v.gallery.length ? v.gallery : [v.image]).filter(Boolean);
+    var facts = VEHICLE_FACTS[v.id] || {};
+    var lang = document.documentElement.lang || "en";
+    var zh = lang === "zh", ar = lang === "ar", ru = lang === "ru";
+    var labels = zh ? { price:"出口参考价", range:"续航里程", power:"最大功率", drive:"驱动形式", body:"车身形式", year:"车型年份", stock:"现货库存", market:"出口市场", gallery:"车辆图片", notes:"出口说明", quote:"获取出口报价" } : ar ? { price:"السعر التصديري المرجعي", range:"المدى", power:"القدرة", drive:"نظام الدفع", body:"نوع الهيكل", year:"سنة الطراز", stock:"المخزون", market:"الأسواق", gallery:"معرض الصور", notes:"ملاحظات التصدير", quote:"طلب عرض سعر" } : ru ? { price:"Экспортная цена", range:"Запас хода", power:"Мощность", drive:"Привод", body:"Тип кузова", year:"Год модели", stock:"В наличии", market:"Рынки", gallery:"Галерея", notes:"Условия экспорта", quote:"Запросить цену" } : { price:"Export reference", range:"Range", power:"Power", drive:"Drivetrain", body:"Body type", year:"Model year", stock:"Stock", market:"Markets", gallery:"Vehicle Gallery", notes:"Export Notes", quote:"Request Export Quote" };
+    var desc = zh ? (v.detailZh || v.descZh || v.description || (v.brand + " " + v.name + " 面向海外经销商和进口商供应。我们可根据采购数量、配置、颜色和目的港匹配中国工厂及港口现货。")) : (ar ? (v.detailAr || v.detailEn || vehicleDescription(v)) : (ru ? (v.detailRu || v.detailEn || vehicleDescription(v)) : vehicleDescription(v)));
+    document.getElementById("vehicleDetailTitle").textContent = v.brand + " " + v.name;
+    document.getElementById("vehicleDetailEyebrow").textContent = (v.year || "") + " · " + (zh ? "可出口" : (v.status || "Export Ready"));
+    document.getElementById("vehicleDetailDescription").textContent = desc;
+    var main = document.getElementById("vehicleDetailImage"); main.src = gallery[0]; main.alt = v.brand + " " + v.name;
+    var specs = [
+      [labels.price, v.exportPrice || facts.price || (zh ? "询价" : "Quote on request")], [labels.range, v.range || "—"],
+      [labels.power, v.power || "—"], [labels.drive, v.drivetrain || "—"],
+      [labels.body, zh ? (v.categoryZh || v.bodyType || "—") : (v.bodyType || v.categoryEn || "—")], [labels.year, v.year || "—"],
+      [labels.stock, (v.stock || 0) + (zh ? " 台" : " units")], [labels.market, zh ? (v.marketZh || "全球") : (v.marketEn || "Global")]
+    ];
+    document.getElementById("vehicleDetailSpecs").innerHTML = specs.map(function (s) { return '<div class="vehicle-spec"><span>' + escapeHtml(s[0]) + '</span><b>' + escapeHtml(s[1]) + '</b></div>'; }).join("");
+    var technical = [
+      [zh ? "车身尺寸" : "Dimensions", v.dimensions || facts.dimensions], [zh ? "轴距" : "Wheelbase", v.wheelbase || facts.wheelbase],
+      [zh ? "座位数" : "Seats", v.seats || facts.seats], [zh ? "电池/能源" : "Battery / Energy", v.battery || facts.battery],
+      [zh ? "变速箱" : "Transmission", v.transmission || facts.transmission]
+    ].filter(function (item) { return item[1]; });
+    document.getElementById("vehicleDetailSpecs").innerHTML += technical.map(function (s) { return '<div class="vehicle-spec"><span>' + escapeHtml(s[0]) + '</span><b>' + escapeHtml(s[1]) + '</b></div>'; }).join("");
+    document.getElementById("vehicleDetailGallery").innerHTML = gallery.map(function (src) { return '<button type="button"><img src="' + escapeAttr(src) + '" alt="' + escapeAttr(v.brand + " " + v.name) + '"></button>'; }).join("");
+    document.querySelectorAll("#vehicleDetailGallery button").forEach(function (button) { button.onclick = function () { main.style.opacity = "0"; setTimeout(function () { main.src = button.querySelector("img").src; main.style.opacity = "1"; }, 180); }; });
+    document.getElementById("vehicleDetailGalleryTitle").textContent = labels.gallery;
+    document.getElementById("vehicleDetailNotesTitle").textContent = labels.notes;
+    document.getElementById("vehicleDetailQuoteText").textContent = labels.quote;
+    document.getElementById("vehicleDetailNotes").textContent = v.exportNotes || (zh ? "参考价格基于中国当前出口库存，不含目的国关税及当地费用。最终 FOB/CIF 价格取决于配置、采购数量、颜色、生产日期、目的港和船期。请联系我们获取最新形式发票及验车资料。" : "Reference price is based on current China export inventory and excludes destination customs duties. Final FOB/CIF pricing depends on trim, quantity, colour, production date, destination port and freight schedule. Contact our team for a current proforma quotation and inspection package.");
+    document.getElementById("vehicleDetailWhatsApp").href = "https://wa.me/8619310192287?text=" + encodeURIComponent("I am interested in " + v.brand + " " + v.name + " " + (v.year || ""));
+    document.getElementById("vehicleDetailQuote").onclick = function () { closeVehicleDetail(false); window.__openModal(v.brand + " " + v.name + " " + (v.year || "")); };
+    detail.classList.add("open"); detail.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+  }
+
+  function closeVehicleDetail(clearHash) {
+    var detail = document.getElementById("vehicleDetail"); if (!detail) return;
+    detail.classList.remove("open"); detail.setAttribute("aria-hidden", "true"); document.body.style.overflow = "";
+    if (clearHash !== false && location.hash.indexOf("#vehicle/") === 0) history.pushState(null, "", location.pathname + location.search + "#vehicles");
+  }
+
+  function openVehicleFromHash() {
+    if (location.hash.indexOf("#vehicle/") !== 0) return;
+    var id = decodeURIComponent(location.hash.slice(9));
+    openVehicleDetail(vehicles.find(function (v) { return String(v.id) === id; }));
   }
 
   function populateBrands() {
@@ -476,6 +549,9 @@
     subscribeToData();
     setInterval(function () { loadData(true); }, 30000);
     window.addEventListener("focus", function () { loadData(true); });
+    window.addEventListener("hashchange", openVehicleFromHash);
+    var detailClose = document.getElementById("vehicleDetailClose");
+    if (detailClose) detailClose.onclick = function () { closeVehicleDetail(true); };
     document.addEventListener("visibilitychange", function () {
       if (!document.hidden) loadData(true);
     });

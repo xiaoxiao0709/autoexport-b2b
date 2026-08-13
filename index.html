@@ -1101,6 +1101,28 @@ section { padding: var(--s-9) 0; }
 /* ============================================================
    QUOTE MODAL
    ============================================================ */
+.vehicle-detail {
+  position: fixed; inset: 0; z-index: 180; overflow-y: auto; background: var(--paper);
+  opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .45s var(--ease-quart), transform .55s var(--ease-expo), visibility .45s;
+}
+.vehicle-detail.open { opacity: 1; visibility: visible; transform: none; }
+.vehicle-detail-head { min-height: 64vh; display: grid; grid-template-columns: 1.18fr .82fr; background: #111; color: #fff; }
+.vehicle-detail-visual { min-height: 64vh; background: linear-gradient(145deg,#f6f6f6,#d8d8d8); position: relative; overflow: hidden; }
+.vehicle-detail-visual::after { content:""; position:absolute; inset:auto 7% 8% 7%; height:18%; background:#0002; filter:blur(35px); border-radius:50%; }
+.vehicle-detail-visual img { position:relative; z-index:1; width: 100%; height: 100%; object-fit: contain; padding:5%; transition: opacity .3s, transform .7s var(--ease-expo); }
+.vehicle-detail-visual:hover img { transform:scale(1.025); }
+.vehicle-detail-info { padding: clamp(40px, 7vw, 100px) clamp(24px, 6vw, 90px); display: flex; flex-direction: column; justify-content: center; }
+.vehicle-detail-info .eyebrow { color: #aaa; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+.vehicle-detail-info h2 { font-family: var(--font-display); font-size: clamp(38px, 5vw, 76px); line-height: .98; margin: 14px 0 24px; }
+.vehicle-detail-info p { color: #bbb; max-width: 560px; line-height: 1.8; }
+.vehicle-detail-close { position: absolute; z-index: 2; top: 24px; right: 28px; width: 44px; height: 44px; border: 1px solid #555; border-radius: 50%; color: #fff; background: #1119; font-size: 24px; }
+.vehicle-detail-body { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 64px 0 120px; }
+.vehicle-spec-grid { display:grid; grid-template-columns: repeat(4,1fr); border:1px solid var(--line); background:#fff; }
+.vehicle-spec { min-height:112px; padding:22px 18px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }.vehicle-spec:nth-child(4n){border-right:0}.vehicle-spec b{display:block;font-size:18px;line-height:1.35;margin-top:9px}.vehicle-spec span{color:#777;font-size:11px;text-transform:uppercase;letter-spacing:.12em}
+.vehicle-gallery { display:flex; gap:12px; overflow-x:auto; margin-top:34px; padding-bottom:8px; }.vehicle-gallery button{min-width:180px;height:110px;padding:0;border:0;overflow:hidden;background:#eee}.vehicle-gallery img{width:100%;height:100%;object-fit:cover;transition:transform .35s}.vehicle-gallery button:hover img{transform:scale(1.06)}
+.vehicle-detail-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; }
+@media (max-width: 760px) { .vehicle-detail-head{grid-template-columns:1fr}.vehicle-detail-visual{min-height:38vh}.vehicle-detail-info{padding:38px 24px 46px}.vehicle-detail-info h2{font-size:42px}.vehicle-spec-grid{grid-template-columns:repeat(2,1fr)}.vehicle-spec{border-right:1px solid var(--line)}.vehicle-spec:nth-child(2n){border-right:0}.vehicle-gallery button{min-width:145px;height:92px} }
+
 .modal {
   position: fixed; inset: 0;
   z-index: 200;
@@ -1758,6 +1780,26 @@ section { padding: var(--s-9) 0; }
 <a class="wa-float" data-contact-whatsapp href="https://wa.me/8619310192287" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.9.9-1.1 2.2-.2 3.9a11.6 11.6 0 0 0 4.5 4.2c1.7.8 2.4.9 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.1-.5-.2z"/></svg>
 </a>
+
+<!-- Vehicle Detail -->
+<section class="vehicle-detail" id="vehicleDetail" aria-modal="true" aria-hidden="true">
+  <button class="vehicle-detail-close" id="vehicleDetailClose" aria-label="Close">×</button>
+  <div class="vehicle-detail-head">
+    <div class="vehicle-detail-visual"><img id="vehicleDetailImage" src="" alt=""></div>
+    <div class="vehicle-detail-info">
+      <span class="eyebrow" id="vehicleDetailEyebrow">Export Ready</span>
+      <h2 id="vehicleDetailTitle"></h2>
+      <p id="vehicleDetailDescription"></p>
+      <div class="vehicle-detail-actions"><button class="btn btn-primary" id="vehicleDetailQuote"><span id="vehicleDetailQuoteText">Request Export Quote</span></button><a class="btn btn-outline-light" id="vehicleDetailWhatsApp" target="_blank" rel="noopener">WhatsApp</a></div>
+    </div>
+  </div>
+  <div class="vehicle-detail-body">
+    <div class="vehicle-spec-grid" id="vehicleDetailSpecs"></div>
+    <h3 style="margin-top:44px" id="vehicleDetailGalleryTitle">Vehicle Gallery</h3>
+    <div class="vehicle-gallery" id="vehicleDetailGallery"></div>
+    <div style="margin-top:44px;max-width:760px"><h3 id="vehicleDetailNotesTitle">Export Notes</h3><p id="vehicleDetailNotes" style="color:#667085;line-height:1.8;margin-top:12px"></p></div>
+  </div>
+</section>
 
 <!-- Quote Modal -->
 <div class="modal" id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
