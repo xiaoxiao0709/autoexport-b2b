@@ -305,7 +305,10 @@
       btn.addEventListener("click", function () { window.__openModal(btn.dataset.model); });
     });
     grid.querySelectorAll("[data-vehicle-id]").forEach(function (card) {
-      var open = function () { window.location.hash = "vehicle/" + encodeURIComponent(card.dataset.vehicleId); };
+      var open = function () {
+        card.style.transform = "scale(.97)";
+        setTimeout(function () { window.location.href = "vehicle.html?id=" + encodeURIComponent(card.dataset.vehicleId); }, 140);
+      };
       card.addEventListener("click", function (event) {
         if (!event.target.closest("button, a, input, select")) open();
       });
