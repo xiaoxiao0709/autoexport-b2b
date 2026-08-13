@@ -72,9 +72,17 @@
       <div><label>品牌</label><input id="vBrand" required></div><div><label>车型</label><input id="vName" required></div><div><label>类型</label><select id="vType"><option value="ev">纯电</option><option value="phev">混动</option><option value="petrol">燃油</option></select></div>
       <div><label>年份</label><input id="vYear" type="number" value="2025"></div><div><label>车身</label><input id="vBody"></div><div><label>库存</label><input id="vStock" type="number" value="1"></div>
       <div><label>续航</label><input id="vRange"></div><div><label>动力</label><input id="vPower"></div><div><label>驱动</label><input id="vDrivetrain"></div>
+      <div><label>车身尺寸</label><input id="vDimensions" placeholder="4775 × 1890 × 1670 mm"></div><div><label>轴距</label><input id="vWheelbase"></div><div><label>座位数</label><input id="vSeats"></div>
+      <div><label>电池 / 能源</label><input id="vBattery"></div><div><label>发动机</label><input id="vEngine"></div><div><label>变速箱</label><input id="vTransmission"></div>
+      <div><label>质保</label><input id="vWarranty"></div><div><label>轮胎</label><input id="vTires"></div><div><label>出口参考价</label><input id="vExportPrice" placeholder="USD 18,900–24,500 FOB"></div>
       <div><label>目标市场（中文）</label><input id="vMarketZh"></div><div><label>目标市场（英文）</label><input id="vMarketEn"></div><div><label>状态</label><input id="vStatus" value="Export Ready"></div>
-      <div class="span-2"><label>图片地址</label><input id="vImage"></div><div><label>上传图片</label><input id="vFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
-      <div class="span-3"><label>中文描述</label><textarea id="vDescZh" rows="2"></textarea></div><div class="span-3"><label>英文描述</label><textarea id="vDescEn" rows="2"></textarea></div><div class="span-3 check"><input id="vPublished" type="checkbox" checked><label style="margin:0">前台上架</label></div>
+      <div class="span-2"><label>主图地址</label><input id="vImage"></div><div><label>上传图片</label><input id="vFile" type="file" accept="image/jpeg,image/png,image/webp" multiple></div>
+      <div class="span-3" id="vPreview" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div class="span-3"><label>中文描述</label><textarea id="vDescZh" rows="2"></textarea></div><div class="span-3"><label>英文描述</label><textarea id="vDescEn" rows="2"></textarea></div>
+      <div class="span-3"><label>阿拉伯文描述</label><textarea id="vDetailAr" rows="2"></textarea></div><div class="span-3"><label>俄文描述</label><textarea id="vDetailRu" rows="2"></textarea></div>
+      <div class="span-3"><label>四语亮点（每行一条，格式：语言|内容）</label><textarea id="vHighlights" rows="4" placeholder="zh|刀片电池与长续航\nen|Blade Battery and extended range\nar|بطارية Blade ومدى طويل\nru|Blade Battery и большой запас хода"></textarea></div>
+      <div class="span-3"><label>配置标签（逗号分隔）</label><input id="vFeatures" placeholder="360° Camera, ADAS, Panoramic Roof"></div><div class="span-3"><label>可选颜色（逗号分隔）</label><input id="vColors" placeholder="Pearl White, Graphite Black, Ocean Blue"></div>
+      <div class="span-3"><label>出口说明</label><textarea id="vExportNotes" rows="3"></textarea></div><div class="span-3 check"><input id="vPublished" type="checkbox" checked><label style="margin:0">前台上架</label></div>
     </div></div><div class="modal-foot"><button class="secondary" type="button" id="cancelVehicleBtn">取消</button><button class="primary" type="submit">保存车辆</button></div></form>
   </div>
   <div class="toast hidden" id="toast"></div>

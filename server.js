@@ -57,7 +57,8 @@
     var rows = $("vehicleRows"); rows.innerHTML = ""; $("vehicleEmpty").classList.toggle("hidden", state.vehicles.length > 0);
     state.vehicles.forEach(function (v) {
       var tr = document.createElement("tr");
-      tr.innerHTML = '<td><img src="' + esc(v.image || "") + '" alt=""></td><td><b>' + esc(v.brand) + '</b><br>' + esc(v.name) + '</td><td>' + esc(v.type) + '</td><td>' + esc(v.year) + '</td><td>' + esc(v.stock) + '</td><td><button class="badge ' + (v.published === false ? "off" : "") + '" data-toggle="' + esc(v.id) + '">' + (v.published === false ? "已下架" : "已上架") + '</button></td><td><div class="actions"><button class="icon-btn" data-edit="' + esc(v.id) + '" title="编辑"><i data-lucide="pencil"></i></button><button class="icon-btn" data-delete="' + esc(v.id) + '" title="删除"><i data-lucide="trash-2"></i></button></div></td>';
+      var stockClass = (+v.stock || 0) < 10 ? " style=\"color:#b42318;font-weight:800\"" : ((+v.stock || 0) < 20 ? " style=\"color:#b54708;font-weight:800\"" : "");
+      tr.innerHTML = '<td><img src="' + esc(v.image || "") + '" alt=""></td><td><b>' + esc(v.brand) + '</b><br>' + esc(v.name) + '</td><td>' + esc(v.type) + '</td><td>' + esc(v.year) + '</td><td' + stockClass + '>' + esc(v.stock) + '</td><td><button class="badge ' + (v.published === false ? "off" : "") + '" data-toggle="' + esc(v.id) + '">' + (v.published === false ? "已下架" : "已上架") + '</button></td><td><div class="actions"><button class="icon-btn" data-edit="' + esc(v.id) + '" title="编辑"><i data-lucide="pencil"></i></button><button class="icon-btn" data-delete="' + esc(v.id) + '" title="删除"><i data-lucide="trash-2"></i></button></div></td>';
       rows.appendChild(tr);
     });
     rows.querySelectorAll("[data-edit]").forEach(function (b) { b.onclick = function () { openVehicle(b.dataset.edit); }; });
@@ -66,21 +67,30 @@
     if (window.lucide) window.lucide.createIcons();
   }
 
-  function blankVehicle() { return { brand: "", name: "", type: "ev", year: 2025, bodyType: "SUV", stock: 1, range: "", power: "", drivetrain: "", marketZh: "", marketEn: "", status: "Export Ready", image: "", descZh: "", descEn: "", published: true }; }
+  function blankVehicle() { return { brand: "", name: "", type: "ev", year: 2025, bodyType: "SUV", stock: 1, range: "", power: "", drivetrain: "", marketZh: "", marketEn: "", status: "Export Ready", image: "", gallery: [], descZh: "", descEn: "", detailAr: "", detailRu: "", highlights: {}, features: [], colors: [], published: true }; }
   function openVehicle(id) {
     var v = id ? state.vehicles.find(function (item) { return item.id === id; }) : blankVehicle(); state.editingId = id || null;
     $("vehicleModalTitle").textContent = id ? "编辑车辆" : "新增车辆";
-    [["vBrand","brand"],["vName","name"],["vType","type"],["vYear","year"],["vBody","bodyType"],["vStock","stock"],["vRange","range"],["vPower","power"],["vDrivetrain","drivetrain"],["vMarketZh","marketZh"],["vMarketEn","marketEn"],["vStatus","status"],["vImage","image"],["vDescZh","descZh"],["vDescEn","descEn"]].forEach(function (pair) { $(pair[0]).value = v[pair[1]] == null ? "" : v[pair[1]]; });
-    $("vPublished").checked = v.published !== false; $("vFile").value = ""; $("vehicleModal").classList.remove("hidden");
+    [["vBrand","brand"],["vName","name"],["vType","type"],["vYear","year"],["vBody","bodyType"],["vStock","stock"],["vRange","range"],["vPower","power"],["vDrivetrain","drivetrain"],["vDimensions","dimensions"],["vWheelbase","wheelbase"],["vSeats","seats"],["vBattery","battery"],["vEngine","engine"],["vTransmission","transmission"],["vWarranty","warranty"],["vTires","tires"],["vExportPrice","exportPrice"],["vMarketZh","marketZh"],["vMarketEn","marketEn"],["vStatus","status"],["vImage","image"],["vDescZh","descZh"],["vDescEn","descEn"],["vDetailAr","detailAr"],["vDetailRu","detailRu"],["vExportNotes","exportNotes"]].forEach(function (pair) { $(pair[0]).value = v[pair[1]] == null ? "" : v[pair[1]]; });
+    $("vHighlights").value = Object.keys(v.highlights || {}).map(function (key) { return key + "|" + v.highlights[key]; }).join("\n");
+    $("vFeatures").value = (v.features || []).join(", "); $("vColors").value = (v.colors || []).join(", ");
+    $("vPublished").checked = v.published !== false; $("vFile").value = ""; renderPreview(v.gallery || [v.image]); $("vehicleModal").classList.remove("hidden");
   }
   function closeVehicle() { $("vehicleModal").classList.add("hidden"); state.editingId = null; }
 
-  async function uploadImage(id) {
-    var file = $("vFile").files[0]; if (!file) return $("vImage").value.trim();
-    var ext = (file.name.split(".").pop() || "jpg").toLowerCase(); var path = "vehicles/" + id + "-" + Date.now() + "." + ext;
-    var result = await db.storage.from("vehicle-images").upload(path, file, { upsert: false, cacheControl: "31536000" });
-    if (result.error) throw result.error;
-    return db.storage.from("vehicle-images").getPublicUrl(path).data.publicUrl;
+  function renderPreview(urls) {
+    var root = $("vPreview"); if (!root) return; root.innerHTML = (urls || []).filter(Boolean).map(function (url) { return '<img src="' + esc(url) + '" alt="" style="width:92px;height:64px;object-fit:cover;border:1px solid #d0d5dd;border-radius:6px">'; }).join("");
+  }
+  async function uploadImages(id, existing) {
+    var files = Array.from($("vFile").files || []); if (!files.length) return existing.filter(Boolean);
+    var urls = [];
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i]; var ext = (file.name.split(".").pop() || "jpg").toLowerCase(); var path = "vehicles/" + id + "-" + Date.now() + "-" + i + "." + ext;
+      var result = await db.storage.from("vehicle-images").upload(path, file, { upsert: false, cacheControl: "31536000" });
+      if (result.error) throw result.error;
+      urls.push(db.storage.from("vehicle-images").getPublicUrl(path).data.publicUrl);
+    }
+    return existing.concat(urls);
   }
 
   async function saveVehicle(event) {
@@ -88,8 +98,11 @@
     try {
       var old = state.editingId ? state.vehicles.find(function (v) { return v.id === state.editingId; }) : null;
       var id = state.editingId || slug($("vBrand").value + "-" + $("vName").value) || String(Date.now());
-      var data = Object.assign({}, old || {}, { id: id, brand: $("vBrand").value.trim(), name: $("vName").value.trim(), type: $("vType").value, year: +$("vYear").value || 2025, bodyType: $("vBody").value.trim(), stock: +$("vStock").value || 0, range: $("vRange").value.trim(), power: $("vPower").value.trim(), drivetrain: $("vDrivetrain").value.trim(), marketZh: $("vMarketZh").value.trim(), marketEn: $("vMarketEn").value.trim(), status: $("vStatus").value.trim(), descZh: $("vDescZh").value.trim(), descEn: $("vDescEn").value.trim(), published: $("vPublished").checked });
-      data.image = await uploadImage(id); delete data.sort_order;
+      var highlights = {};
+      $("vHighlights").value.split(/\r?\n/).map(function (line) { var parts = line.split("|"); if (parts.length > 1 && parts[0].trim()) highlights[parts[0].trim()] = parts.slice(1).join("|").trim(); });
+      var data = Object.assign({}, old || {}, { id: id, brand: $("vBrand").value.trim(), name: $("vName").value.trim(), type: $("vType").value, year: +$("vYear").value || 2025, bodyType: $("vBody").value.trim(), stock: +$("vStock").value || 0, range: $("vRange").value.trim(), power: $("vPower").value.trim(), drivetrain: $("vDrivetrain").value.trim(), dimensions: $("vDimensions").value.trim(), wheelbase: $("vWheelbase").value.trim(), seats: $("vSeats").value.trim(), battery: $("vBattery").value.trim(), engine: $("vEngine").value.trim(), transmission: $("vTransmission").value.trim(), warranty: $("vWarranty").value.trim(), tires: $("vTires").value.trim(), exportPrice: $("vExportPrice").value.trim(), marketZh: $("vMarketZh").value.trim(), marketEn: $("vMarketEn").value.trim(), status: $("vStatus").value.trim(), descZh: $("vDescZh").value.trim(), descEn: $("vDescEn").value.trim(), detailAr: $("vDetailAr").value.trim(), detailRu: $("vDetailRu").value.trim(), highlights: highlights, features: $("vFeatures").value.split(",").map(function (item) { return item.trim(); }).filter(Boolean), colors: $("vColors").value.split(",").map(function (item) { return item.trim(); }).filter(Boolean), exportNotes: $("vExportNotes").value.trim(), published: $("vPublished").checked });
+      var existingGallery = old && old.gallery ? old.gallery : (old && old.image ? [old.image] : []);
+      data.gallery = await uploadImages(id, existingGallery); data.image = data.gallery[0] || $("vImage").value.trim(); delete data.sort_order;
       var order = old ? old.sort_order : state.vehicles.length;
       var result = await db.from("vehicles").upsert({ id: id, data: data, published: data.published, sort_order: order }); if (result.error) throw result.error;
       closeVehicle(); toast("车辆已保存，前端已同步"); await loadAll();
@@ -147,6 +160,7 @@
   $("logoutBtn").onclick = async function () { await db.auth.signOut(); showLogin(); };
   document.querySelectorAll(".nav [data-page]").forEach(function (b) { b.onclick = function () { showPage(b.dataset.page); }; });
   $("addVehicleBtn").onclick = function () { openVehicle(); }; $("closeVehicleBtn").onclick = closeVehicle; $("cancelVehicleBtn").onclick = closeVehicle; $("vehicleForm").onsubmit = saveVehicle;
+  $("vFile").onchange = function () { var urls = Array.from($("vFile").files || []).map(function (file) { return URL.createObjectURL(file); }); renderPreview(urls); };
   $("contentSearch").oninput = renderContent; $("saveContentBtn").onclick = saveContent; $("settingsForm").onsubmit = saveSettings;
   db.auth.getSession().then(function (result) {
     var inviteFlow = /(?:^|[?#&])type=(invite|recovery)(?:&|$)/.test(location.hash + location.search);
