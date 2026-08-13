@@ -30,6 +30,7 @@
     @media(max-width:1050px){.app{grid-template-columns:76px 1fr}.brand strong,.brand small,.nav span,.nav-label,.side-foot small{display:none}.brand{justify-content:center;padding:0 0 20px}.nav button{justify-content:center}.side-foot{padding:14px 0}.side-foot .state{justify-content:center}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.grid-2{grid-template-columns:1fr}.settings-grid{grid-template-columns:1fr}}
     @media(max-width:720px){.app{display:block}.sidebar{height:auto;position:sticky;padding:7px;display:block}.brand,.nav-label,.side-foot{display:none}.nav{grid-template-columns:repeat(8,1fr);overflow:auto}.nav button{min-width:48px;height:46px;padding:0}.topbar{padding:0 15px}.top-actions .btn span{display:none}.workspace{padding:20px 14px 50px}.page-head{align-items:flex-start;flex-direction:column}.metrics{grid-template-columns:1fr 1fr}.metric{padding:16px}.toolbar{align-items:stretch;flex-direction:column}.search{min-width:0}.content-shell{grid-template-columns:1fr}.content-groups{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.content-groups button{width:auto;white-space:nowrap}.form-grid{grid-template-columns:1fr}.span-2{grid-column:auto}.media-grid{grid-template-columns:repeat(2,1fr)}.drawer-panel{width:100%}}
   </style>
+  <link rel="stylesheet" href="admin-theme.css?v=glass-v1">
 </head>
 <body>
   <div class="app">
@@ -50,11 +51,11 @@
     </aside>
     <main class="main">
       <div class="dev-banner"><span>开发模式：后台暂未启用登录。正式公开前必须恢复管理员认证。</span><button id="dismissBanner">关闭</button></div>
-      <header class="topbar"><h1 id="pageTitle">业务概览</h1><div class="top-actions"><button class="icon-btn" id="refreshBtn" title="刷新"><i data-lucide="refresh-cw"></i></button><a class="btn" href="../" target="_blank"><i data-lucide="external-link"></i><span>打开网站</span></a><button class="btn primary" id="quickAddBtn"><i data-lucide="plus"></i><span>新增车辆</span></button></div></header>
+      <header class="topbar"><div class="topbar-title"><button class="icon-btn sidebar-toggle" id="sidebarToggle" title="折叠侧栏"><i data-lucide="panel-left-close"></i></button><div><small>EXPORT OPERATIONS</small><h1 id="pageTitle">业务概览</h1></div></div><div class="top-actions"><button class="icon-btn" id="refreshBtn" title="刷新"><i data-lucide="refresh-cw"></i></button><a class="btn" href="../" target="_blank"><i data-lucide="external-link"></i><span>打开网站</span></a><button class="btn primary" id="quickAddBtn"><i data-lucide="plus"></i><span>新增车辆</span></button></div></header>
       <div class="workspace">
         <section class="page active" id="page-dashboard">
           <div class="page-head"><div><h2>业务概览</h2><p>车辆资源、库存和客户线索的实时状态。</p></div><div class="actions"><button class="btn" id="exportSnapshotBtn"><i data-lucide="download"></i>导出业务快照</button></div></div>
-          <div class="metrics"><div class="metric"><span>车辆总数</span><b id="statVehicles">0</b><em>云端资源</em></div><div class="metric"><span>已上架</span><b id="statPublished">0</b><em>前台可见</em></div><div class="metric"><span>库存总量</span><b id="statStock">0</b><em id="stockWarning">库存正常</em></div><div class="metric"><span>待跟进询盘</span><b id="statInquiries">0</b><em>客户线索</em></div></div>
+          <div class="metrics"><div class="metric accent-blue"><div class="metric-icon"><i data-lucide="car-front"></i></div><span>车辆总数</span><b id="statVehicles">0</b><em>云端资源</em></div><div class="metric accent-green"><div class="metric-icon"><i data-lucide="badge-check"></i></div><span>已上架</span><b id="statPublished">0</b><em>前台可见</em></div><div class="metric accent-amber"><div class="metric-icon"><i data-lucide="warehouse"></i></div><span>库存总量</span><b id="statStock">0</b><em id="stockWarning">库存正常</em></div><div class="metric accent-cyan"><div class="metric-icon"><i data-lucide="messages-square"></i></div><span>待跟进询盘</span><b id="statInquiries">0</b><em>客户线索</em></div></div>
           <div class="grid-2"><div class="panel"><div class="panel-head"><h3>库存预警</h3><button class="btn" data-go="vehicles">查看全部</button></div><div class="panel-body low-list" id="lowStockList"></div></div><div class="panel"><div class="panel-head"><h3>最近询盘</h3><button class="btn" data-go="inquiries">进入询盘</button></div><div class="panel-body activity-list" id="recentInquiryList"></div></div></div>
         </section>
         <section class="page" id="page-vehicles">
@@ -97,6 +98,6 @@
     </div><div class="drawer-foot"><button class="btn danger hidden" type="button" id="deleteVehicleBtn"><i data-lucide="trash-2"></i>删除车辆</button><div><button class="btn" type="button" id="cancelVehicleBtn">取消</button><button class="btn primary" type="submit" id="saveVehicleBtn"><i data-lucide="save"></i>保存并同步</button></div></div></form>
   </div>
   <div class="toast hidden" id="toast"></div>
-  <script src="server.js?v=admin-v3"></script>
+  <script src="server.js?v=admin-glass-v1"></script>
 </body>
 </html>

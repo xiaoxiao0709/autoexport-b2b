@@ -201,8 +201,8 @@
   function renderReplies() { var replies = JSON.parse(localStorage.getItem("aex_quick_replies") || '["您好，请告诉我您需要的车型、数量和目的港。","我们将在确认库存和船期后提供 FOB/CIF 报价。"]'); $("quickReplies").innerHTML = replies.map(function (x) { return '<div class="activity-item"><span>' + esc(x) + '</span><button class="icon-btn" data-copy-reply="' + esc(x) + '"><i data-lucide="copy"></i></button></div>'; }).join(""); $("quickReplies").querySelectorAll("[data-copy-reply]").forEach(function (b) { b.onclick = function () { navigator.clipboard.writeText(b.dataset.copyReply); toast("快捷回复已复制"); }; }); }
   async function checkWritePermission() {
     var hint = $("writePermissionHint"), toggle = $("writePermissionToggle");
-    var probe = await db.from("site_settings").update({ updated_at: state.settings.updated_at || new Date().toISOString() }).eq("id", "__permission_probe__");
-    var allowed = !probe.error; toggle.classList.toggle("on", allowed); hint.textContent = allowed ? "匿名云端写入已启用" : "匿名写入未启用，请执行开发策略 SQL";
+    var probe = await db.from("site_settings").update({ updated_at: state.settings.updated_at || new Date().toISOString() }).eq("id", "main").select("id");
+    var allowed = !probe.error && probe.data && probe.data.length === 1; toggle.classList.toggle("on", allowed); hint.textContent = allowed ? "匿名云端写入已启用" : "匿名写入未启用，请执行开发策略 SQL";
   }
   function formatError(e) { var message = e && e.message ? e.message : String(e); if (/row-level security|permission denied/i.test(message)) return "Supabase 尚未开启开发阶段匿名写入权限"; return message; }
   function backup() { download("autoexport-backup-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify({ exportedAt: new Date().toISOString(), vehicles: state.vehicles, content: state.content, settings: state.settings, inquiries: state.inquiries }, null, 2)); }
@@ -227,6 +227,7 @@
   document.querySelectorAll("#vehicleLangTabs [data-lang]").forEach(function (b) { b.onclick = function () { storeCopyFields(); state.copyLang = b.dataset.lang; loadCopyFields(); }; });
   document.querySelectorAll("#contentLangTabs [data-lang]").forEach(function (b) { b.onclick = function () { state.contentLang = b.dataset.lang; renderContent(); }; });
   $("dismissBanner").onclick = function () { document.querySelector(".dev-banner").classList.add("hidden"); };
+  $("sidebarToggle").onclick = function () { document.body.classList.toggle("sidebar-collapsed"); localStorage.setItem("aex_sidebar_collapsed", document.body.classList.contains("sidebar-collapsed") ? "1" : "0"); };
   $("refreshBtn").onclick = function () { loadAll(); }; $("quickAddBtn").onclick = $("addVehicleBtn").onclick = function () { openVehicle(); };
   $("closeVehicleBtn").onclick = $("cancelVehicleBtn").onclick = closeVehicle; $("vehicleDrawer").onclick = function (e) { if (e.target === $("vehicleDrawer")) closeVehicle(); };
   $("vehicleForm").onsubmit = saveVehicle; $("deleteVehicleBtn").onclick = deleteVehicle;
@@ -239,5 +240,6 @@
   $("clearCacheBtn").onclick = function () { ["aex_site_cache","aex_vehicles_cache"].forEach(function (k) { localStorage.removeItem(k); }); loadAll(); toast("本地缓存已清理"); };
   $("addReplyBtn").onclick = function () { var text = prompt("输入快捷回复"); if (!text) return; var replies = JSON.parse(localStorage.getItem("aex_quick_replies") || "[]"); replies.push(text); localStorage.setItem("aex_quick_replies", JSON.stringify(replies)); renderReplies(); };
   if (window.lucide) window.lucide.createIcons();
+  if (localStorage.getItem("aex_sidebar_collapsed") === "1") document.body.classList.add("sidebar-collapsed");
   loadAll(true).then(subscribe).catch(function (e) { toast(formatError(e), true); });
 })();
